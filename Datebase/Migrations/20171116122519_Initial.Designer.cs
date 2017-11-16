@@ -11,7 +11,7 @@ using System;
 namespace Database.Migrations
 {
     [DbContext(typeof(RentalContext))]
-    [Migration("20171114225812_Initial")]
+    [Migration("20171116122519_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,9 +27,11 @@ namespace Database.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(32);
 
                     b.Property<string>("Surname")
+                        .IsRequired()
                         .HasMaxLength(32);
 
                     b.HasKey("Id");
@@ -45,9 +47,11 @@ namespace Database.Migrations
                     b.Property<int>("AuthorId");
 
                     b.Property<string>("ISBN")
+                        .IsRequired()
                         .HasMaxLength(13);
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasMaxLength(128);
 
                     b.HasKey("Id");
@@ -63,6 +67,7 @@ namespace Database.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(32);
 
                     b.HasKey("Id");
@@ -72,18 +77,22 @@ namespace Database.Migrations
 
             modelBuilder.Entity("Models.Models.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(256);
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(64);
 
                     b.Property<string>("Password")
+                        .IsRequired()
                         .HasMaxLength(64);
 
                     b.Property<int>("RoleId");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("UserName")
+                        .IsRequired()
                         .HasMaxLength(64);
 
                     b.HasKey("Id");

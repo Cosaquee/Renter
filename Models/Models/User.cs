@@ -6,13 +6,14 @@ namespace Models.Models
     public class User
     {
         [Key]
-        public int Id { get; set; }
+        [StringLength(256)]
+        public string Id { get; set; }
         [Required]
         [StringLength(64)]
         public string Email { get; set; }
         [Required]
         [StringLength(64)]
-        public string Username { get; set; }
+        public string UserName { get; set; }
         [Required]
         [StringLength(64)]
         public string Password { get; set; }

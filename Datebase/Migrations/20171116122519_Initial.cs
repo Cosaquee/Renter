@@ -15,8 +15,8 @@ namespace Database.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(maxLength: 32, nullable: true),
-                    Surname = table.Column<string>(maxLength: 32, nullable: true)
+                    Name = table.Column<string>(maxLength: 32, nullable: false),
+                    Surname = table.Column<string>(maxLength: 32, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -29,7 +29,7 @@ namespace Database.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(maxLength: 32, nullable: true)
+                    Name = table.Column<string>(maxLength: 32, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -43,8 +43,8 @@ namespace Database.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     AuthorId = table.Column<int>(nullable: false),
-                    ISBN = table.Column<string>(maxLength: 13, nullable: true),
-                    Title = table.Column<string>(maxLength: 128, nullable: true)
+                    ISBN = table.Column<string>(maxLength: 13, nullable: false),
+                    Title = table.Column<string>(maxLength: 128, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -61,12 +61,11 @@ namespace Database.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Email = table.Column<string>(maxLength: 64, nullable: true),
-                    Password = table.Column<string>(maxLength: 64, nullable: true),
+                    Id = table.Column<string>(maxLength: 256, nullable: false),
+                    Email = table.Column<string>(maxLength: 64, nullable: false),
+                    Password = table.Column<string>(maxLength: 64, nullable: false),
                     RoleId = table.Column<int>(nullable: false),
-                    Username = table.Column<string>(maxLength: 64, nullable: true)
+                    UserName = table.Column<string>(maxLength: 64, nullable: false)
                 },
                 constraints: table =>
                 {

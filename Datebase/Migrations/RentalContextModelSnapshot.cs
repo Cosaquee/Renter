@@ -76,8 +76,9 @@ namespace Database.Migrations
 
             modelBuilder.Entity("Models.Models.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(256);
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -89,7 +90,7 @@ namespace Database.Migrations
 
                     b.Property<int>("RoleId");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(64);
 

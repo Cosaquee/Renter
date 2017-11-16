@@ -8,6 +8,10 @@ using Database.Interfaces;
 using Models.Models;
 using System.Security.Cryptography;
 using System.Text;
+using Authorization;
+using Services.UserServices.Interfaces;
+using Models.Dtos.User;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace HelloWorld.Controllers.Api
 {
@@ -17,11 +21,35 @@ namespace HelloWorld.Controllers.Api
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IUserRepositoryService userRepositoryService;
+        private readonly ITokenProvider tokenProvider;
+        private readonly IUserManagementService userManagementService;
 
-        public UsersController(IUnitOfWork unitOfWork, IUserRepositoryService userRepositoryService)
+        public UsersController(IUnitOfWork unitOfWork, IUserRepositoryService userRepositoryService, ITokenProvider tokenProvider, IUserManagementService userManagementService)
         {
             this.unitOfWork = unitOfWork;
             this.userRepositoryService = userRepositoryService;
+            this.tokenProvider = tokenProvider;
+            this.userManagementService = userManagementService;
+        }
+
+        //[HttpPost("/authorize")]        
+        /// <summary>
+        /// Returns auth token
+        /// </summary>
+        /// <param name="userName">User name.</param>
+        /// <param name="password">password.</param>
+        /// <returns></returns>
+        /// <response code="200">Returns auth token</response>
+        /// <response code="404">Bad username or password</response>      
+        [HttpPost("/authorize")]
+        [ProducesResponseType(typeof(AuthToken), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Authorize(string userName, string password)
+        {
+            var token = await tokenProvider.GenerateToken(userName, password);
+            if (token == null)
+                return NotFound("Bad username or password");
+            return Json(token);
         }
 
         // GET api/values
@@ -33,35 +61,64 @@ namespace HelloWorld.Controllers.Api
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public User Get(int id)
+        public User Get(string id)
         {
-            return userRepositoryService.Queryable().Where(x => x.Id == id).FirstOrDefault();
+            return userRepositoryService.Queryable().Where(x => x.Equals(id)).FirstOrDefault();
         }
 
-        private const string _salt = "P&0myWHq";
-        private static string CalculateHashedPassword(string clearpwd)
-        {
-            using (var sha = SHA256.Create())
-            {
-                var computedHash = sha.ComputeHash(Encoding.Unicode.GetBytes(clearpwd + _salt));
-                return Convert.ToBase64String(computedHash);
-            }
-        }
-        // POST api/values
+        // POST api/values        
+        /// <summary>
+        /// Creates the user.
+        /// </summary>
+        /// <param name="createUserDto">The create user dto.</param>
+        /// <returns></returns>
+        /// <response code="200">Returns ok</response>
+        /// <response code="400">If creation fails</response>       
+        /// <response code="409">If user name or email is allready taken</response>
+        /// <response code="412">If model validation fails</response>
         [HttpPost]
-        public void CreateUser([FromBody]User user)
+
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<string>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status412PreconditionFailed)]
+        public async Task<IActionResult> CreateUser([FromBody]CreateUserDto createUserDto)
         {
-            user.Password = CalculateHashedPassword(user.Password);
-            userRepositoryService.Insert(user);
-            unitOfWork.Save();
+            //Validate Model
+            if(!ModelState.IsValid)
+            {
+                Response.StatusCode = StatusCodes.Status412PreconditionFailed;
+                return Json(ModelState);
+            }
+
+            //Check if user allready exits
+            var allreadyExists = await userRepositoryService.LoginOrEmailIsAllreadyInUserAsync(createUserDto.UserName, createUserDto.Email);
+            if(allreadyExists)
+            {
+                Response.StatusCode = StatusCodes.Status409Conflict;
+                return Json("User name or email is allready in use.");
+            }
+
+            //Prepare user creation model
+            var userCreationResult = userManagementService.CreateUser(createUserDto);
+            if (userCreationResult.User == null)
+            {
+                Response.StatusCode = StatusCodes.Status400BadRequest;
+                return Json(userCreationResult.Errors);
+            }
+
+            //add user to db
+            userRepositoryService.Insert(userCreationResult.User);
+            await unitOfWork.SaveAsync();
+
+            return Ok();
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void UpdateUser(int id, [FromBody]User user)
+        public void UpdateUser(string id, [FromBody]User user)
         {
             user.Id = id;
-            user.Password = CalculateHashedPassword(user.Password);
             userRepositoryService.Update(user);
             unitOfWork.Save();
         }

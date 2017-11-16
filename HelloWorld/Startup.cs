@@ -15,6 +15,15 @@ using Database.Services;
 using Swashbuckle.AspNetCore.Swagger;
 using AutoMapper;
 using Models.AutoMapperProfiles;
+using Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Services.UserServices;
+using Services.UserServices.Interfaces;
+using Microsoft.Extensions.PlatformAbstractions;
+using System.IO;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace HelloWorld
 {
@@ -37,6 +46,8 @@ namespace HelloWorld
         {
             services.AddMvc();
             RegisterDatebase(services);
+            RegisterToken(services);
+            RegisterUserServices(services);
 
             services.AddSwaggerGen(c =>
             {
@@ -44,7 +55,9 @@ namespace HelloWorld
                 c.DescribeAllParametersInCamelCase();
                 c.DescribeStringEnumsInCamelCase();
                 c.DescribeAllEnumsAsStrings();
-                
+                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                var xmlPath = Path.Combine(basePath, "API.xml");
+                c.IncludeXmlComments(xmlPath);
             });
         }
 
@@ -56,6 +69,7 @@ namespace HelloWorld
                 app.UseDeveloperExceptionPage();
             }
             app.UseSwagger();
+            app.UseAuthentication();
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
@@ -70,10 +84,55 @@ namespace HelloWorld
 
         private void RegisterDatebase(IServiceCollection services)
         {
-            services.AddSingleton<DbContext, RentalContext>();
             services.AddDbContext<RentalContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddTransient<DbContext, RentalContext>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IUserRepositoryService, UserRepositoryService>();
+            services.AddTransient<IAuthorRepositoryService, AuthorRepositoryService>();
+            services.AddTransient<IBookRepositoryService, BookRepositoryService>();
+        }
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        private void RegisterToken(IServiceCollection services)
+        {
+
+            string secretKey = Configuration["Tokens:Key"];
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
+            var options = new TokenProviderOptions
+            {
+                Audience = "Rental",
+                Issuer = "Rental",
+                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
+                Expiration = TimeSpan.FromDays(1)
+            };
+            services.AddSingleton<IOptions<TokenProviderOptions>>(Options.Create(options));
+            services.AddTransient<ITokenProvider, TokenProvider>();
+
+            services.AddAuthentication()
+                .AddCookie(cfg => {
+                    cfg.SlidingExpiration = true;
+                })
+                .AddJwtBearer(cfg => {
+                    cfg.RequireHttpsMetadata = false;
+                    cfg.SaveToken = true;
+                    cfg.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = Configuration["Tokens:Issuer"],
+                        ValidateAudience = true,
+                        ValidAudience = Configuration["Tokens:Issuer"],
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"])),
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero
+                    };
+            });
+
+        }
+
+        private void RegisterUserServices(IServiceCollection services)
+        {
+            services.AddTransient<IUserManagementService, UserManagementService>();
         }
     }
 }
