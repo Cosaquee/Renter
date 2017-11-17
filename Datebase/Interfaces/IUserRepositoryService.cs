@@ -13,5 +13,7 @@ namespace Database.Interfaces
         Task<string> GetUserIdAsync(string userName, string password);
 
         Task<bool> LoginOrEmailIsAllreadyInUserAsync(string userName, string email);
+
+        Task<User> GetWithRoleAsync(string userId);
     }
 }

@@ -21,7 +21,8 @@ namespace HelloWorld
                 Audience = Configuration["Tokens:Issuer"],
                 Issuer = Configuration["Tokens:Issuer"],
                 SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
-                Expiration = TimeSpan.FromDays(1)
+                Expiration = TimeSpan.FromDays(1),
+                CookieName = Configuration["Tokens:CookieName"]
             };
             services.AddSingleton<IOptions<TokenProviderOptions>>(Options.Create(options));
             services.AddTransient<ITokenProvider, TokenProvider>();
@@ -49,7 +50,7 @@ namespace HelloWorld
                 })
                 .AddCookie(cfg =>
                 {
-                    cfg.Cookie.Name = Configuration.GetSection("Tokens:CookieName").Value;
+                    cfg.Cookie.Name = Configuration["Tokens:CookieName"];
                     cfg.TicketDataFormat = new CustomJwtDataFormat(
                         SecurityAlgorithms.HmacSha256,
                         tokenValidationParameters);

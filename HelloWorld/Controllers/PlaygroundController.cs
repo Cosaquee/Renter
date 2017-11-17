@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
+namespace HelloWorld.Controllers
+{
+    public class PlaygroundController : Controller
+    {
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> SignOut()
+        {
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            return Ok();
+        }
+
+    }
+}

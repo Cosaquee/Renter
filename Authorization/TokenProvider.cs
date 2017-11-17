@@ -1,6 +1,7 @@
 ﻿using Database.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Models.Models;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -15,55 +16,135 @@ namespace Authorization
     {
         private readonly TokenProviderOptions tokenProviderOptions;
         private readonly IUserRepositoryService userRepositoryService;
-        public TokenProvider(IOptions<TokenProviderOptions> options, IUserRepositoryService userRepositoryService)
+        private readonly IRefreshTokenRepositoryService refreshTokenRepositoryService;
+        private readonly IUnitOfWork unitOfWork;
+
+        private User user;
+        private DateTime nowDateTime;
+        private long nowSeconds;
+        private DateTime expireDateTime;
+
+        public TokenProvider(IOptions<TokenProviderOptions> options, IUserRepositoryService userRepositoryService, IRefreshTokenRepositoryService refreshTokenRepositoryService, IUnitOfWork unitOfWork)
         {
             this.tokenProviderOptions = options.Value;
             this.userRepositoryService = userRepositoryService;
+            this.refreshTokenRepositoryService = refreshTokenRepositoryService;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<AuthToken> GenerateToken(string userName, string password)
         {
-            var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            var identity = await GetIdentity(userName, password, now);
-            if (identity == null)
+            //get user
+            user = await userRepositoryService.FindUserAsync(userName, password);
+            if (user == null)
+            {
+                return null;
+            }
+            return await CreateToken();
+        }
+
+        public async Task<AuthToken> RefreshToken(string refreshTokenId)
+        {
+            var refreshToken = await refreshTokenRepositoryService.GetAsync(refreshTokenId);
+            if(refreshToken == null)
             {
                 return null;
             }
 
-            // Create the JWT and write it to a string
-            var nowDate = DateTimeOffset.FromUnixTimeSeconds(now).UtcDateTime;
-            var jwt = new JwtSecurityToken(
-                issuer: tokenProviderOptions.Issuer,
-                audience: tokenProviderOptions.Audience,
-                claims: identity.Claims,
-                notBefore: nowDate,
-                expires: nowDate.Add(tokenProviderOptions.Expiration),
-                signingCredentials: tokenProviderOptions.SigningCredentials);
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+            if(refreshToken.Expire < DateTime.UtcNow)
+            {
+                return null;
+            }
 
+            user = await userRepositoryService.GetWithRoleAsync(refreshToken.UserId);
+            if (user == null)
+            {
+                return null;
+            }
+
+            return await CreateToken();
+        }
+
+        private async Task<AuthToken> CreateToken()
+        {
+            SetupTime();
+            //token id
+            string jwtID = Guid.NewGuid().ToString() + '-' + nowSeconds;
+
+            //Get user identity
+            var claimsIdentity = GetIdentity(jwtID);
+
+            //create token
+            var encodedJwt = CreateJWTToken(claimsIdentity);
+            //create refresh token
+            var refreshToken = await CreateRefreshToken();
+
+            //return ready auth token
             return new AuthToken
             {
                 AccessToken = encodedJwt,
-                ExpiresIn = tokenProviderOptions.Expiration.TotalSeconds
+                ExpiresIn = tokenProviderOptions.Expiration.TotalSeconds,
+                RefreshToken = refreshToken,
+                CookieName = tokenProviderOptions.CookieName
             };
         }
 
-        private async Task<ClaimsIdentity> GetIdentity(string userName, string password, long now)
+
+        private void SetupTime()
         {
-            var user = await userRepositoryService.FindUserAsync(userName, password);
-            if(user != null)
+            //setup datetime
+            nowDateTime = DateTimeOffset.UtcNow.DateTime;
+            nowSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            expireDateTime = nowDateTime.Add(tokenProviderOptions.Expiration);
+        }
+
+        private string CreateJWTToken(ClaimsIdentity claimsIdentity)
+        {
+            // Create the JWT and write it to a string
+            var jwt = new JwtSecurityToken(
+                issuer: tokenProviderOptions.Issuer,
+                audience: tokenProviderOptions.Audience,
+                claims: claimsIdentity.Claims,
+                notBefore: nowDateTime,
+                expires: expireDateTime,
+                signingCredentials: tokenProviderOptions.SigningCredentials);
+            return new JwtSecurityTokenHandler().WriteToken(jwt);
+        }
+
+        private ClaimsIdentity GetIdentity(string jwtID)
+        {
+            //user claims need for auth setup
+            return new ClaimsIdentity(new GenericIdentity(user.UserName, "Token"), new Claim[]
             {
-                return new ClaimsIdentity(new GenericIdentity(user.UserName, "Token"), new Claim[]
-                {
                     new Claim(ClaimTypes.NameIdentifier, user.Id),
                     new Claim(ClaimTypes.Role, user.Role.Name),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Iat, now.ToString(), ClaimValueTypes.Integer64)
-                });
-            }
-
-            return null;
+                    new Claim(JwtRegisteredClaimNames.Jti, jwtID),
+                    new Claim(JwtRegisteredClaimNames.Iat, nowSeconds.ToString(), ClaimValueTypes.Integer64)
+            });
         }
+
+        private async Task<string> CreateRefreshToken()
+        {
+            //Create unique token id
+            string refrshTokenId = Guid.NewGuid().ToString() + '-' + nowSeconds;
+
+            //Remove from db user previous refresh tokens
+            await refreshTokenRepositoryService.RemoveRefreshTokenForUserAsync(user.Id);
+
+            //Add user refresh token
+            refreshTokenRepositoryService.Insert(new RefreshToken
+            {
+                Id = refrshTokenId,
+                UserId = user.Id,
+                Expire = expireDateTime
+            });
+
+            //Save changes in db
+            await unitOfWork.SaveAsync();
+
+            return refrshTokenId;
+        }
+
     }
 
 }

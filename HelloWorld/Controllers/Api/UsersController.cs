@@ -39,7 +39,7 @@ namespace HelloWorld.Controllers.Api
         /// <returns></returns>
         /// <response code="200">Returns auth token</response>
         /// <response code="404">Bad username or password</response>      
-        [HttpPost("/authorize")]
+        [HttpPost("authorize")]
         [ProducesResponseType(typeof(AuthToken), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Authorize(string userName, string password)
@@ -49,6 +49,21 @@ namespace HelloWorld.Controllers.Api
                 return NotFound("Bad username or password");
             return Json(token);
         }
+
+        /// <response code="200">Returns auth token</response>
+        /// <response code="404">Refresh token does not exist or expired.</response>      
+        [HttpPost("authorize/refresh")]
+        [ProducesResponseType(typeof(AuthToken), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> RefreshToken(string refreshToken)
+        {
+            var token = await tokenProvider.RefreshToken(refreshToken);
+            if (token == null)
+                return NotFound("Refresh token does not exist or expired.");
+            return Json(token);
+        }
+
+
 
         // GET api/values
         //[HttpGet]
@@ -64,13 +79,20 @@ namespace HelloWorld.Controllers.Api
             return userRepositoryService.Queryable().Where(x => x.Equals(id)).FirstOrDefault();
         }
 
+        /// <remarks>
+        /// "Authorization": "Bearer {accessToken}"
+        /// example
+        /// {
+        ///     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiNzI3ZjRhOGYtYWFhYi00YzMyLWFmNmQtZGM0Yzc5NWY3NzUwLTYzNjQ2NDc0Njc2NjQ1NDk2Mi10ZXN0IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUmVnaXN0cmVkIiwianRpIjoiZTI4ZDUyNzItZWE2ZS00NDljLThiODEtNzRjZTcxZTllYTUwLTE1MTA5MTk5NDAiLCJpYXQiOjE1MTA5MTk5NDAsIm5iZiI6MTUxMDkxNjM0MCwiZXhwIjoxNTExMDAyNzQwLCJpc3MiOiJDTVNSZW50YWwiLCJhdWQiOiJDTVNSZW50YWwifQ.Nmhegxy71oTkZ98z1z50YueP8IRpQObAhHEsXZWeUyQ"
+        /// }
+        /// </remarks>
+        /// <response code="200">Authorized</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="403">Authentication was provided, but the authenticated user is not permitted to perform the requested operation.</response>
         [HttpGet("test")]
-        [Authorize]
+        [Authorize(Roles = "Administrator")]
         public IActionResult Test()
         {
-            //string id;
-            //id = User.Identity.GetUserId();
-            //id = RequestContext.Principal.Identity.GetUserId();
             return Json(User.Identity);
         }
 

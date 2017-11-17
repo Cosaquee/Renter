@@ -4,9 +4,10 @@ using System.Text;
 
 namespace Models.Models
 {
-    public class AuthorizationToekn
+    public class RefreshToken
     {
         public string Id { get; set; }
-        public DateTime ExpireDate { get; set; }
+        public string UserId { get; set; }
+        public DateTime Expire { get; set; }
     }
 }

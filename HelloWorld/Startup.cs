@@ -77,11 +77,13 @@ namespace HelloWorld
         {
             var dbContextOptions = new DbContextOptionsBuilder<RentalContext>();
             dbContextOptions.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            services.AddDbContext<RentalContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddSingleton<DbContext>(new RentalContext(dbContextOptions.Options));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IUserRepositoryService, UserRepositoryService>();
             services.AddTransient<IAuthorRepositoryService, AuthorRepositoryService>();
             services.AddTransient<IBookRepositoryService, BookRepositoryService>();
+            services.AddTransient<IRefreshTokenRepositoryService, RefreshTokenRepositoryService>();
         }
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 

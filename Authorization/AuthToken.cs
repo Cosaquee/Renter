@@ -10,5 +10,9 @@ namespace Authorization
 
         //TotalSeconds
         public double ExpiresIn { get; set; }
+
+        public string CookieName { get; set; }
+
+        public string RefreshToken { get; set; }
     }
 }
