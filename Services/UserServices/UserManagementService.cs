@@ -19,6 +19,7 @@ namespace Services.UserServices
             var ticks = DateTime.Now.Ticks;
             var guid = Guid.NewGuid().ToString();
             user.Id = $"{guid}-{ticks}-{user.UserName}";
+            user.RoleId = 1;
 
             return new UserCreationResult
             {

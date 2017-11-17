@@ -13,6 +13,13 @@ namespace HelloWorld.Models
     {
         private readonly string algorithm;
         private readonly TokenValidationParameters validationParameters;
+
+        public CustomJwtDataFormat(string algorithm, TokenValidationParameters validationParameters)
+        {
+            this.algorithm = algorithm;
+            this.validationParameters = validationParameters;
+        }
+
         public AuthenticationTicket Unprotect(string protectedText)
             => Unprotect(protectedText, null);
 
@@ -20,10 +27,10 @@ namespace HelloWorld.Models
         {
             var handler = new JwtSecurityTokenHandler();
             ClaimsPrincipal principal = null;
-            SecurityToken validToken = null;
 
             try
             {
+                SecurityToken validToken = null;
                 principal = handler.ValidateToken(protectedText, this.validationParameters, out validToken);
 
                 var validJwt = validToken as JwtSecurityToken;
@@ -47,13 +54,18 @@ namespace HelloWorld.Models
                 return null;
             }
 
-            // Validation passed. Return a valid AuthenticationTicket:
+            // VALIDATION PASSED
             return new AuthenticationTicket(principal, new AuthenticationProperties(), "Cookie");
         }
 
-        // This ISecureDataFormat implementation is decode-only
-        public string Protect(AuthenticationTicket data) => Protect(data);
+        public string Protect(AuthenticationTicket data)
+        {
+            throw new NotImplementedException();
+        }
 
-        public string Protect(AuthenticationTicket data, string purpose) => Protect(data, null);
+        public string Protect(AuthenticationTicket data, string purpose)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

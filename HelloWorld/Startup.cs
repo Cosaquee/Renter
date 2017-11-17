@@ -1,33 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using AutoMapper;
 using Database;
-using Microsoft.EntityFrameworkCore;
 using Database.Interfaces;
 using Database.Services;
-using Swashbuckle.AspNetCore.Swagger;
-using AutoMapper;
+using HelloWorld.Models;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.PlatformAbstractions;
 using Models.AutoMapperProfiles;
-using Authorization;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Services.UserServices;
 using Services.UserServices.Interfaces;
-using Microsoft.Extensions.PlatformAbstractions;
+using Swashbuckle.AspNetCore.Swagger;
 using System.IO;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace HelloWorld
 {
-    public class Startup
+    public partial class Startup
     {
         public Startup(IConfiguration configuration)
         {
@@ -58,6 +48,7 @@ namespace HelloWorld
                 var basePath = PlatformServices.Default.Application.ApplicationBasePath;
                 var xmlPath = Path.Combine(basePath, "API.xml");
                 c.IncludeXmlComments(xmlPath);
+                c.OperationFilter<AuthorizationHeaderParameterOperationFilter>();
             });
         }
 
@@ -84,51 +75,15 @@ namespace HelloWorld
 
         private void RegisterDatebase(IServiceCollection services)
         {
-            services.AddDbContext<RentalContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddTransient<DbContext, RentalContext>();
+            var dbContextOptions = new DbContextOptionsBuilder<RentalContext>();
+            dbContextOptions.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            services.AddSingleton<DbContext>(new RentalContext(dbContextOptions.Options));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IUserRepositoryService, UserRepositoryService>();
             services.AddTransient<IAuthorRepositoryService, AuthorRepositoryService>();
             services.AddTransient<IBookRepositoryService, BookRepositoryService>();
         }
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        private void RegisterToken(IServiceCollection services)
-        {
-
-            string secretKey = Configuration["Tokens:Key"];
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
-            var options = new TokenProviderOptions
-            {
-                Audience = "Rental",
-                Issuer = "Rental",
-                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
-                Expiration = TimeSpan.FromDays(1)
-            };
-            services.AddSingleton<IOptions<TokenProviderOptions>>(Options.Create(options));
-            services.AddTransient<ITokenProvider, TokenProvider>();
-
-            services.AddAuthentication()
-                .AddCookie(cfg => {
-                    cfg.SlidingExpiration = true;
-                })
-                .AddJwtBearer(cfg => {
-                    cfg.RequireHttpsMetadata = false;
-                    cfg.SaveToken = true;
-                    cfg.TokenValidationParameters = new TokenValidationParameters()
-                    {
-                        ValidateIssuer = true,
-                        ValidIssuer = Configuration["Tokens:Issuer"],
-                        ValidateAudience = true,
-                        ValidAudience = Configuration["Tokens:Issuer"],
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"])),
-                        ValidateLifetime = true,
-                        ClockSkew = TimeSpan.Zero
-                    };
-            });
-
-        }
 
         private void RegisterUserServices(IServiceCollection services)
         {

@@ -1,17 +1,15 @@
-﻿using System;
+﻿using Authorization;
+using Database.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Models.Dtos.User;
+using Models.Models;
+using Services.UserServices.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Database.Interfaces;
-using Models.Models;
-using System.Security.Cryptography;
-using System.Text;
-using Authorization;
-using Services.UserServices.Interfaces;
-using Models.Dtos.User;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace HelloWorld.Controllers.Api
 {
@@ -53,17 +51,27 @@ namespace HelloWorld.Controllers.Api
         }
 
         // GET api/values
-        [HttpGet]
-        public IEnumerable<User> Get()
-        {
-            return userRepositoryService.Get();
-        }
+        //[HttpGet]
+        //public IEnumerable<User> Get()
+        //{
+        //    return userRepositoryService.Get();
+        //}
 
         // GET api/values/5
         [HttpGet("{id}")]
         public User Get(string id)
         {
             return userRepositoryService.Queryable().Where(x => x.Equals(id)).FirstOrDefault();
+        }
+
+        [HttpGet("test")]
+        [Authorize]
+        public IActionResult Test()
+        {
+            //string id;
+            //id = User.Identity.GetUserId();
+            //id = RequestContext.Principal.Identity.GetUserId();
+            return Json(User.Identity);
         }
 
         // POST api/values        
@@ -77,7 +85,7 @@ namespace HelloWorld.Controllers.Api
         /// <response code="409">If user name or email is allready taken</response>
         /// <response code="412">If model validation fails</response>
         [HttpPost]
-
+        [AllowAnonymous]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,27 +23,19 @@ namespace Authorization
 
         public async Task<AuthToken> GenerateToken(string userName, string password)
         {
-            var identity = await GetIdentity(userName, password);
-            if (string.IsNullOrEmpty(identity))
+            var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            var identity = await GetIdentity(userName, password, now);
+            if (identity == null)
             {
                 return null;
             }
-
-            var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-
-            var claims = new Claim[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, identity),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, now.ToString(), ClaimValueTypes.Integer64)
-            };
 
             // Create the JWT and write it to a string
             var nowDate = DateTimeOffset.FromUnixTimeSeconds(now).UtcDateTime;
             var jwt = new JwtSecurityToken(
                 issuer: tokenProviderOptions.Issuer,
                 audience: tokenProviderOptions.Audience,
-                claims: claims,
+                claims: identity.Claims,
                 notBefore: nowDate,
                 expires: nowDate.Add(tokenProviderOptions.Expiration),
                 signingCredentials: tokenProviderOptions.SigningCredentials);
@@ -55,17 +48,21 @@ namespace Authorization
             };
         }
 
-        private Task<string> GetIdentity(string userName, string password)
+        private async Task<ClaimsIdentity> GetIdentity(string userName, string password, long now)
         {
-            return userRepositoryService.GetUserIdAsync(userName, password);
-            //if (userName == "asd" && password == "asd")
-            //{
-            //    return Task.FromResult("userID");
-            //}
-            //else
-            //{
-            //    return Task.FromResult(default(string));
-            //}
+            var user = await userRepositoryService.FindUserAsync(userName, password);
+            if(user != null)
+            {
+                return new ClaimsIdentity(new GenericIdentity(user.UserName, "Token"), new Claim[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id),
+                    new Claim(ClaimTypes.Role, user.Role.Name),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(JwtRegisteredClaimNames.Iat, now.ToString(), ClaimValueTypes.Integer64)
+                });
+            }
+
+            return null;
         }
     }
 

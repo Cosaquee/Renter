@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Database.Interfaces;
 using System.Linq;
 using System.Threading.Tasks;
+using Services.Utils;
 
 namespace Database.Services
 {
@@ -17,7 +18,9 @@ namespace Database.Services
 
         public Task<User> FindUserAsync(string userName, string password)
         {
-            return Queryable().Where(x => string.Equals(x.UserName, userName, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefaultAsync();
+            var hashedPassword = PasswordHasher.CalculateHashedPassword(password);
+            return Queryable().Include(x=>x.Role).Where(x => string.Equals(x.UserName, userName, StringComparison.InvariantCultureIgnoreCase) &&
+                                                             string.Equals(x.Password, hashedPassword)).FirstOrDefaultAsync();
         }
 
         public async Task<string> GetUserIdAsync(string userName, string password)
