@@ -84,6 +84,7 @@ namespace HelloWorld
             services.AddTransient<IAuthorRepositoryService, AuthorRepositoryService>();
             services.AddTransient<IBookRepositoryService, BookRepositoryService>();
             services.AddTransient<IRefreshTokenRepositoryService, RefreshTokenRepositoryService>();
+            services.AddTransient<IRoleRepositoryService, RoleRepositoryService>();
         }
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 

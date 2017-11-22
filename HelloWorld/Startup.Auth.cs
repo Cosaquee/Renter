@@ -55,9 +55,6 @@ namespace HelloWorld
                         SecurityAlgorithms.HmacSha256,
                         tokenValidationParameters);
                 });
-
-
-
         }
     }
 }
