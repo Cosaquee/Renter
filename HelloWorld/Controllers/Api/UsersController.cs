@@ -10,6 +10,7 @@ using Services.UserServices.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Models.Dtos.Login;
 
 namespace HelloWorld.Controllers.Api
 {
@@ -42,9 +43,9 @@ namespace HelloWorld.Controllers.Api
         [HttpPost("authorize")]
         [ProducesResponseType(typeof(AuthToken), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Authorize(string userName, string password)
+        public async Task<IActionResult> Authorize([FromBody]LoginDto loginDto)
         {
-            var token = await tokenProvider.GenerateToken(userName, password);
+            var token = await tokenProvider.GenerateToken(loginDto.Username, loginDto.Password);
             if (token == null)
                 return NotFound("Bad username or password");
         
@@ -142,7 +143,7 @@ namespace HelloWorld.Controllers.Api
             userRepositoryService.Insert(userCreationResult.User);
             await unitOfWork.SaveAsync();
 
-            return Ok();
+            return StatusCode(201);
         }
 
         // PUT api/values/5
