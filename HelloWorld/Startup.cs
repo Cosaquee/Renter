@@ -59,6 +59,11 @@ namespace HelloWorld
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(builder =>
+                builder.WithOrigins("http://localhost:8080")
+                .AllowAnyHeader()
+                .AllowAnyMethod());
             app.UseSwagger();
             app.UseAuthentication();
 
@@ -85,6 +90,7 @@ namespace HelloWorld
             services.AddTransient<IBookRepositoryService, BookRepositoryService>();
             services.AddTransient<IRefreshTokenRepositoryService, RefreshTokenRepositoryService>();
             services.AddTransient<IRoleRepositoryService, RoleRepositoryService>();
+            services.AddCors();
         }
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
