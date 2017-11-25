@@ -46,8 +46,12 @@ namespace HelloWorld.Controllers.Api
         public async Task<IActionResult> Authorize([FromBody]LoginDto loginDto)
         {
             var token = await tokenProvider.GenerateToken(loginDto.Username, loginDto.Password);
+            // var user = userRepositoryService.Queryable().Where(x => x.Equals(loginDto.Username)).FirstOrDefault();
+            var user = await userRepositoryService.FindUserByUsername(loginDto.Username);
             if (token == null)
                 return NotFound("Bad username or password");
+            // TODO: Create better way to handle adding user to token
+            token.User = user;
         
             return Json(token);
         }
@@ -76,6 +80,7 @@ namespace HelloWorld.Controllers.Api
 
         // GET api/values/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "Administrator")]
         public User Get(string id)
         {
             return userRepositoryService.Queryable().Where(x => x.Equals(id)).FirstOrDefault();
