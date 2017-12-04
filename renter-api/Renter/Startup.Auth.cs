@@ -1,5 +1,5 @@
 ﻿using Authorization;
-using HelloWorld.Models;
+using Renter.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 
-namespace HelloWorld
+namespace Renter
 {
     public partial class Startup
     {

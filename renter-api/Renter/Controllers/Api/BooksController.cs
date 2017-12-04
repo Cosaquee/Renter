@@ -10,7 +10,7 @@ using Models.Dtos.Book;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 
-namespace HelloWorld.Controllers.Api
+namespace Renter.Controllers.Api
 {
     [Produces("application/json")]
     [Route("api/book")]

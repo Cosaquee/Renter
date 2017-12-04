@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Models.Models;
 
 namespace Authorization
 {
@@ -14,5 +15,7 @@ namespace Authorization
         public string CookieName { get; set; }
 
         public string RefreshToken { get; set; }
+
+        public User User { get; set; }
     }
 }

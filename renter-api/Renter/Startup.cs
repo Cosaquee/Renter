@@ -2,7 +2,7 @@
 using Database;
 using Database.Interfaces;
 using Database.Services;
-using HelloWorld.Models;
+using Renter.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;

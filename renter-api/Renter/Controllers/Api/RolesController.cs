@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Models.Models;
 using System.Threading.Tasks;
 
-namespace HelloWorld.Controllers.Api
+namespace Renter.Controllers.Api
 {
     [Produces("application/json")]
     [Route("api/role")]

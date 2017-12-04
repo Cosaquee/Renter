@@ -12,6 +12,8 @@ namespace Database.Interfaces
         Task<User> FindUserAsync(string userName, string password);
         Task<string> GetUserIdAsync(string userName, string password);
 
+        Task<User> FindUserByUsername(string userName);
+
         Task<bool> LoginOrEmailIsAllreadyInUserAsync(string userName, string email);
 
         Task<User> GetWithRoleAsync(string userId);

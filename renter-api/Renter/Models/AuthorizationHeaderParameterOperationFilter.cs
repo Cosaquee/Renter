@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HelloWorld.Models
+namespace Renter.Models
 {
     public class AuthorizationHeaderParameterOperationFilter : IOperationFilter
     {

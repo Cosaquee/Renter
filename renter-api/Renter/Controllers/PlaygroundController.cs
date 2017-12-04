@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
-namespace HelloWorld.Controllers
+namespace Renter.Controllers
 {
     public class PlaygroundController : Controller
     {

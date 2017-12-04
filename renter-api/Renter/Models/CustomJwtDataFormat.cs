@@ -7,7 +7,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace HelloWorld.Models
+namespace Renter.Models
 {
     public class CustomJwtDataFormat : ISecureDataFormat<AuthenticationTicket>
     {

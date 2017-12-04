@@ -16,6 +16,11 @@ namespace Database.Services
         {
         }
 
+        public Task<User> FindUserByUsername(string userName)
+        {
+            return Queryable().Where(x => x.UserName == userName).FirstOrDefaultAsync();
+        }
+
         public Task<User> FindUserAsync(string userName, string password)
         {
             var hashedPassword = PasswordHasher.CalculateHashedPassword(password);
@@ -23,9 +28,9 @@ namespace Database.Services
                                                              string.Equals(x.Password, hashedPassword)).FirstOrDefaultAsync();
         }
 
-        public Task<User> GetWithRoleAsync(string userId)
+        public async Task<User> GetWithRoleAsync(string userId)
         {
-            return Queryable().Include(x=>x.Role).Where(x => x.Id == userId).FirstOrDefaultAsync();
+            return await Queryable().Include(x=>x.Role).Where(x => x.Id == userId).FirstOrDefaultAsync();
         }
 
         public async Task<string> GetUserIdAsync(string userName, string password)

@@ -12,7 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Models.Dtos.Login;
 
-namespace HelloWorld.Controllers.Api
+namespace Renter.Controllers.Api
 {
     [Produces("application/json")]
     [Route("api/user")]
@@ -31,7 +31,7 @@ namespace HelloWorld.Controllers.Api
             this.userManagementService = userManagementService;
         }
 
-        //[HttpPost("/authorize")]        
+        //[HttpPost("/authorize")]
         /// <summary>
         /// Returns auth token
         /// </summary>
@@ -39,25 +39,24 @@ namespace HelloWorld.Controllers.Api
         /// <param name="password">password.</param>
         /// <returns></returns>
         /// <response code="200">Returns auth token</response>
-        /// <response code="404">Bad username or password</response>      
+        /// <response code="404">Bad username or password</response>
         [HttpPost("authorize")]
         [ProducesResponseType(typeof(AuthToken), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Authorize([FromBody]LoginDto loginDto)
         {
             var token = await tokenProvider.GenerateToken(loginDto.Username, loginDto.Password);
-            // var user = userRepositoryService.Queryable().Where(x => x.Equals(loginDto.Username)).FirstOrDefault();
             var user = await userRepositoryService.FindUserByUsername(loginDto.Username);
             if (token == null)
                 return NotFound("Bad username or password");
             // TODO: Create better way to handle adding user to token
             token.User = user;
-        
+
             return Json(token);
         }
 
         /// <response code="200">Returns auth token</response>
-        /// <response code="404">Refresh token does not exist or expired.</response>      
+        /// <response code="404">Refresh token does not exist or expired.</response>
         [HttpPost("authorize/refresh")]
         [ProducesResponseType(typeof(AuthToken), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -103,14 +102,14 @@ namespace HelloWorld.Controllers.Api
             return Json(User.Identity);
         }
 
-        // POST api/values        
+        // POST api/values
         /// <summary>
         /// Creates the user.
         /// </summary>
         /// <param name="createUserDto">The create user dto.</param>
         /// <returns></returns>
         /// <response code="200">Returns ok</response>
-        /// <response code="400">If creation fails</response>       
+        /// <response code="400">If creation fails</response>
         /// <response code="409">If user name or email is allready taken</response>
         /// <response code="412">If model validation fails</response>
         [HttpPost]
@@ -166,6 +165,13 @@ namespace HelloWorld.Controllers.Api
         {
             userRepositoryService.Delete(id);
             unitOfWork.Save();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Administrator")]
+        public IEnumerable<User> Index()
+        {
+            return userRepositoryService.Get();
         }
     }
 }

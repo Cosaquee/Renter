@@ -8,7 +8,7 @@ using Database.Interfaces;
 using Models.Models;
 using AutoMapper;
 
-namespace HelloWorld.Controllers.Api
+namespace Renter.Controllers.Api
 {
     [Produces("application/json")]
     [Route("api/author")]
