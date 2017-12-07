@@ -32,20 +32,20 @@ namespace Authorization
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<AuthToken> GenerateToken(string userName, string password)
+        public AuthToken GenerateToken(string userName, string password)
         {
             //get user
-            user = await userRepositoryService.FindUserAsync(userName, password);
+            user = userRepositoryService.FindUser(userName, password);
             if (user == null)
             {
                 return null;
             }
-            return await CreateToken();
+            return CreateToken();
         }
 
-        public async Task<AuthToken> RefreshToken(string refreshTokenId)
+        public AuthToken RefreshToken(string refreshTokenId)
         {
-            var refreshToken = await refreshTokenRepositoryService.GetAsync(refreshTokenId);
+            var refreshToken = refreshTokenRepositoryService.Get(refreshTokenId);
             if(refreshToken == null)
             {
                 return null;
@@ -56,16 +56,16 @@ namespace Authorization
                 return null;
             }
 
-            user = await userRepositoryService.GetWithRoleAsync(refreshToken.UserId);
+            user = userRepositoryService.GetWithRole(refreshToken.UserId);
             if (user == null)
             {
                 return null;
             }
 
-            return await CreateToken();
+            return CreateToken();
         }
 
-        private async Task<AuthToken> CreateToken()
+        private AuthToken CreateToken()
         {
             SetupTime();
             //token id
@@ -77,7 +77,7 @@ namespace Authorization
             //create token
             var encodedJwt = CreateJWTToken(claimsIdentity);
             //create refresh token
-            var refreshToken = await CreateRefreshToken();
+            var refreshToken = CreateRefreshToken();
 
             //return ready auth token
             return new AuthToken
@@ -123,13 +123,13 @@ namespace Authorization
             });
         }
 
-        private async Task<string> CreateRefreshToken()
+        private string CreateRefreshToken()
         {
             //Create unique token id
             string refrshTokenId = Guid.NewGuid().ToString() + '-' + nowSeconds;
 
             //Remove from db user previous refresh tokens
-            await refreshTokenRepositoryService.RemoveRefreshTokenForUserAsync(user.Id);
+            refreshTokenRepositoryService.RemoveRefreshTokenForUser(user.Id);
 
             //Add user refresh token
             refreshTokenRepositoryService.Insert(new RefreshToken
@@ -140,7 +140,7 @@ namespace Authorization
             });
 
             //Save changes in db
-            await unitOfWork.SaveAsync();
+            unitOfWork.Save();
 
             return refrshTokenId;
         }

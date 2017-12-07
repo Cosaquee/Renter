@@ -9,13 +9,13 @@ namespace Database.Interfaces
     public interface IUserRepositoryService : IRepositoryService<User>
     {
         //userName is UserName or Email
-        Task<User> FindUserAsync(string userName, string password);
-        Task<string> GetUserIdAsync(string userName, string password);
+        User FindUser(string userName, string password);
+        string GetUserId(string userName, string password);
 
-        Task<User> FindUserByUsername(string userName);
+        User FindUserByUsername(string userName);
 
-        Task<bool> LoginOrEmailIsAllreadyInUserAsync(string userName, string email);
+        bool LoginOrEmailIsAllreadyInUser(string userName, string email);
 
-        Task<User> GetWithRoleAsync(string userId);
+        User GetWithRole(string userId);
     }
 }

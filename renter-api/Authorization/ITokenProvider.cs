@@ -4,7 +4,7 @@ namespace Authorization
 {
     public interface ITokenProvider
     {
-        Task<AuthToken> GenerateToken(string userName, string password);
-        Task<AuthToken> RefreshToken(string refreshTokenId);
+        AuthToken GenerateToken(string userName, string password);
+        AuthToken RefreshToken(string refreshTokenId);
     }
 }

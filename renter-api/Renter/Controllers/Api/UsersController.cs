@@ -45,10 +45,10 @@ namespace Renter.Controllers.Api
         [HttpPost("authorize")]
         [ProducesResponseType(typeof(AuthToken), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Authorize([FromBody]LoginDto loginDto)
+        public IActionResult Authorize([FromBody]LoginDto loginDto)
         {
-            var token = await tokenProvider.GenerateToken(loginDto.Username, loginDto.Password);
-            var user = await userRepositoryService.FindUserByUsername(loginDto.Username);
+            var token = tokenProvider.GenerateToken(loginDto.Username, loginDto.Password);
+            var user = userRepositoryService.FindUserByUsername(loginDto.Username);
             if (token == null)
                 return NotFound("Bad username or password");
             // TODO: Create better way to handle adding user to token
@@ -62,9 +62,9 @@ namespace Renter.Controllers.Api
         [HttpPost("authorize/refresh")]
         [ProducesResponseType(typeof(AuthToken), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> RefreshToken(string refreshToken)
+        public IActionResult RefreshToken(string refreshToken)
         {
-            var token = await tokenProvider.RefreshToken(refreshToken);
+            var token = tokenProvider.RefreshToken(refreshToken);
             if (token == null)
                 return NotFound("Refresh token does not exist or expired.");
             return Json(token);
@@ -130,7 +130,7 @@ namespace Renter.Controllers.Api
             }
 
             //Check if user allready exits
-            var allreadyExists = await userRepositoryService.LoginOrEmailIsAllreadyInUserAsync(createUserDto.UserName, createUserDto.Email);
+            var allreadyExists = userRepositoryService.LoginOrEmailIsAllreadyInUser(createUserDto.UserName, createUserDto.Email);
             if(allreadyExists)
             {
                 Response.StatusCode = StatusCodes.Status409Conflict;
@@ -177,7 +177,7 @@ namespace Renter.Controllers.Api
         }
 
         [HttpGet("RentHistory/{userId}")]
-        public IEnumerable<RentBook> GetRentHistory(int userId)
+        public IEnumerable<RentBook> GetRentHistory(string userId)
         {
             return rentBookRepositoryService.GetUserRentHisotry(userId);
         }

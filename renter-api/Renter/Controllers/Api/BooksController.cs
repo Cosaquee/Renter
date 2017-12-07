@@ -84,10 +84,14 @@ namespace Renter.Controllers.Api
 
 
         [HttpGet("Rent/{bookId}/{userId}/{days}")]
-        public IActionResult Rent(int bookId, int userId, int days)
+        public IActionResult Rent(int bookId, string userId, int days)
         {
             var timeSpan = TimeSpan.FromDays(days);
             var rentBook = rentBookRepositoryService.Rent(bookId, userId, timeSpan);
+            if(rentBook == null)
+            {
+                return BadRequest("Book is not avaiable for rent.");
+            }
             return Ok(rentBook);
         }
 

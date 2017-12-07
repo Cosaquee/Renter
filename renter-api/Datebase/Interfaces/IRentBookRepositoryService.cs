@@ -7,11 +7,11 @@ namespace Database.Interfaces
 {
     public interface IRentBookRepositoryService : IRepositoryService<RentBook>
     {
-        RentBook Rent(int bookId, int userId, TimeSpan time);
+        RentBook Rent(int bookId, string userId, TimeSpan time);
         bool IsBookAvaiable(int bookId);
         List<Book> GetAvaiableBooksByTitle(string title);
         List<Book> GetAvaiableBooksByIsbn(string isbn);
-        List<RentBook> GetUserRentHisotry(int userID);
+        List<RentBook> GetUserRentHisotry(string userId);
         List<RentBook> GetBookRentHisotry(int bookId);
     }
 }

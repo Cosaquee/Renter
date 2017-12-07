@@ -16,32 +16,32 @@ namespace Database.Services
         {
         }
 
-        public Task<User> FindUserByUsername(string userName)
+        public User FindUserByUsername(string userName)
         {
-            return Queryable().Where(x => x.UserName == userName).FirstOrDefaultAsync();
+            return Queryable().Where(x => x.UserName == userName).FirstOrDefault();
         }
 
-        public Task<User> FindUserAsync(string userName, string password)
+        public User FindUser(string userName, string password)
         {
             var hashedPassword = PasswordHasher.CalculateHashedPassword(password);
             return Queryable().Include(x=>x.Role).Where(x => string.Equals(x.UserName, userName, StringComparison.InvariantCultureIgnoreCase) &&
-                                                             string.Equals(x.Password, hashedPassword)).FirstOrDefaultAsync();
+                                                             string.Equals(x.Password, hashedPassword)).FirstOrDefault();
         }
 
-        public Task<User> GetWithRoleAsync(string userId)
+        public User GetWithRole(string userId)
         {
-            return Queryable().Include(x=>x.Role).Where(x => x.Id == userId).FirstOrDefaultAsync();
+            return Queryable().Include(x=>x.Role).Where(x => x.Id == userId).FirstOrDefault();
         }
 
-        public async Task<string> GetUserIdAsync(string userName, string password)
+        public string GetUserId(string userName, string password)
         {
-            return (await Queryable().Where(x => string.Equals(x.UserName, userName, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefaultAsync())?.Id;
+            return Queryable().Where(x => string.Equals(x.UserName, userName, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault()?.Id;
         }
 
-        public async Task<bool> LoginOrEmailIsAllreadyInUserAsync(string userName, string email)
+        public bool LoginOrEmailIsAllreadyInUser(string userName, string email)
         {
-            return (await Queryable().Where(x => string.Equals(x.UserName, userName, StringComparison.InvariantCultureIgnoreCase) ||
-            string.Equals(x.Email, email, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefaultAsync()) != null;
+            return Queryable().Where(x => string.Equals(x.UserName, userName, StringComparison.InvariantCultureIgnoreCase) ||
+            string.Equals(x.Email, email, StringComparison.InvariantCultureIgnoreCase)).Any();
         }
     }
 }

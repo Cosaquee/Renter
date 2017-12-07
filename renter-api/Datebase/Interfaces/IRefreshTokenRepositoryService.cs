@@ -8,7 +8,7 @@ namespace Database.Interfaces
 {
     public interface IRefreshTokenRepositoryService : IRepositoryService<RefreshToken>
     {
-        Task RemoveRefreshTokenForUserAsync(string userId);
-        Task<RefreshToken> GetAsync(string id);
+        void RemoveRefreshTokenForUser(string userId);
+        RefreshToken Get(string id);
     }
 }

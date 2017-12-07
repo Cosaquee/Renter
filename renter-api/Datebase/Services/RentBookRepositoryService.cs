@@ -51,8 +51,11 @@ namespace Database.Services
             return !Queryable().Where(x => x.BookId == bookId && x.To >= DateTime.Now).Any();
         }
 
-        public RentBook Rent(int bookId, int userId, TimeSpan time)
+        public RentBook Rent(int bookId, string userId, TimeSpan time)
         {
+            if (IsBookAvaiable(bookId) == false)
+                return null;
+
             var now = DateTime.Now;
 
             var rentBook = new RentBook
@@ -68,9 +71,9 @@ namespace Database.Services
             return rentBook;
         }
 
-        public List<RentBook> GetUserRentHisotry(int userID)
+        public List<RentBook> GetUserRentHisotry(string userId)
         {
-            return Queryable().Where(x => x.UserId == userID).ToList();
+            return Queryable().Where(x => x.UserId == userId).ToList();
         }
 
         public List<RentBook> GetBookRentHisotry(int bookId)

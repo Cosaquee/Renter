@@ -16,14 +16,14 @@ namespace Database.Services
 
         }
 
-        public Task<RefreshToken> GetAsync(string id)
+        public RefreshToken Get(string id)
         {
-            return Queryable().Where(x => x.Id == id).FirstOrDefaultAsync();
+            return Queryable().Where(x => x.Id == id).FirstOrDefault();
         }
 
-        public async Task RemoveRefreshTokenForUserAsync(string userId)
+        public void RemoveRefreshTokenForUser(string userId)
         {
-            var userToken = await Queryable().Where(x => x.UserId == userId).FirstOrDefaultAsync();
+            var userToken = Queryable().Where(x => x.UserId == userId).FirstOrDefault();
             if (userToken != null)
             {
                 Delete(userToken);
