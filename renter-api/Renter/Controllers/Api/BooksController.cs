@@ -64,6 +64,11 @@ namespace Renter.Controllers.Api
         [HttpGet("Avaiable/{id}")]
         public IActionResult IsBookAvaiable(int id)
         {
+            var bookExists = bookRepositoryService.Get(id) != null;
+            if(!bookExists)
+            {
+                return BadRequest("Book does not exist");
+            }
             var isAvaiable = rentBookRepositoryService.IsBookAvaiable(id);
             return Ok(isAvaiable);
         }
