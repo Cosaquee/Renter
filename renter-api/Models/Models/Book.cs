@@ -8,7 +8,7 @@ namespace Models.Models
     public class Book
     {
         [Key]
-        public int Id { get; set; }
+        public long Id { get; set; }
         [Required]
         [StringLength(128)]
         public string Title { get; set; }
@@ -18,5 +18,11 @@ namespace Models.Models
         public int AuthorId { get; set; }
         public virtual Author Author { get; set; }
 
+        public int CategoryId { get; set; }
+        public virtual Category Category { get; set; }
+
+        public string Description { get; set; }
+
+        public virtual ICollection<BookRating> BookRatings { get; set; }
     }
 }

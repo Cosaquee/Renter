@@ -5,13 +5,13 @@ using System.Text;
 
 namespace Models.Models
 {
-    public class RentBook
+    public class RentMovie
     {
         [Key]
         public long Id { get; set; }
         [Required]
-        public int BookId { get; set; }
-        public virtual Book Book { get; set; }
+        public int MovieId { get; set; }
+        public virtual Movie Movie { get; set; }
         [Required]
         [StringLength(256)]
         public string UserId { get; set; }
