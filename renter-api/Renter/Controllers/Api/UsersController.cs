@@ -22,13 +22,15 @@ namespace Renter.Controllers.Api
         private readonly IUserRepositoryService userRepositoryService;
         private readonly ITokenProvider tokenProvider;
         private readonly IUserManagementService userManagementService;
+        private readonly IRentBookRepositoryService rentBookRepositoryService;
 
-        public UsersController(IUnitOfWork unitOfWork, IUserRepositoryService userRepositoryService, ITokenProvider tokenProvider, IUserManagementService userManagementService)
+        public UsersController(IUnitOfWork unitOfWork, IUserRepositoryService userRepositoryService, ITokenProvider tokenProvider, IUserManagementService userManagementService, IRentBookRepositoryService rentBookRepositoryService)
         {
             this.unitOfWork = unitOfWork;
             this.userRepositoryService = userRepositoryService;
             this.tokenProvider = tokenProvider;
             this.userManagementService = userManagementService;
+            this.rentBookRepositoryService = rentBookRepositoryService;
         }
 
         //[HttpPost("/authorize")]
@@ -172,6 +174,12 @@ namespace Renter.Controllers.Api
         public IEnumerable<User> Index()
         {
             return userRepositoryService.Get();
+        }
+
+        [HttpGet("RentHistory/{userId}")]
+        public IEnumerable<RentBook> GetRentHistory(int userId)
+        {
+            return rentBookRepositoryService.GetUserRentHisotry(userId);
         }
     }
 }

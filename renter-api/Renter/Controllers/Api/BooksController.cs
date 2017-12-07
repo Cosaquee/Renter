@@ -91,5 +91,11 @@ namespace Renter.Controllers.Api
             return Ok(rentBook);
         }
 
+        [HttpGet("RentHistory/{bookId}")]
+        public IActionResult RentHistory(int bookId)
+        {
+            var rentBook = rentBookRepositoryService.GetBookRentHisotry(bookId);
+            return Ok(rentBook);
+        }
     }
 }

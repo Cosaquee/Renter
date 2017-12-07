@@ -11,5 +11,7 @@ namespace Database.Interfaces
         bool IsBookAvaiable(int bookId);
         List<Book> GetAvaiableBooksByTitle(string title);
         List<Book> GetAvaiableBooksByIsbn(string isbn);
+        List<RentBook> GetUserRentHisotry(int userID);
+        List<RentBook> GetBookRentHisotry(int bookId);
     }
 }

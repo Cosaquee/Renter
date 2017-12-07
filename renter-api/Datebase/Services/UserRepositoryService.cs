@@ -28,9 +28,9 @@ namespace Database.Services
                                                              string.Equals(x.Password, hashedPassword)).FirstOrDefaultAsync();
         }
 
-        public async Task<User> GetWithRoleAsync(string userId)
+        public Task<User> GetWithRoleAsync(string userId)
         {
-            return await Queryable().Include(x=>x.Role).Where(x => x.Id == userId).FirstOrDefaultAsync();
+            return Queryable().Include(x=>x.Role).Where(x => x.Id == userId).FirstOrDefaultAsync();
         }
 
         public async Task<string> GetUserIdAsync(string userName, string password)

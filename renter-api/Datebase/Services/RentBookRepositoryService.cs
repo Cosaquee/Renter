@@ -68,5 +68,15 @@ namespace Database.Services
             return rentBook;
         }
 
+        public List<RentBook> GetUserRentHisotry(int userID)
+        {
+            return Queryable().Where(x => x.UserId == userID).ToList();
+        }
+
+        public List<RentBook> GetBookRentHisotry(int bookId)
+        {
+            return Queryable().Where(x => x.BookId == bookId).ToList();
+        }
+
     }
 }
