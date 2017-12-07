@@ -90,6 +90,7 @@ namespace Renter
             services.AddTransient<IBookRepositoryService, BookRepositoryService>();
             services.AddTransient<IRefreshTokenRepositoryService, RefreshTokenRepositoryService>();
             services.AddTransient<IRoleRepositoryService, RoleRepositoryService>();
+            services.AddTransient<IRentBookRepositoryService, RentBookRepositoryService>();
             services.AddCors();
         }
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

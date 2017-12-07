@@ -120,7 +120,7 @@ namespace Renter.Controllers.Api
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status412PreconditionFailed)]
-        public async Task<IActionResult> CreateUser([FromBody]CreateUserDto createUserDto)
+        public IActionResult CreateUser([FromBody]CreateUserDto createUserDto)
         {
             //Validate Model
             if(!ModelState.IsValid)
@@ -147,7 +147,7 @@ namespace Renter.Controllers.Api
 
             //add user to db
             userRepositoryService.Insert(userCreationResult.User);
-            await unitOfWork.SaveAsync();
+            unitOfWork.Save();
 
             return StatusCode(201);
         }
