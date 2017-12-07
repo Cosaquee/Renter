@@ -19,11 +19,13 @@ namespace Renter.Controllers.Api
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IBookRepositoryService bookRepositoryService;
+        private readonly IRentBookRepositoryService rentBookRepositoryService;
 
-        public BooksController(IUnitOfWork unitOfWork, IBookRepositoryService bookRepositoryService)
+        public BooksController(IUnitOfWork unitOfWork, IBookRepositoryService bookRepositoryService, IRentBookRepositoryService rentBookRepositoryService)
         {
             this.unitOfWork = unitOfWork;
             this.bookRepositoryService = bookRepositoryService;
+            this.rentBookRepositoryService = rentBookRepositoryService;
         }
 
         // GET api/values
@@ -59,11 +61,35 @@ namespace Renter.Controllers.Api
         }
 
         // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void DeleteBook(int id)
+        [HttpGet("Avaiable/{id}")]
+        public IActionResult IsBookAvaiable(int id)
         {
-            bookRepositoryService.Delete(id);
-            unitOfWork.Save();
+            var isAvaiable = rentBookRepositoryService.IsBookAvaiable(id);
+            return Ok(isAvaiable);
         }
+
+        [HttpGet("GetAvaiableByIsbn/{isbn}")]
+        public IActionResult GetAvaiableBooksByIsbn(string isbn)
+        {
+            var avaiableBooks = rentBookRepositoryService.GetAvaiableBooksByIsbn(isbn);
+            return Ok(avaiableBooks);
+        }
+
+        [HttpGet("GetAvaiableByTitle/{title}")]
+        public IActionResult GetAvaiableBooksByTitle(string title)
+        {
+            var avaiableBooks = rentBookRepositoryService.GetAvaiableBooksByTitle(title);
+            return Ok(avaiableBooks);
+        }
+
+
+        [HttpGet("Rent/{bookId}/{userId}/{days}")]
+        public IActionResult Rent(int bookId, int userId, int days)
+        {
+            var timeSpan = TimeSpan.FromDays(days);
+            var rentBook = rentBookRepositoryService.Rent(bookId, userId, timeSpan);
+            return Ok(rentBook);
+        }
+
     }
 }

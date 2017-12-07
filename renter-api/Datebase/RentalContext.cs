@@ -13,6 +13,7 @@ namespace Database
         public DbSet<Author> Authors { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<RentBook> RentBooks { get; set; }
 
         public RentalContext(DbContextOptions<RentalContext> options) : base(options)
         {

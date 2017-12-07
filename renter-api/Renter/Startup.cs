@@ -15,7 +15,7 @@ using Services.UserServices.Interfaces;
 using Swashbuckle.AspNetCore.Swagger;
 using System.IO;
 
-namespace HelloWorld
+namespace Renter
 {
     public partial class Startup
     {
