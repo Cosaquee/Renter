@@ -1,5 +1,5 @@
 #
 # AddMigration.ps1
 #
-$migrationName = ""
+$migrationName = Read-Host -Prompt 'Migration name'
 dotnet ef migrations add $migrationName -s ../Renter/

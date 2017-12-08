@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="PowershellScripts\" />
   </ItemGroup>
 
 </Project>
