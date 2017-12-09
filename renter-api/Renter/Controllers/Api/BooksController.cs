@@ -9,6 +9,7 @@ using Models.Models;
 using Models.Dtos.Book;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Renter.Controllers.Api
 {
@@ -20,12 +21,15 @@ namespace Renter.Controllers.Api
         private readonly IUnitOfWork unitOfWork;
         private readonly IBookRepositoryService bookRepositoryService;
         private readonly IRentBookRepositoryService rentBookRepositoryService;
+        private readonly IBookRatingRepositoryService bookRatingRepositoryService;
 
-        public BooksController(IUnitOfWork unitOfWork, IBookRepositoryService bookRepositoryService, IRentBookRepositoryService rentBookRepositoryService)
+        public BooksController(IUnitOfWork unitOfWork, IBookRepositoryService bookRepositoryService,
+                               IRentBookRepositoryService rentBookRepositoryService, IBookRatingRepositoryService bookRatingRepositoryService)
         {
             this.unitOfWork = unitOfWork;
             this.bookRepositoryService = bookRepositoryService;
             this.rentBookRepositoryService = rentBookRepositoryService;
+            this.bookRatingRepositoryService = bookRatingRepositoryService;
         }
 
         // GET api/values
@@ -65,7 +69,7 @@ namespace Renter.Controllers.Api
         public IActionResult IsBookAvaiable(int id)
         {
             var bookExists = bookRepositoryService.Get(id) != null;
-            if(!bookExists)
+            if (!bookExists)
             {
                 return BadRequest("Book does not exist");
             }
@@ -93,7 +97,7 @@ namespace Renter.Controllers.Api
         {
             var timeSpan = TimeSpan.FromDays(days);
             var rentBook = rentBookRepositoryService.Rent(bookId, userId, timeSpan);
-            if(rentBook == null)
+            if (rentBook == null)
             {
                 return BadRequest("Book is not avaiable for rent.");
             }
@@ -105,6 +109,34 @@ namespace Renter.Controllers.Api
         {
             var rentBook = rentBookRepositoryService.GetBookRentHisotry(bookId);
             return Ok(rentBook);
+        }
+
+        [HttpGet("Rate/{title}")]
+        public IActionResult Rate(string title)
+        {
+            var rate = this.bookRatingRepositoryService.GetRate(title);
+            return Ok(rate);
+        }
+
+        [HttpPost("Rate/{title}/{userId}/{rate}")]
+        public IActionResult Rate(string title, string userId, int rate)
+        {
+            try
+            {
+                this.bookRatingRepositoryService.RateBook(title, userId, rate);
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("Category/{categoryName}")]
+        public IActionResult GetBooksByCategory(string categoryName)
+        {
+            var books = this.bookRepositoryService.Queryable().Include(x => x.Category).Where(x => string.Equals(x.Category.Name, categoryName, StringComparison.OrdinalIgnoreCase)).ToList();
+            return Ok(books);
         }
     }
 }

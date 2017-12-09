@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Database.Interfaces;
 using Models.Models;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace Renter.Controllers.Api
 {
@@ -60,6 +61,13 @@ namespace Renter.Controllers.Api
         {
             authorRepositoryService.Delete(id);
             unitOfWork.Save();
+        }
+
+        [HttpGet("Books/{authorId}")]
+        public IActionResult GetBooks(int authorId)
+        {
+            var books = authorRepositoryService.Queryable().Include(x => x.Books).Select(x => x.Books).ToList();
+            return Ok(books);
         }
     }
 }

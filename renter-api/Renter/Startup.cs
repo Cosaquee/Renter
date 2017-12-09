@@ -91,6 +91,8 @@ namespace Renter
             services.AddTransient<IRefreshTokenRepositoryService, RefreshTokenRepositoryService>();
             services.AddTransient<IRoleRepositoryService, RoleRepositoryService>();
             services.AddTransient<IRentBookRepositoryService, RentBookRepositoryService>();
+            services.AddTransient<IUserSubscriptionRepositoryService, UserSubscriptionRepositoryService>();
+            services.AddTransient<IRentBookRepositoryService, RentBookRepositoryService>();
             services.AddCors();
         }
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
