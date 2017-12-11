@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Database.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class initialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -97,10 +97,8 @@ namespace Database.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    AuthorId = table.Column<int>(nullable: false),
-                    AuthorId1 = table.Column<long>(nullable: true),
-                    CategoryId = table.Column<int>(nullable: false),
-                    CategoryId1 = table.Column<long>(nullable: true),
+                    AuthorId = table.Column<long>(nullable: false),
+                    CategoryId = table.Column<long>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     ISBN = table.Column<string>(maxLength: 13, nullable: false),
                     Title = table.Column<string>(maxLength: 128, nullable: false)
@@ -109,17 +107,17 @@ namespace Database.Migrations
                 {
                     table.PrimaryKey("PK_Books", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Books_Authors_AuthorId1",
-                        column: x => x.AuthorId1,
+                        name: "FK_Books_Authors_AuthorId",
+                        column: x => x.AuthorId,
                         principalTable: "Authors",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Books_Categories_CategoryId1",
-                        column: x => x.CategoryId1,
+                        name: "FK_Books_Categories_CategoryId",
+                        column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -128,11 +126,9 @@ namespace Database.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CategoryId = table.Column<int>(nullable: false),
-                    CategoryId1 = table.Column<long>(nullable: true),
+                    CategoryId = table.Column<long>(nullable: false),
                     Description = table.Column<string>(nullable: true),
-                    DirectorId = table.Column<int>(nullable: false),
-                    DirectorId1 = table.Column<long>(nullable: true),
+                    DirectorId = table.Column<long>(nullable: false),
                     Seconds = table.Column<double>(nullable: false),
                     Title = table.Column<string>(maxLength: 128, nullable: false)
                 },
@@ -140,17 +136,17 @@ namespace Database.Migrations
                 {
                     table.PrimaryKey("PK_Movies", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Movies_Categories_CategoryId1",
-                        column: x => x.CategoryId1,
+                        name: "FK_Movies_Categories_CategoryId",
+                        column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Movies_Directors_DirectorId1",
-                        column: x => x.DirectorId1,
+                        name: "FK_Movies_Directors_DirectorId",
+                        column: x => x.DirectorId,
                         principalTable: "Directors",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -160,19 +156,18 @@ namespace Database.Migrations
                     Id = table.Column<string>(maxLength: 256, nullable: false),
                     Email = table.Column<string>(maxLength: 64, nullable: false),
                     Password = table.Column<string>(maxLength: 64, nullable: false),
-                    RoleId = table.Column<int>(nullable: false),
-                    RoleId1 = table.Column<long>(nullable: true),
+                    RoleId = table.Column<long>(nullable: false),
                     UserName = table.Column<string>(maxLength: 64, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Users_Roles_RoleId1",
-                        column: x => x.RoleId1,
+                        name: "FK_Users_Roles_RoleId",
+                        column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -209,8 +204,7 @@ namespace Database.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    MovieId = table.Column<int>(nullable: false),
-                    MovieId1 = table.Column<long>(nullable: true),
+                    MovieId = table.Column<long>(nullable: false),
                     Rate = table.Column<int>(nullable: false),
                     UserId = table.Column<string>(nullable: true)
                 },
@@ -218,11 +212,11 @@ namespace Database.Migrations
                 {
                     table.PrimaryKey("PK_MovieRatings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MovieRatings_Movies_MovieId1",
-                        column: x => x.MovieId1,
+                        name: "FK_MovieRatings_Movies_MovieId",
+                        column: x => x.MovieId,
                         principalTable: "Movies",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_MovieRatings_Users_UserId",
                         column: x => x.UserId,
@@ -237,8 +231,7 @@ namespace Database.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    BookId = table.Column<int>(nullable: false),
-                    BookId1 = table.Column<long>(nullable: true),
+                    BookId = table.Column<long>(nullable: false),
                     From = table.Column<DateTime>(nullable: false),
                     To = table.Column<DateTime>(nullable: false),
                     UserId = table.Column<string>(maxLength: 256, nullable: false)
@@ -247,11 +240,11 @@ namespace Database.Migrations
                 {
                     table.PrimaryKey("PK_RentBooks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RentBooks_Books_BookId1",
-                        column: x => x.BookId1,
+                        name: "FK_RentBooks_Books_BookId",
+                        column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RentBooks_Users_UserId",
                         column: x => x.UserId,
@@ -267,8 +260,7 @@ namespace Database.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     From = table.Column<DateTime>(nullable: false),
-                    MovieId = table.Column<int>(nullable: false),
-                    MovieId1 = table.Column<long>(nullable: true),
+                    MovieId = table.Column<long>(nullable: false),
                     To = table.Column<DateTime>(nullable: false),
                     UserId = table.Column<string>(maxLength: 256, nullable: false)
                 },
@@ -276,11 +268,11 @@ namespace Database.Migrations
                 {
                     table.PrimaryKey("PK_RentMovies", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RentMovies_Movies_MovieId1",
-                        column: x => x.MovieId1,
+                        name: "FK_RentMovies_Movies_MovieId",
+                        column: x => x.MovieId,
                         principalTable: "Movies",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RentMovies_Users_UserId",
                         column: x => x.UserId,
@@ -318,14 +310,14 @@ namespace Database.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Books_AuthorId1",
+                name: "IX_Books_AuthorId",
                 table: "Books",
-                column: "AuthorId1");
+                column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Books_CategoryId1",
+                name: "IX_Books_CategoryId",
                 table: "Books",
-                column: "CategoryId1");
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BooksRatings_BookId",
@@ -338,9 +330,9 @@ namespace Database.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MovieRatings_MovieId1",
+                name: "IX_MovieRatings_MovieId",
                 table: "MovieRatings",
-                column: "MovieId1");
+                column: "MovieId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MovieRatings_UserId",
@@ -348,19 +340,19 @@ namespace Database.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Movies_CategoryId1",
+                name: "IX_Movies_CategoryId",
                 table: "Movies",
-                column: "CategoryId1");
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Movies_DirectorId1",
+                name: "IX_Movies_DirectorId",
                 table: "Movies",
-                column: "DirectorId1");
+                column: "DirectorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RentBooks_BookId1",
+                name: "IX_RentBooks_BookId",
                 table: "RentBooks",
-                column: "BookId1");
+                column: "BookId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RentBooks_UserId",
@@ -368,9 +360,9 @@ namespace Database.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RentMovies_MovieId1",
+                name: "IX_RentMovies_MovieId",
                 table: "RentMovies",
-                column: "MovieId1");
+                column: "MovieId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RentMovies_UserId",
@@ -378,9 +370,9 @@ namespace Database.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_RoleId1",
+                name: "IX_Users_RoleId",
                 table: "Users",
-                column: "RoleId1");
+                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserSubscriptions_SubscriptionId1",

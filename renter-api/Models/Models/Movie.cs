@@ -14,10 +14,10 @@ namespace Models.Models
         [StringLength(128)]
         public string Title { get; set; }
 
-        public int DirectorId { get; set; }
+        public long DirectorId { get; set; }
         public virtual Director Director { get; set; }
 
-        public int CategoryId { get; set; }
+        public long CategoryId { get; set; }
         public virtual Category Category { get; set; }
 
         [NotMapped]

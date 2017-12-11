@@ -10,7 +10,7 @@ namespace Models.Models
         [Key]
         public long Id { get; set; }
         [Required]
-        public int MovieId { get; set; }
+        public long MovieId { get; set; }
         public virtual Movie Movie { get; set; }
         [Required]
         [StringLength(256)]

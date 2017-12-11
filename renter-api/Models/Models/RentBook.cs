@@ -10,7 +10,7 @@ namespace Models.Models
         [Key]
         public long Id { get; set; }
         [Required]
-        public int BookId { get; set; }
+        public long BookId { get; set; }
         public virtual Book Book { get; set; }
         [Required]
         [StringLength(256)]

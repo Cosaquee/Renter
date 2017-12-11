@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Models.Models;
 using System.Threading.Tasks;
+using Models.Dtos.Role;
+using AutoMapper;
 
 namespace Renter.Controllers.Api
 {
@@ -22,8 +24,9 @@ namespace Renter.Controllers.Api
         }
 
         [HttpPost]
-        public void CreateRole([FromBody] Role role)
+        public void CreateRole([FromBody] CreateRoleDto createRole)
         {
+            var role = Mapper.Map<Role>(createRole);
             this.roleRepositoryService.Insert(role);
             unitOfWork.Save();
         }

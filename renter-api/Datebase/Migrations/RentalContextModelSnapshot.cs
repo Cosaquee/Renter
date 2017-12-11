@@ -43,13 +43,9 @@ namespace Database.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("AuthorId");
+                    b.Property<long>("AuthorId");
 
-                    b.Property<long?>("AuthorId1");
-
-                    b.Property<int>("CategoryId");
-
-                    b.Property<long?>("CategoryId1");
+                    b.Property<long>("CategoryId");
 
                     b.Property<string>("Description");
 
@@ -63,9 +59,9 @@ namespace Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId1");
+                    b.HasIndex("AuthorId");
 
-                    b.HasIndex("CategoryId1");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Books");
                 });
@@ -129,15 +125,11 @@ namespace Database.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("CategoryId");
-
-                    b.Property<long?>("CategoryId1");
+                    b.Property<long>("CategoryId");
 
                     b.Property<string>("Description");
 
-                    b.Property<int>("DirectorId");
-
-                    b.Property<long?>("DirectorId1");
+                    b.Property<long>("DirectorId");
 
                     b.Property<double>("Seconds");
 
@@ -147,9 +139,9 @@ namespace Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId1");
+                    b.HasIndex("CategoryId");
 
-                    b.HasIndex("DirectorId1");
+                    b.HasIndex("DirectorId");
 
                     b.ToTable("Movies");
                 });
@@ -159,9 +151,7 @@ namespace Database.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("MovieId");
-
-                    b.Property<long?>("MovieId1");
+                    b.Property<long>("MovieId");
 
                     b.Property<int>("Rate");
 
@@ -169,7 +159,7 @@ namespace Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MovieId1");
+                    b.HasIndex("MovieId");
 
                     b.HasIndex("UserId");
 
@@ -195,9 +185,7 @@ namespace Database.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("BookId");
-
-                    b.Property<long?>("BookId1");
+                    b.Property<long>("BookId");
 
                     b.Property<DateTime>("From");
 
@@ -209,7 +197,7 @@ namespace Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookId1");
+                    b.HasIndex("BookId");
 
                     b.HasIndex("UserId");
 
@@ -223,9 +211,7 @@ namespace Database.Migrations
 
                     b.Property<DateTime>("From");
 
-                    b.Property<int>("MovieId");
-
-                    b.Property<long?>("MovieId1");
+                    b.Property<long>("MovieId");
 
                     b.Property<DateTime>("To");
 
@@ -235,7 +221,7 @@ namespace Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MovieId1");
+                    b.HasIndex("MovieId");
 
                     b.HasIndex("UserId");
 
@@ -286,9 +272,7 @@ namespace Database.Migrations
                         .IsRequired()
                         .HasMaxLength(64);
 
-                    b.Property<int>("RoleId");
-
-                    b.Property<long?>("RoleId1");
+                    b.Property<long>("RoleId");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -296,7 +280,7 @@ namespace Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId1");
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
@@ -327,11 +311,13 @@ namespace Database.Migrations
                 {
                     b.HasOne("Models.Models.Author", "Author")
                         .WithMany("Books")
-                        .HasForeignKey("AuthorId1");
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Models.Models.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId1");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Models.Models.BookRating", b =>
@@ -349,18 +335,21 @@ namespace Database.Migrations
                 {
                     b.HasOne("Models.Models.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId1");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Models.Models.Director", "Director")
                         .WithMany("Movies")
-                        .HasForeignKey("DirectorId1");
+                        .HasForeignKey("DirectorId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Models.Models.MovieRating", b =>
                 {
                     b.HasOne("Models.Models.Movie", "Movie")
                         .WithMany("MovieRatings")
-                        .HasForeignKey("MovieId1");
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Models.Models.User", "User")
                         .WithMany()
@@ -371,7 +360,8 @@ namespace Database.Migrations
                 {
                     b.HasOne("Models.Models.Book", "Book")
                         .WithMany()
-                        .HasForeignKey("BookId1");
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Models.Models.User", "User")
                         .WithMany("RentBooks")
@@ -383,7 +373,8 @@ namespace Database.Migrations
                 {
                     b.HasOne("Models.Models.Movie", "Movie")
                         .WithMany()
-                        .HasForeignKey("MovieId1");
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Models.Models.User", "User")
                         .WithMany("RentMovies")
@@ -395,7 +386,8 @@ namespace Database.Migrations
                 {
                     b.HasOne("Models.Models.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleId1");
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Models.Models.UserSubscription", b =>

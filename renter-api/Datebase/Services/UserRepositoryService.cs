@@ -1,12 +1,9 @@
-﻿using Models.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Database.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Database.Interfaces;
-using System.Linq;
-using System.Threading.Tasks;
+using Models.Models;
 using Services.Utils;
+using System;
+using System.Linq;
 
 namespace Database.Services
 {

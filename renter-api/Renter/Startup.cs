@@ -53,12 +53,14 @@ namespace Renter
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IDbInitializer dbInitializer)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            dbInitializer.Seed();
 
             app.UseCors(builder =>
                 builder.WithOrigins("http://localhost:8080")
@@ -93,6 +95,7 @@ namespace Renter
             services.AddTransient<IRentBookRepositoryService, RentBookRepositoryService>();
             services.AddTransient<IUserSubscriptionRepositoryService, UserSubscriptionRepositoryService>();
             services.AddTransient<IRentBookRepositoryService, RentBookRepositoryService>();
+            services.AddTransient<IDbInitializer, DbInitializer>();
             services.AddCors();
         }
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

@@ -19,7 +19,7 @@ namespace Models.Models
         [StringLength(64)]
         public string Password { get; set; }
 
-        public int RoleId { get; set; }
+        public long RoleId { get; set; }
         public virtual Role Role { get; set; }
 
         public virtual ICollection<RentBook> RentBooks { get; set; }
