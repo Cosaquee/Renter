@@ -18,7 +18,7 @@ namespace Database.Services
 
         public virtual IEnumerable<TEntity> Get()
         {
-            return dbSet;
+            return dbSet.AsEnumerable();
         }
 
         public virtual TEntity Get(object id)
