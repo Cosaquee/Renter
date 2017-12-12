@@ -17,8 +17,13 @@ namespace Database.Services
         public float GetRate(string bookTitle)
         {
             var rates = Queryable().Where(x => x.BookTitle == bookTitle);
+            var ratesCount = rates.Count();
+
+            if (ratesCount <= 0)
+                return 0;
+
             float sumRates = (float)rates.Sum(x => x.Rate);
-            return sumRates / rates.Count();
+            return sumRates / ratesCount;
         }
 
         public BookRating GetRateByUser(string bookTitle, string userId)

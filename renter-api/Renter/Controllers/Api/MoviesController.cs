@@ -35,7 +35,6 @@ namespace Renter.Controllers.Api
         [HttpGet]
         public IEnumerable<Movie> Get()
         {
-            //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdFVzZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjNmYjNkNDE3LWU1NDMtNDVlOS04YmRjLTZkNjU0Y2M2YmViMyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJqdGkiOiI3NDUwZDU3ZC03NTNjLTQ5ZTYtOTQ0ZC1jYTdmMTMyNDBhM2QtMTUxMzA4NDczNCIsImlhdCI6MTUxMzA4NDczNCwibmJmIjoxNTEzMDgxMTM0LCJleHAiOjE1MTMxNjc1MzQsImlzcyI6IkNNU1JlbnRhbCIsImF1ZCI6IkNNU1JlbnRhbCJ9.apoaG5QPa0izOS2-q17-NgbmfrWw51q1KTj1nJU-5Ws
             return movieRepositoryService.Get();
         }
 
