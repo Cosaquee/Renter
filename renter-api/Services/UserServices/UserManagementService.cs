@@ -11,6 +11,8 @@ namespace Services.UserServices
 {
     public class UserManagementService : IUserManagementService
     {
+        private readonly int DefaultRoleId = 1;
+
         public UserCreationResult CreateUser(CreateUserDto createUserDto)
         {
             var user = Mapper.Map<User>(createUserDto);
@@ -19,7 +21,7 @@ namespace Services.UserServices
             var ticks = DateTime.Now.Ticks;
             var guid = Guid.NewGuid().ToString();
             user.Id = $"{guid}-{ticks}-{user.UserName}";
-            user.RoleId = 1;
+            user.RoleId = DefaultRoleId;
 
             return new UserCreationResult
             {
