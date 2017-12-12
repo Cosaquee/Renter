@@ -73,7 +73,7 @@ namespace Renter.Controllers.Api
             {
                 return BadRequest("Book does not exist");
             }
-            var isAvaiable = rentBookRepositoryService.IsBookAvaiable(id);
+            var isAvaiable = rentBookRepositoryService.IsBookAvailable(id);
             return Ok(isAvaiable);
         }
 

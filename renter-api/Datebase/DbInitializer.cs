@@ -38,7 +38,7 @@ namespace Database
             }
 
             roles.Add(new Role { Name = "User" });
-            roles.Add(new Role { Name = "Moderator" });
+            roles.Add(new Role { Name = "Employee" });
             roles.Add(new Role { Name = "Administrator" });
 
             dbContext.SaveChanges();
@@ -52,7 +52,7 @@ namespace Database
             }
 
             var userRole = await roles.FirstOrDefaultAsync(x => x.Name == "User");
-            var moderatorRole = await roles.FirstOrDefaultAsync(x => x.Name == "Moderator");
+            var moderatorRole = await roles.FirstOrDefaultAsync(x => x.Name == "Employee");
             var administratorRole = await roles.FirstOrDefaultAsync(x => x.Name == "Administrator");
 
             users.Add(new User
@@ -67,9 +67,9 @@ namespace Database
             users.Add(new User
             {
                 Role = moderatorRole,
-                UserName = "testModerator",
-                Password = PasswordHasher.CalculateHashedPassword("testModerator"),
-                Email = "testModerator@tt.tt",
+                UserName = "testEmployee",
+                Password = PasswordHasher.CalculateHashedPassword("testEmployee"),
+                Email = "testEmployee@tt.tt",
 
             });
 

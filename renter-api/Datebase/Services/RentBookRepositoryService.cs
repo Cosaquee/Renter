@@ -46,14 +46,14 @@ namespace Database.Services
             return result;
         }
 
-        public bool IsBookAvaiable(int bookId)
+        public bool IsBookAvailable(int bookId)
         {
             return !Queryable().Where(x => x.BookId == bookId && x.To >= DateTime.Now).Any();
         }
 
         public RentBook Rent(int bookId, string userId, TimeSpan time)
         {
-            if (IsBookAvaiable(bookId) == false)
+            if (IsBookAvailable(bookId) == false)
                 return null;
 
             var now = DateTime.Now;
