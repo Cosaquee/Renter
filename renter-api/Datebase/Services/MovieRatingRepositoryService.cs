@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Database.Services
 {
@@ -12,5 +13,47 @@ namespace Database.Services
 		public MovieRatingRepositoryService(DbContext dbContext) : base(dbContext)
 		{
 		}
-	}
+
+        public float GetRate(int movieId)
+        {
+            var rates = Queryable().Where(x => x.MovieId == movieId);
+            float sumRates = (float)rates.Sum(x => x.Rate);
+            return sumRates / rates.Count();
+        }
+
+        public MovieRating GetRateByUser(int movieId, string userId)
+        {
+            return Queryable().Where(x => x.MovieId == movieId && x.UserId == userId).FirstOrDefault();
+        }
+
+        public void RateMovie(int movieId, string userId, int rate)
+        {
+            if (this.IsRateValid(rate))
+                throw new Exception("Invalid rate");
+
+            var rateItem = GetRateByUser(movieId, userId);
+            if (rateItem != null)
+            {
+                rateItem.Rate = rate;
+                this.Update(rateItem);
+            }
+            else
+            {
+                rateItem = new MovieRating
+                {
+                    MovieId = movieId,
+                    UserId = userId,
+                    Rate = rate
+                };
+                this.Insert(rateItem);
+            }
+        }
+
+        private const int minRate = 1;
+        private const int maxRate = 10;
+        private bool IsRateValid(int rate)
+        {
+            return rate >= minRate && rate <= maxRate;
+        }
+    }
 }

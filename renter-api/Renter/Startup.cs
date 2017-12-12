@@ -86,15 +86,21 @@ namespace Renter
             dbContextOptions.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             services.AddDbContext<RentalContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddSingleton<DbContext>(new RentalContext(dbContextOptions.Options));
+            services.AddTransient<IAuthorRepositoryService, AuthorRepositoryService>();
+            services.AddTransient<IBookRatingRepositoryService, BookRatingRepositoryService>();
+            services.AddTransient<IBookRepositoryService, BookRepositoryService>();
+            services.AddTransient<ICategoryRepositoryService, CategoryRepositoryService>();
+            services.AddTransient<IDirectorRepositoryService, DirectorRepositoryService>();
+            services.AddTransient<IMovieRatingRepositoryService, MovieRatingRepositoryService>();
+            services.AddTransient<IMovieRepositoryService, MovieRepositoryService>();
+            services.AddTransient<IRefreshTokenRepositoryService, RefreshTokenRepositoryService>();
+            services.AddTransient<IRentBookRepositoryService, RentBookRepositoryService>();
+            services.AddTransient<IRentMovieRepositoryService, RentMovieRepositoryService>();
+            services.AddTransient<IRoleRepositoryService, RoleRepositoryService>();
+            services.AddTransient<ISubscriptionRepositoryService, SubscriptionRepositoryService>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IUserRepositoryService, UserRepositoryService>();
-            services.AddTransient<IAuthorRepositoryService, AuthorRepositoryService>();
-            services.AddTransient<IBookRepositoryService, BookRepositoryService>();
-            services.AddTransient<IRefreshTokenRepositoryService, RefreshTokenRepositoryService>();
-            services.AddTransient<IRoleRepositoryService, RoleRepositoryService>();
-            services.AddTransient<IRentBookRepositoryService, RentBookRepositoryService>();
             services.AddTransient<IUserSubscriptionRepositoryService, UserSubscriptionRepositoryService>();
-            services.AddTransient<IRentBookRepositoryService, RentBookRepositoryService>();
             services.AddTransient<IDbInitializer, DbInitializer>();
             services.AddCors();
         }
