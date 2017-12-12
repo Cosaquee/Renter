@@ -14,7 +14,7 @@ namespace Database.Services
 		{
 		}
 
-        public float GetRate(int movieId)
+        public float GetRate(long movieId)
         {
             var rates = Queryable().Where(x => x.MovieId == movieId);
             var ratesCount = rates.Count();
@@ -26,12 +26,12 @@ namespace Database.Services
             return sumRates / ratesCount;
         }
 
-        public MovieRating GetRateByUser(int movieId, string userId)
+        public MovieRating GetRateByUser(long movieId, string userId)
         {
             return Queryable().Where(x => x.MovieId == movieId && x.UserId == userId).FirstOrDefault();
         }
 
-        public void RateMovie(int movieId, string userId, int rate)
+        public void RateMovie(long movieId, string userId, int rate)
         {
             if (this.IsRateValid(rate))
                 throw new Exception("Invalid rate");

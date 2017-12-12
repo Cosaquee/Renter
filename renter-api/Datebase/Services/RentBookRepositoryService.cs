@@ -46,12 +46,12 @@ namespace Database.Services
             return result;
         }
 
-        public bool IsBookAvailable(int bookId)
+        public bool IsBookAvailable(long bookId)
         {
             return !Queryable().Where(x => x.BookId == bookId && x.To >= DateTime.Now).Any();
         }
 
-        public RentBook Rent(int bookId, string userId, TimeSpan time)
+        public RentBook Rent(long bookId, string userId, TimeSpan time)
         {
             if (IsBookAvailable(bookId) == false)
                 return null;
@@ -76,7 +76,7 @@ namespace Database.Services
             return Queryable().Where(x => x.UserId == userId).ToList();
         }
 
-        public List<RentBook> GetBookRentHisotry(int bookId)
+        public List<RentBook> GetBookRentHisotry(long bookId)
         {
             return Queryable().Where(x => x.BookId == bookId).ToList();
         }

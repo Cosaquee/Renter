@@ -8,7 +8,7 @@ namespace Database.Interfaces
     public interface IRentMovieRepositoryService : IRepositoryService<RentMovie>
     {
         List<RentMovie> GetMovieRentHisotry(string userId);
-        List<RentMovie> GetMovieRentHisotry(int movieId);
-        RentMovie Rent(int movieId, string userId, TimeSpan time);
+        List<RentMovie> GetMovieRentHisotry(long movieId);
+        RentMovie Rent(long movieId, string userId, TimeSpan time);
     }
 }

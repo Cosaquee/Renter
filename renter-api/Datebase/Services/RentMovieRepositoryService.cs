@@ -20,12 +20,12 @@ namespace Database.Services
             return Queryable().Where(x => x.UserId == userId).ToList();
         }
 
-        public List<RentMovie> GetMovieRentHisotry(int movieId)
+        public List<RentMovie> GetMovieRentHisotry(long movieId)
         {
             return Queryable().Where(x => x.MovieId == movieId).ToList();
         }
 
-        public RentMovie Rent(int movieId, string userId, TimeSpan time)
+        public RentMovie Rent(long movieId, string userId, TimeSpan time)
         {
             var now = DateTime.Now;
 

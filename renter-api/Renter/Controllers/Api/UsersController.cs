@@ -163,7 +163,7 @@ namespace Renter.Controllers.Api
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void DeleteUser(int id)
+        public void DeleteUser(string id)
         {
             userRepositoryService.Delete(id);
             unitOfWork.Save();

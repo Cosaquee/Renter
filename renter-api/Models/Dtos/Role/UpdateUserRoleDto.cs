@@ -8,6 +8,6 @@ namespace Models.Dtos.Role
     public class UpdateUserRoleDto
     {
         [Required]
-        public int ID {get; set;}
+        public long Id {get; set;}
     }
 }

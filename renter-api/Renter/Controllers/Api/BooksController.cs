@@ -41,7 +41,7 @@ namespace Renter.Controllers.Api
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public Book Get(int id)
+        public Book Get(long id)
         {
             return bookRepositoryService.Queryable().Where(x => x.Id == id).FirstOrDefault();
         }
@@ -56,7 +56,7 @@ namespace Renter.Controllers.Api
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void UpdateBook(int id, [FromBody]BookDto book)
+        public void UpdateBook(long id, [FromBody]BookDto book)
         {
             var bookDb = Mapper.Map<Book>(book);
             bookDb.Id = id;
@@ -66,7 +66,7 @@ namespace Renter.Controllers.Api
 
         // DELETE api/values/5
         [HttpGet("Avaiable/{id}")]
-        public IActionResult IsBookAvaiable(int id)
+        public IActionResult IsBookAvaiable(long id)
         {
             var bookExists = bookRepositoryService.Get(id) != null;
             if (!bookExists)
@@ -93,7 +93,7 @@ namespace Renter.Controllers.Api
 
 
         [HttpGet("Rent/{bookId}/{userId}/{days}")]
-        public IActionResult Rent(int bookId, string userId, int days)
+        public IActionResult Rent(long bookId, string userId, int days)
         {
             var timeSpan = TimeSpan.FromDays(days);
             var rentBook = rentBookRepositoryService.Rent(bookId, userId, timeSpan);
@@ -105,7 +105,7 @@ namespace Renter.Controllers.Api
         }
 
         [HttpGet("RentHistory/{bookId}")]
-        public IActionResult RentHistory(int bookId)
+        public IActionResult RentHistory(long bookId)
         {
             var rentBook = rentBookRepositoryService.GetBookRentHisotry(bookId);
             return Ok(rentBook);

@@ -40,7 +40,7 @@ namespace Renter.Controllers.Api
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public Movie Get(int id)
+        public Movie Get(long id)
         {
             return movieRepositoryService.Queryable().Where(x => x.Id == id).FirstOrDefault();
         }
@@ -55,7 +55,7 @@ namespace Renter.Controllers.Api
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void UpdateMovie(int id, [FromBody]EditMovieDto movie)
+        public void UpdateMovie(long id, [FromBody]EditMovieDto movie)
         {
             var movieDb = Mapper.Map<Movie>(movie);
             movieDb.Id = id;
@@ -65,7 +65,7 @@ namespace Renter.Controllers.Api
 
 
         [HttpGet("Rent/{movieId}/{userId}/{days}")]
-        public IActionResult Rent(int movieId, string userId, int days)
+        public IActionResult Rent(long movieId, string userId, int days)
         {
             var timeSpan = TimeSpan.FromDays(days);
             var rentMovie = rentMovieRepositoryService.Rent(movieId, userId, timeSpan);
@@ -77,21 +77,21 @@ namespace Renter.Controllers.Api
         }
 
         [HttpGet("RentHistory/{movieId}")]
-        public IActionResult RentHistory(int movieId)
+        public IActionResult RentHistory(long movieId)
         {
             var rentMovie = rentMovieRepositoryService.GetMovieRentHisotry(movieId);
             return Ok(rentMovie);
         }
 
         [HttpGet("Rate/{movieId}")]
-        public IActionResult Rate(int movieId)
+        public IActionResult Rate(long movieId)
         {
             var rate = this.movieRatingRepositoryService.GetRate(movieId);
             return Ok(rate);
         }
 
         [HttpPost("Rate/{movieId}/{userId}/{rate}")]
-        public IActionResult Rate(int movieId, string userId, int rate)
+        public IActionResult Rate(long movieId, string userId, int rate)
         {
             try
             {

@@ -13,7 +13,7 @@ namespace Models.Dtos.Book
         [Required]
         [StringLength(13)]
         public string ISBN { get; set; }
-        public int AuthorId { get; set; }
-        public int CategoryId { get; set; }
+        public long AuthorId { get; set; }
+        public long CategoryId { get; set; }
     }
 }

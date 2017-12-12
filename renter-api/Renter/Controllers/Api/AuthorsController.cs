@@ -33,7 +33,7 @@ namespace Renter.Controllers.Api
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public Author Get(int id)
+        public Author Get(long id)
         {
             return authorRepositoryService.Queryable().Where(x => x.Id == id).FirstOrDefault();
         }
@@ -48,7 +48,7 @@ namespace Renter.Controllers.Api
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void UpdateAuthor(int id, [FromBody]Author author)
+        public void UpdateAuthor(long id, [FromBody]Author author)
         {
             author.Id = id;
             authorRepositoryService.Update(author);
@@ -57,14 +57,14 @@ namespace Renter.Controllers.Api
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void DeleteAuthor(int id)
+        public void DeleteAuthor(long id)
         {
             authorRepositoryService.Delete(id);
             unitOfWork.Save();
         }
 
         [HttpGet("Books/{authorId}")]
-        public IActionResult GetBooks(int authorId)
+        public IActionResult GetBooks(long authorId)
         {
             var books = authorRepositoryService.Queryable().Include(x => x.Books).Select(x => x.Books).ToList();
             return Ok(books);
