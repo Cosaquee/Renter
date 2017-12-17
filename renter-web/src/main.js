@@ -7,10 +7,14 @@ import { sync } from 'vuex-router-sync';
 import store from './store';
 import Buefy from 'buefy';
 import './main.scss';
+import { ClientTable } from 'vue-tables-2';
+
+Vue.use(ClientTable, {}, true, {});
 
 Vue.use(Buefy, {
   defaultIconPack: 'fa'
 });
+
 Vue.config.productionTip = false;
 
 sync(store, router);

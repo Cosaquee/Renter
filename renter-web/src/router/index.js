@@ -39,7 +39,7 @@ const router = new Router({
       path: '/users',
       name: 'users',
       component: Users,
-      meta: {auth: true},
+      meta: { auth: true, requiresAdministrator: true },
     },
     {
       path: '/register',
@@ -55,6 +55,15 @@ router.beforeEach((to, from, next) => {
         path: '/welcome',
       });
     } else {
+      if (to.fullPath === '/users') {
+        if (store.getters.admin) {
+          next();
+        } else {
+          next({
+            path: '/',
+          })
+        }
+      }
       next();
     }
   } else {

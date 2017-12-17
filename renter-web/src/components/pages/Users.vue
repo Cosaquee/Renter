@@ -20,7 +20,7 @@
          </b-field>
 
          <b-table
-             :data="tableData"
+             :data="users"
              :paginated="isPaginated"
              :per-page="perPage"
              :pagination-simple="isPaginationSimple"
@@ -28,10 +28,11 @@
              default-sort="user.first_name">
 
              <template slot-scope="props">
+
                  <b-table-column field="id" label="ID" width="40" sortable numeric>
                      {{ props.row.id }}
                  </b-table-column>
-
+<!-- <
                  <b-table-column field="user.first_name" label="First Name" sortable>
                      {{ props.row.user.first_name }}
                  </b-table-column>
@@ -51,7 +52,7 @@
                          :icon="props.row.gender === 'Male' ? 'mars' : 'venus'">
                      </b-icon>
                      {{ props.row.gender }}
-                 </b-table-column>
+                 </b-table-column> -->
              </template>
          </b-table>
      </section>
@@ -60,12 +61,19 @@
 <script>
   export default {
     data () {
+      console.log(this.$store);
+
       return {
-        tableData: [],
+        users: this.$store.state.users,
         isPaginated: true,
         isPaginationSimple: false,
         defaultSortDirection: 'asc',
         perPage: 5
+      };
+    },
+    computed: {
+      users () {
+        return this.$store.state.users;
       }
     },
     methods: {
