@@ -48,13 +48,13 @@
         </b-dropdown>
       </div>
     </div>
+
     <div v-else class="navbar-menu">
       <div class="navbar-end">
         <router-link to="login" class="is-tab navbar-item">Login</router-link>
         <router-link to="register" class="is-tab navbar-item">Register</router-link>
       </div>
     </div>
-
   </nav>
 </template>
 
