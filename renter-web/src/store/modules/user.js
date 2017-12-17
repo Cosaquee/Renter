@@ -15,7 +15,9 @@ const getters = {
   isLogged: state => !!state.token,
   user: state => state.user,
   refresh_token: state => state.refresh_token,
-  admin: store => store.user.roleId === 4,
+  admin: store => state.user.roleId === 3,
+  employee: store => state.user.roleId === 2,
+  normal_user: store => state.user.roleId === 1,
   users: store => store.users || [],
 };
 
@@ -28,7 +30,6 @@ const actions = {
           'Authorization': 'Bearer ' + token
         }
       }).then((response) => {
-        console.log(response);
         store.commit(USER_LIST, { users: response.data })
       })
     })
@@ -40,9 +41,8 @@ const actions = {
         'password': password,
       }).then((response) => {
         if (response.status === 200) {
-          const admin = (response.data.user.role.name === 'Administrator');
           store.commit(USER_AUTH_SUCCESS,
-            { user: response.data.user, token: response.data.accessToken, refresh_token: response.data.refreshToken, admin: admin });
+            { user: response.data.user, token: response.data.accessToken, refresh_token: response.data.refreshToken });
           resolve();
         } else {
           reject();
@@ -75,12 +75,11 @@ const actions = {
 };
 
 const mutations = {
-  [USER_AUTH_SUCCESS] (store, { user, token, refreshToken, admin }) {
+  [USER_AUTH_SUCCESS] (store, { user, token, refreshToken }) {
     store.user = user;
     store.error = '';
     store.token = token;
     store.refresh_token = refreshToken;
-    store.admin = admin;
     sessionStorage.setItem('token', token);
     sessionStorage.setItem('user', JSON.stringify(user));
   },
