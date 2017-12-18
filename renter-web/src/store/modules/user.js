@@ -18,7 +18,7 @@ const getters = {
   admin: store => state.user.roleId === 3,
   employee: store => state.user.roleId === 2,
   normal_user: store => state.user.roleId === 1,
-  users: store => store.users || [],
+  users: store => state.user.users,
 };
 
 const actions = {
