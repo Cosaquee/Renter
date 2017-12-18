@@ -32,6 +32,7 @@
                  <b-table-column field="Role" label="Role" sortable>
                      {{ props.row.rentMovies }}
                  </b-table-column>
+
              </template>
          </b-table>
      </section>
