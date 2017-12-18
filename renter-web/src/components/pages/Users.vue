@@ -9,11 +9,10 @@
              default-sort="userName">
 
              <template slot-scope="props">
-
                  <b-table-column field="id" label="ID" width="40" sortable numeric>
                      {{ props.row.id }}
                  </b-table-column>
-<!-- <
+
                  <b-table-column field="username" label="Username" sortable>
                      {{ props.row.userName }}
                  </b-table-column>
@@ -32,7 +31,8 @@
 
                  <b-table-column field="Role" label="Role" sortable>
                      {{ props.row.rentMovies }}
-                 </b-table-column> -->
+                 </b-table-column>
+
              </template>
          </b-table>
      </section>
@@ -41,19 +41,12 @@
 <script>
   export default {
     data () {
-      console.log(this.$store);
-
       return {
-(??)        tableData: [],
+        users: this.$store.state.user.users,
         isPaginated: true,
         isPaginationSimple: false,
         defaultSortDirection: 'asc',
         perPage: 5
-      };
-    },
-    computed: {
-      users () {
-        return this.$store.state.users;
       };
     },
     created: function () {
