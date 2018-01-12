@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Database.Interfaces;
 using Models.Models;
 using Models.Dtos.Book;
+using Models.Dtos.BookRating;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace Renter.Controllers.Api
         private readonly IRentBookRepositoryService rentBookRepositoryService;
         private readonly IBookRatingRepositoryService bookRatingRepositoryService;
 
+
         public BooksController(IUnitOfWork unitOfWork, IBookRepositoryService bookRepositoryService,
                                IRentBookRepositoryService rentBookRepositoryService, IBookRatingRepositoryService bookRatingRepositoryService)
         {
@@ -36,7 +38,7 @@ namespace Renter.Controllers.Api
         [HttpGet]
         public IEnumerable<Book> Get()
         {
-            return bookRepositoryService.Get();
+            return bookRepositoryService.Queryable().Include(x => x.Author);
         }
 
         // GET api/values/5
@@ -118,12 +120,12 @@ namespace Renter.Controllers.Api
             return Ok(rate);
         }
 
-        [HttpPost("Rate/{title}/{userId}/{rate}")]
-        public IActionResult Rate(string title, string userId, int rate)
+        [HttpPost("rate")]
+        public IActionResult Rate([FromBody] BookRatingDto bookRating)
         {
             try
             {
-                this.bookRatingRepositoryService.RateBook(title, userId, rate);
+                this.bookRatingRepositoryService.RateBook(bookRating.ISBN, bookRating.UserID, bookRating.Rate);
                 return Ok();
             }
             catch(Exception ex)

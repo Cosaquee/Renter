@@ -7,9 +7,13 @@ import { sync } from 'vuex-router-sync';
 import store from './store';
 import Buefy from 'buefy';
 import './main.scss';
-import { ClientTable } from 'vue-tables-2';
+import Rate from 'vue-rate';
 
-Vue.use(ClientTable, {}, true, {});
+import { TableComponent, TableColumn } from 'vue-table-component';
+
+Vue.component('table-component', TableComponent);
+Vue.component('table-column', TableColumn);
+Vue.component('Rate', Rate);
 
 Vue.use(Buefy, {
   defaultIconPack: 'fa'

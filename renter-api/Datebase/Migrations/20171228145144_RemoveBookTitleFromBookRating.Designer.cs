@@ -11,9 +11,10 @@ using System;
 namespace Database.Migrations
 {
     [DbContext(typeof(RentalContext))]
-    partial class RentalContextModelSnapshot : ModelSnapshot
+    [Migration("20171228145144_RemoveBookTitleFromBookRating")]
+    partial class RemoveBookTitleFromBookRating
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,9 +78,9 @@ namespace Database.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<long?>("BookId");
+                    b.Property<long>("BookId");
 
-                    b.Property<string>("ISBN");
+                    b.Property<string>("BookTitle");
 
                     b.Property<int>("Rate");
 
@@ -330,9 +331,10 @@ namespace Database.Migrations
 
             modelBuilder.Entity("Models.Models.BookRating", b =>
                 {
-                    b.HasOne("Models.Models.Book")
+                    b.HasOne("Models.Models.Book", "Book")
                         .WithMany("BookRatings")
-                        .HasForeignKey("BookId");
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Models.Models.User", "User")
                         .WithMany()

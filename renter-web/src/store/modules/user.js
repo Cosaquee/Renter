@@ -18,7 +18,8 @@ const getters = {
   admin: store => state.user.roleId === 3,
   employee: store => state.user.roleId === 2,
   normal_user: store => state.user.roleId === 1,
-  users: store => state.user.users,
+  users: store => store.user,
+  token: store => state.token,
 };
 
 const actions = {
@@ -30,9 +31,9 @@ const actions = {
           'Authorization': 'Bearer ' + token
         }
       }).then((response) => {
-        store.commit(USER_LIST, { users: response.data })
-      })
-    })
+        store.commit(USER_LIST, { users: response.data });
+      });
+    });
   },
   login (store, { username, password }) {
     return new Promise((resolve, reject) => {

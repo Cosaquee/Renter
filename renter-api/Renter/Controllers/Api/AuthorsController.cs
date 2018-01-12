@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -26,13 +27,15 @@ namespace Renter.Controllers.Api
 
         // GET api/values
         [HttpGet]
+        [Authorize(Roles = "Administrator, Employee, User")]
         public IEnumerable<Author> Get()
         {
-            return authorRepositoryService.Get();
+            return authorRepositoryService.Queryable().Include(x => x.Books);
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "Administrator, Employee, User")]
         public Author Get(long id)
         {
             return authorRepositoryService.Queryable().Where(x => x.Id == id).FirstOrDefault();
@@ -40,14 +43,18 @@ namespace Renter.Controllers.Api
 
         // POST api/values
         [HttpPost]
-        public void CreateAuthor([FromBody]Author author)
+        [Authorize(Roles = "Administrator, Employee")]
+        public Author CreateAuthor([FromBody]Author author)
         {
             authorRepositoryService.Insert(author);
             unitOfWork.Save();
+
+            return author;
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrator, Employee")]
         public void UpdateAuthor(long id, [FromBody]Author author)
         {
             author.Id = id;
@@ -57,6 +64,7 @@ namespace Renter.Controllers.Api
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator, Employee")]
         public void DeleteAuthor(long id)
         {
             authorRepositoryService.Delete(id);
@@ -64,6 +72,7 @@ namespace Renter.Controllers.Api
         }
 
         [HttpGet("Books/{authorId}")]
+        [Authorize(Roles = "Administrator, Employee, User")]
         public IActionResult GetBooks(long authorId)
         {
             var books = authorRepositoryService.Queryable().Include(x => x.Books).Select(x => x.Books).ToList();

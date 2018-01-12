@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Database.Interfaces;
 using Models.Models;
+using System.Collections.Concurrent;
 
 namespace Renter.Controllers.Api
 {
     [Produces("application/json")]
     [Route("api/Category")]
+    [Authorize]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
@@ -22,9 +25,12 @@ namespace Renter.Controllers.Api
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator, Employee, User")]
         public IEnumerable<Category> Get()
         {
-            return categoryRepositoryService.Get();
+           
+            return categoryRepositoryService.Get().ToList();
+           
         }
 
         // GET api/values/5

@@ -8,10 +8,17 @@ using System.Linq;
 
 namespace Database.Services
 {
-    public class RentBookRepositoryService : RepositoryService<RentBook>, IRentBookRepositoryService
+    public class RentBookRepositoryService : RepositoryService<RentBook>,  IRentBookRepositoryService
     {
         public RentBookRepositoryService(DbContext dbContext) : base(dbContext)
         {
+            this.dbContext = dbContext;
+        }
+
+        public Book getBookById(long bookID)
+        {
+            RepositoryService<Book> rs = new BookRepositoryService(dbContext);
+            return rs.Queryable().Where(x => x.Id == bookID).FirstOrDefault();
         }
 
         public List<Book> GetAvaiableBooksByIsbn(string isbn)
@@ -63,10 +70,17 @@ namespace Database.Services
                 BookId = bookId,
                 UserId = userId,
                 From = now,
-                To = now.Add(time)
+                To = now.Add(time),
+                Received = false
             };
 
+            var book = getBookById(bookId);
+            book.Rented = true;
+
+            dbContext.Update(book);
+
             this.Insert(rentBook);
+            dbContext.SaveChanges();
 
             return rentBook;
         }

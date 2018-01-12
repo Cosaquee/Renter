@@ -1,20 +1,16 @@
 <template>
   <section>
          <b-table
-             :data="users"
+             :data="computedUsers"
              :paginated="isPaginated"
              :per-page="perPage"
              :pagination-simple="isPaginationSimple"
              :default-sort-direction="defaultSortDirection"
-             default-sort="userName">
+             default-sort="username">
 
              <template slot-scope="props">
-                 <b-table-column field="id" label="ID" width="40" sortable numeric>
-                     {{ props.row.id }}
-                 </b-table-column>
-
                  <b-table-column field="username" label="Username" sortable>
-                     {{ props.row.userName }}
+                     {{ props.row.name }}
                  </b-table-column>
 
                  <b-table-column field="email" label="Email" sortable>
@@ -22,23 +18,24 @@
                  </b-table-column>
 
                  <b-table-column field="Role" label="Role" sortable>
-                     {{ props.row.role.name }}
+                     {{ props.row.role }}
                  </b-table-column>
 
-                 <b-table-column field="Books" label="Role" sortable>
-                     {{ props.row.rentBooks }}
+                 <b-table-column field="books" label="Books" sortable>
+                     {{ props.row.books }}
                  </b-table-column>
 
-                 <b-table-column field="Role" label="Role" sortable>
-                     {{ props.row.rentMovies }}
+                 <b-table-column field="movies" label="Movies" sortable>
+                     {{ props.row.movies }}
                  </b-table-column>
-
              </template>
          </b-table>
      </section>
 </template>
 
 <script>
+  import _ from 'lodash';
+
   export default {
     data () {
       return {
@@ -51,6 +48,42 @@
     },
     created: function () {
       this.$store.dispatch('getUsers');
+    },
+    computed: {
+      computedUsers: function () {
+        let roles = {
+          1: 'Administrator',
+          2: 'Employee',
+          3: 'User'
+        };
+
+        var users = [];
+
+        _.forEach(this.$store.state.user.users, (user) => {
+          var movies = null;
+          var books = null;
+
+          if (user.rentMovies === null) {
+            movies = [];
+          }
+
+          if (user.rentBooks === null) {
+            books = [];
+          }
+
+          let us = {
+            email: user.email,
+            role: roles[user.roleId],
+            name: user.userName,
+            movies: movies.length,
+            books: books.length
+          };
+
+          users.push(us);
+        });
+
+        return users;
+      }
     }
   };
 </script>

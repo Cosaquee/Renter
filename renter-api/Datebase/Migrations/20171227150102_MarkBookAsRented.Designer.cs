@@ -11,9 +11,10 @@ using System;
 namespace Database.Migrations
 {
     [DbContext(typeof(RentalContext))]
-    partial class RentalContextModelSnapshot : ModelSnapshot
+    [Migration("20171227150102_MarkBookAsRented")]
+    partial class MarkBookAsRented
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,8 +25,6 @@ namespace Database.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Description");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -48,8 +47,6 @@ namespace Database.Migrations
                     b.Property<long>("AuthorId");
 
                     b.Property<long>("CategoryId");
-
-                    b.Property<string>("CoverURL");
 
                     b.Property<string>("Description");
 
@@ -79,7 +76,7 @@ namespace Database.Migrations
 
                     b.Property<long?>("BookId");
 
-                    b.Property<string>("ISBN");
+                    b.Property<string>("BookTitle");
 
                     b.Property<int>("Rate");
 

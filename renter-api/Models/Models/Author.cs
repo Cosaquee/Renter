@@ -15,6 +15,9 @@ namespace Models.Models
         [Required]
         [StringLength(32)]
         public string Surname { get; set; }
+
+        public string Description { get; set; }
+
         public virtual ICollection<Book> Books { get; set; }
     }
 }

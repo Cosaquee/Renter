@@ -11,9 +11,10 @@ using System;
 namespace Database.Migrations
 {
     [DbContext(typeof(RentalContext))]
-    partial class RentalContextModelSnapshot : ModelSnapshot
+    [Migration("20171228100013_AddBookCoverUrlToBook")]
+    partial class AddBookCoverUrlToBook
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,7 +80,7 @@ namespace Database.Migrations
 
                     b.Property<long?>("BookId");
 
-                    b.Property<string>("ISBN");
+                    b.Property<string>("BookTitle");
 
                     b.Property<int>("Rate");
 

@@ -14,43 +14,44 @@ namespace Database.Services
         {
 		}
 
-        public float GetRate(string bookTitle)
+        public float GetRate(string ISBN)
         {
-            var rates = Queryable().Where(x => x.BookTitle == bookTitle);
+            var rates = Queryable().Where(x => x.ISBN == ISBN);
             var ratesCount = rates.Count();
 
             if (ratesCount <= 0)
                 return 0;
 
-            float sumRates = (float)rates.Sum(x => x.Rate);
+            float sumRates = (float) rates.Sum(x => x.Rate);
             return sumRates / ratesCount;
         }
 
-        public BookRating GetRateByUser(string bookTitle, string userId)
+        public BookRating GetRateByUser(string ISBN, string userId)
         {
-            return Queryable().Where(x => x.BookTitle == bookTitle && x.UserId == userId).FirstOrDefault();
+            return Queryable().Where(x => x.ISBN == ISBN && x.UserId == userId).FirstOrDefault();
         }
 
-        public void RateBook(string bookTitle, string userId, int rate)
+        // We use ISBN here to rate books to make sure that differnt copies of same books will always have same rate.
+        public void RateBook(string ISBN, string userId, int rate)
         {
-            if (this.IsRateValid(rate))
+
+
+            if (!this.IsRateValid(rate))
                 throw new Exception("Invalid rate");
 
-            var rateItem = GetRateByUser(bookTitle, userId);
+            var rateItem = GetRateByUser(ISBN, userId);
+
             if(rateItem != null)
             {
                 rateItem.Rate = rate;
                 this.Update(rateItem);
+                dbContext.SaveChanges();
             }
             else
             {
-                rateItem = new BookRating
-                {
-                    BookTitle = bookTitle,
-                    UserId = userId,
-                    Rate = rate
-                };
+                rateItem = new BookRating { ISBN = ISBN, UserId = userId, Rate = rate };
                 this.Insert(rateItem);
+                dbContext.SaveChanges();
             }
         }
 

@@ -5,7 +5,7 @@ namespace Database.Interfaces
     public interface IBookRatingRepositoryService : IRepositoryService<BookRating>
     {
         float GetRate(string bookTitle);
-        BookRating GetRateByUser(string bookTitle, string userId);
-        void RateBook(string bookTitle, string userId, int rate);
+        BookRating GetRateByUser(string ISBN, string userId);
+        void RateBook(string ISBN, string userId, int rate);
     }
 }

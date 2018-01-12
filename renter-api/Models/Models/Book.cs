@@ -14,7 +14,7 @@ namespace Models.Models
         public string Title { get; set; }
         [Required]
         [StringLength(13)]
-        public string ISBN { get; set; }//Podobno teraz 13 znakw https://pl.wikipedia.org/wiki/International_Standard_Book_Number
+        public string ISBN { get; set; } //Podobno teraz 13 znakw https://pl.wikipedia.org/wiki/International_Standard_Book_Number
         public long AuthorId { get; set; }
         public virtual Author Author { get; set; }
 
@@ -24,5 +24,9 @@ namespace Models.Models
         public string Description { get; set; }
 
         public virtual ICollection<BookRating> BookRatings { get; set; }
+
+        public bool Rented { get; set; }
+
+        public string CoverURL { get; set; }
     }
 }

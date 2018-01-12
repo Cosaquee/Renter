@@ -3,5 +3,7 @@ export default {
   API: {
     LOGIN: root + 'user/authorize',
     REGISTER: root + 'user',
+    AUTHORS: root + 'author',
+    CATEGORIES: root + 'category'
   }
 };

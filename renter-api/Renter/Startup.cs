@@ -34,22 +34,13 @@ namespace Renter
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc()
+                .AddJsonOptions(
+                    options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                );
             RegisterDatebase(services);
             RegisterToken(services);
             RegisterUserServices(services);
-
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info { Title = "Cms Rental API", Version = "v1"});
-                c.DescribeAllParametersInCamelCase();
-                c.DescribeStringEnumsInCamelCase();
-                c.DescribeAllEnumsAsStrings();
-                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
-                var xmlPath = Path.Combine(basePath, "API.xml");
-                c.IncludeXmlComments(xmlPath);
-                c.OperationFilter<AuthorizationHeaderParameterOperationFilter>();
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,16 +57,8 @@ namespace Renter
                 builder.WithOrigins("http://localhost:8080")
                 .AllowAnyHeader()
                 .AllowAnyMethod());
-            app.UseSwagger();
-            app.UseAuthentication();
 
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint(@"/swagger/v1/swagger.json", "Cms Rental");
-                c.ShowJsonEditor();
-                c.ShowRequestHeaders();
-            });
+            app.UseAuthentication();
 
             app.UseMvc();
         }
@@ -84,8 +67,16 @@ namespace Renter
         {
             var dbContextOptions = new DbContextOptionsBuilder<RentalContext>();
             dbContextOptions.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-            services.AddDbContext<RentalContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddSingleton<DbContext>(new RentalContext(dbContextOptions.Options));
+
+            // services.AddDbContext<RentalContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Transient);
+
+            services.AddScoped<DbContext>((provider) =>
+            {
+                return new RentalContext(dbContextOptions.Options);
+            }
+            );
+
+
             services.AddTransient<IAuthorRepositoryService, AuthorRepositoryService>();
             services.AddTransient<IBookRatingRepositoryService, BookRatingRepositoryService>();
             services.AddTransient<IBookRepositoryService, BookRepositoryService>();
@@ -102,6 +93,7 @@ namespace Renter
             services.AddTransient<IUserRepositoryService, UserRepositoryService>();
             services.AddTransient<IUserSubscriptionRepositoryService, UserSubscriptionRepositoryService>();
             services.AddTransient<IDbInitializer, DbInitializer>();
+
             services.AddCors();
         }
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
