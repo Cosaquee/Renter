@@ -117,6 +117,8 @@ router.beforeEach((to, from, next) => {
             path: '/'
           });
         }
+      } else if (Object.getOwnPropertyNames(to.meta).length === 1) {
+        next();
       }
     }
   } else {

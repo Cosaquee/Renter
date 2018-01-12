@@ -38,7 +38,7 @@ namespace Renter.Controllers.Api
         [Authorize(Roles = "Administrator, Employee, User")]
         public Author Get(long id)
         {
-            return authorRepositoryService.Queryable().Where(x => x.Id == id).FirstOrDefault();
+            return authorRepositoryService.Queryable().Where(x => x.Id == id).Include(x => x.Books).FirstOrDefault();
         }
 
         // POST api/values
