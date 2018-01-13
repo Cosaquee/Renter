@@ -1,14 +1,13 @@
 ﻿using Database.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Models.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace Database.Services
 {
-    public class RentBookRepositoryService : RepositoryService<RentBook>,  IRentBookRepositoryService
+    public class RentBookRepositoryService : RepositoryService<RentBook>, IRentBookRepositoryService
     {
         public RentBookRepositoryService(DbContext dbContext) : base(dbContext)
         {
@@ -28,7 +27,7 @@ namespace Database.Services
 
             foreach (var book in books)
             {
-                if(!book.Where(x => x.To > DateTime.Now).Any())
+                if (!book.Where(x => x.To > DateTime.Now).Any())
                 {
                     result.Add(book.Key);
                 }
@@ -94,6 +93,5 @@ namespace Database.Services
         {
             return Queryable().Where(x => x.BookId == bookId).ToList();
         }
-
     }
 }

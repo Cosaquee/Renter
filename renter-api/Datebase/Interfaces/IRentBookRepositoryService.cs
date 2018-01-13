@@ -1,17 +1,21 @@
 ﻿using Models.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Database.Interfaces
 {
     public interface IRentBookRepositoryService : IRepositoryService<RentBook>
     {
         RentBook Rent(long bookId, string userId, TimeSpan time);
+
         bool IsBookAvailable(long bookId);
+
         List<Book> GetAvaiableBooksByTitle(string title);
+
         List<Book> GetAvaiableBooksByIsbn(string isbn);
+
         List<RentBook> GetUserRentHisotry(string userId);
+
         List<RentBook> GetBookRentHisotry(long bookId);
     }
 }

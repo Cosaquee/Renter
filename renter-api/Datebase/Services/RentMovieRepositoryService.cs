@@ -1,19 +1,17 @@
 ﻿using Database.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Models.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace Database.Services
 {
     public class RentMovieRepositoryService : RepositoryService<RentMovie>, IRentMovieRepositoryService
-	{
-		public RentMovieRepositoryService(DbContext dbContext) : base(dbContext)
-		{
-		}
-
+    {
+        public RentMovieRepositoryService(DbContext dbContext) : base(dbContext)
+        {
+        }
 
         public List<RentMovie> GetMovieRentHisotry(string userId)
         {

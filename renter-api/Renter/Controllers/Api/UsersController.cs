@@ -4,13 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Models.Dtos.Login;
 using Models.Dtos.User;
 using Models.Models;
 using Services.UserServices.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Models.Dtos.Login;
 
 namespace Renter.Controllers.Api
 {
@@ -70,8 +69,6 @@ namespace Renter.Controllers.Api
             return Json(token);
         }
 
-
-
         // GET api/values
         //[HttpGet]
         //public IEnumerable<User> Get()
@@ -123,7 +120,7 @@ namespace Renter.Controllers.Api
         public IActionResult CreateUser([FromBody]CreateUserDto createUserDto)
         {
             //Validate Model
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 Response.StatusCode = StatusCodes.Status412PreconditionFailed;
                 return Json(ModelState);
@@ -131,7 +128,7 @@ namespace Renter.Controllers.Api
 
             //Check if user allready exits
             var allreadyExists = userRepositoryService.LoginOrEmailIsAllreadyInUser(createUserDto.UserName, createUserDto.Email);
-            if(allreadyExists)
+            if (allreadyExists)
             {
                 Response.StatusCode = StatusCodes.Status409Conflict;
                 return Json("User name or email is allready in use.");

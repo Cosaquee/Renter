@@ -1,18 +1,16 @@
 ﻿using Database.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Models.Models;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace Database.Services
 {
     public class MovieRatingRepositoryService : RepositoryService<MovieRating>, IMovieRatingRepositoryService
-	{
-		public MovieRatingRepositoryService(DbContext dbContext) : base(dbContext)
-		{
-		}
+    {
+        public MovieRatingRepositoryService(DbContext dbContext) : base(dbContext)
+        {
+        }
 
         public float GetRate(long movieId)
         {
@@ -56,6 +54,7 @@ namespace Database.Services
 
         private const int minRate = 1;
         private const int maxRate = 10;
+
         private bool IsRateValid(int rate)
         {
             return rate >= minRate && rate <= maxRate;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Models.Dtos.Book
 {
@@ -10,10 +7,13 @@ namespace Models.Dtos.Book
         [Required]
         [StringLength(128)]
         public string Title { get; set; }
+
         [Required]
         [StringLength(13)]
         public string ISBN { get; set; }
+
         public long AuthorId { get; set; }
+
         public long CategoryId { get; set; }
     }
 }

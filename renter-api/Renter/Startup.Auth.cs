@@ -1,9 +1,9 @@
 ﻿using Authorization;
-using Renter.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Renter.Models;
 using System;
 using System.Text;
 
@@ -13,7 +13,6 @@ namespace Renter
     {
         private void RegisterToken(IServiceCollection services)
         {
-
             string secretKey = Configuration["Tokens:Key"];
             var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
             var options = new TokenProviderOptions

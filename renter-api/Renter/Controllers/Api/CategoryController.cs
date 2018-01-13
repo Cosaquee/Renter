@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Database.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Database.Interfaces;
 using Models.Models;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Renter.Controllers.Api
 {
@@ -28,9 +25,7 @@ namespace Renter.Controllers.Api
         [Authorize(Roles = "Administrator, Employee, User")]
         public IEnumerable<Category> Get()
         {
-           
             return categoryRepositoryService.Get().ToList();
-           
         }
 
         // GET api/values/5
@@ -64,6 +59,5 @@ namespace Renter.Controllers.Api
             categoryRepositoryService.Delete(id);
             unitOfWork.Save();
         }
-
     }
 }

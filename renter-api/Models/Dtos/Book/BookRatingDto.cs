@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Models.Dtos.BookRating
@@ -6,7 +5,7 @@ namespace Models.Dtos.BookRating
     public class BookRatingDto
     {
         [Required]
-        public string UserID {get; set; }
+        public string UserID { get; set; }
 
         [Required]
         public int Rate { get; set; }

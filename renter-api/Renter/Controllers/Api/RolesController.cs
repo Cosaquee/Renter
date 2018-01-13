@@ -1,11 +1,8 @@
-using Authorization;
+using AutoMapper;
 using Database.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Models.Models;
-using System.Threading.Tasks;
 using Models.Dtos.Role;
-using AutoMapper;
+using Models.Models;
 
 namespace Renter.Controllers.Api
 {

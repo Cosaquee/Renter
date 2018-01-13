@@ -21,13 +21,13 @@ namespace Database.Services
         public User FindUser(string userName, string password)
         {
             var hashedPassword = PasswordHasher.CalculateHashedPassword(password);
-            return Queryable().Include(x=>x.Role).Where(x => string.Equals(x.UserName, userName, StringComparison.InvariantCultureIgnoreCase) &&
-                                                             string.Equals(x.Password, hashedPassword)).FirstOrDefault();
+            return Queryable().Include(x => x.Role).Where(x => string.Equals(x.UserName, userName, StringComparison.InvariantCultureIgnoreCase) &&
+                                                               string.Equals(x.Password, hashedPassword)).FirstOrDefault();
         }
 
         public User GetWithRole(string userId)
         {
-            return Queryable().Include(x=>x.Role).Where(x => x.Id == userId).FirstOrDefault();
+            return Queryable().Include(x => x.Role).Where(x => x.Id == userId).FirstOrDefault();
         }
 
         public string GetUserId(string userName, string password)

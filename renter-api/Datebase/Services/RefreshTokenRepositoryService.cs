@@ -1,10 +1,6 @@
-﻿using Models.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Database.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Database.Interfaces;
-using System.Threading.Tasks;
+using Models.Models;
 using System.Linq;
 
 namespace Database.Services
@@ -13,7 +9,6 @@ namespace Database.Services
     {
         public RefreshTokenRepositoryService(DbContext dbContext) : base(dbContext)
         {
-
         }
 
         public RefreshToken Get(string id)

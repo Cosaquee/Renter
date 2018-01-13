@@ -4,8 +4,6 @@ using Models.Models;
 using Services.UserServices.Interfaces;
 using Services.UserServices.Results;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Services.UserServices
 {

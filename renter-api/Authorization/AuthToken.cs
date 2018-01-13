@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Models.Models;
+﻿using Models.Models;
 
 namespace Authorization
 {

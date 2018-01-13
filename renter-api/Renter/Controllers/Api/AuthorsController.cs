@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Database.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Database.Interfaces;
-using Models.Models;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Models.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Renter.Controllers.Api
 {

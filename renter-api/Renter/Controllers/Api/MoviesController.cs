@@ -1,14 +1,13 @@
-﻿using System;
+﻿using AutoMapper;
+using Database.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Models.Dtos.Movie;
+using Models.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Database.Interfaces;
-using Models.Models;
-using AutoMapper;
-using Models.Dtos.Movie;
-using Microsoft.EntityFrameworkCore;
 
 namespace Renter.Controllers.Api
 {
@@ -22,7 +21,7 @@ namespace Renter.Controllers.Api
         private readonly IRentMovieRepositoryService rentMovieRepositoryService;
         private readonly IMovieRatingRepositoryService movieRatingRepositoryService;
 
-        public MoviesController(IUnitOfWork unitOfWork, IMovieRepositoryService movieRepositoryService, 
+        public MoviesController(IUnitOfWork unitOfWork, IMovieRepositoryService movieRepositoryService,
                                 IRentMovieRepositoryService rentMovieRepositoryService, IMovieRatingRepositoryService movieRatingRepositoryService)
         {
             this.unitOfWork = unitOfWork;
@@ -62,7 +61,6 @@ namespace Renter.Controllers.Api
             movieRepositoryService.Update(movieDb);
             unitOfWork.Save();
         }
-
 
         [HttpGet("Rent/{movieId}/{userId}/{days}")]
         public IActionResult Rent(long movieId, string userId, int days)

@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
 using Database.Interfaces;
-using Models.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Models.Dtos.Book;
 using Models.Dtos.BookRating;
-using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
+using Models.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Renter.Controllers.Api
 {
@@ -23,7 +21,6 @@ namespace Renter.Controllers.Api
         private readonly IBookRepositoryService bookRepositoryService;
         private readonly IRentBookRepositoryService rentBookRepositoryService;
         private readonly IBookRatingRepositoryService bookRatingRepositoryService;
-
 
         public BooksController(IUnitOfWork unitOfWork, IBookRepositoryService bookRepositoryService,
                                IRentBookRepositoryService rentBookRepositoryService, IBookRatingRepositoryService bookRatingRepositoryService)
@@ -93,7 +90,6 @@ namespace Renter.Controllers.Api
             return Ok(avaiableBooks);
         }
 
-
         [HttpGet("Rent/{bookId}/{userId}/{days}")]
         public IActionResult Rent(long bookId, string userId, int days)
         {
@@ -128,7 +124,7 @@ namespace Renter.Controllers.Api
                 this.bookRatingRepositoryService.RateBook(bookRating.ISBN, bookRating.UserID, bookRating.Rate);
                 return Ok();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

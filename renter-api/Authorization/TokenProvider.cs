@@ -1,14 +1,10 @@
 ﻿using Database.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Models.Models;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Authorization
 {
@@ -46,12 +42,12 @@ namespace Authorization
         public AuthToken RefreshToken(string refreshTokenId)
         {
             var refreshToken = refreshTokenRepositoryService.Get(refreshTokenId);
-            if(refreshToken == null)
+            if (refreshToken == null)
             {
                 return null;
             }
 
-            if(refreshToken.Expire < DateTime.UtcNow)
+            if (refreshToken.Expire < DateTime.UtcNow)
             {
                 return null;
             }
@@ -88,7 +84,6 @@ namespace Authorization
                 CookieName = tokenProviderOptions.CookieName
             };
         }
-
 
         private void SetupTime()
         {
@@ -144,9 +139,5 @@ namespace Authorization
 
             return refrshTokenId;
         }
-
     }
-
 }
-
-

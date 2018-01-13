@@ -1,16 +1,13 @@
 ﻿using Database.Interfaces;
-using Models.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Models.Models;
 
 namespace Database.Services
 {
     public class UserSubscriptionRepositoryService : RepositoryService<UserSubscription>, IUserSubscriptionRepositoryService
-	{
-		public UserSubscriptionRepositoryService(DbContext dbContext) : base(dbContext)
-		{
-		}
-	}
+    {
+        public UserSubscriptionRepositoryService(DbContext dbContext) : base(dbContext)
+        {
+        }
+    }
 }
