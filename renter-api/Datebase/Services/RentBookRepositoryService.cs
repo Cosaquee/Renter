@@ -20,20 +20,10 @@ namespace Database.Services
             return rs.Queryable().Where(x => x.Id == bookID).FirstOrDefault();
         }
 
-        public List<Book> GetAvaiableBooksByIsbn(string isbn)
+        public IEnumerable<Book> GetAvaiableBooksByIsbn(string isbn)
         {
-            var books = Queryable().Include(x => x.Book).Where(x => x.Book.ISBN == isbn).GroupBy(x => x.Book);
-            var result = new List<Book>();
-
-            foreach (var book in books)
-            {
-                if (!book.Where(x => x.To > DateTime.Now).Any())
-                {
-                    result.Add(book.Key);
-                }
-            }
-
-            return result;
+            RepositoryService<Book> rs = new BookRepositoryService(dbContext);
+            return rs.Queryable().Where(x => x.ISBN == isbn && x.Rented == false).Include(x => x.Author);
         }
 
         public List<Book> GetAvaiableBooksByTitle(string title)

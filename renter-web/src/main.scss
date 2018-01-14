@@ -159,11 +159,6 @@
   padding-top: 2em;
 }
 
-.book-title {
-  font-size: 3em;
-  padding-bottom: 1em;
-}
-
 .book-rate {
   padding-top: 2em;
   margin-left: 40%;
@@ -175,4 +170,53 @@
 
 .book-menu {
   padding-bottom: 10px;
+}
+
+.book-info {
+  text-align: center;
+}
+
+.rent-book {
+  padding-top: 1em;
+  text-align: center;
+}
+
+.rate-dropdown {
+  padding-left: 6em;
+}
+
+.rent-container {
+  padding-top: 2em;
+}
+
+.book-image {
+  padding-top: 2em;
+  width: 35em;
+}
+
+.book-menu {
+  text-align: center;
+}
+
+.book-image {
+  width: 80%;
+}
+
+.book-title {
+  font-size: 5em;
+}
+
+.rent-title {
+  font-size: 2em;
+}
+
+.rent-datepicker {
+  padding-bottom: 1em;
+  width: 50%;
+  margin: auto;
+}
+
+.rent-button {
+  width: 50%;
+  text-align: center;
 }

@@ -4,6 +4,7 @@ export default {
     LOGIN: root + 'user/authorize',
     REGISTER: root + 'user',
     AUTHORS: root + 'author',
-    CATEGORIES: root + 'category'
+    CATEGORIES: root + 'category',
+    BOOK: root + 'book'
   }
 };

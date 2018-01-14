@@ -1,5 +1,4 @@
 require 'sinatra'
-require 'sinatra/cross_origin'
 require 'aws-sdk-s3'
 require 'guid'
 require 'json'

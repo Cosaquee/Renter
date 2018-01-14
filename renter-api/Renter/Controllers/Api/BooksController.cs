@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models.Dtos.Book;
 using Models.Dtos.BookRating;
+using Models.Dtos.RentBook;
 using Models.Models;
 using System;
 using System.Collections.Generic;
@@ -102,6 +103,20 @@ namespace Renter.Controllers.Api
             return Ok(rentBook);
         }
 
+
+        [HttpPost("rent")]
+        [Authorize(Roles="Administrator, Employee, User")]
+        public IActionResult Rent([FromBody] RentBookDTO rentBookDTO)
+        {
+            var timeSpan = TimeSpan.FromDays(rentBookDTO.RentDuration);
+            var rentBook = rentBookRepositoryService.Rent(rentBookDTO.BookID, rentBookDTO.UserID, timeSpan);
+            if (rentBook == null)
+            {
+                return BadRequest("Book is not avaiable for rent.");
+            }
+            return Ok(rentBook);
+        }
+
         [HttpGet("RentHistory/{bookId}")]
         public IActionResult RentHistory(long bookId)
         {
@@ -135,6 +150,14 @@ namespace Renter.Controllers.Api
         {
             var books = this.bookRepositoryService.Queryable().Include(x => x.Category).Where(x => string.Equals(x.Category.Name, categoryName, StringComparison.OrdinalIgnoreCase)).ToList();
             return Ok(books);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(long id)
+        {
+            var book = this.bookRepositoryService.Get(id);
+            this.bookRepositoryService.Delete(book);
+            return Ok("Book deleted");
         }
     }
 }

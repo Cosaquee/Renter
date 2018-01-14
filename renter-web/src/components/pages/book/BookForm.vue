@@ -103,11 +103,8 @@
           };
         });
 
-        console.log('A');
         let selectedCategory = this.selectedCategory;
-
         let cat = this.$store.getters.categories.find(function (category) { return category.name === selectedCategory; });
-        console.log('Categories: ', this.$store.getters.categories);
 
         axios.post('http://localhost:5000/api/book', {
           title: this.title,
@@ -121,10 +118,6 @@
           }
         }).then((response) => {
           this.$router.push({ path: '/book' });
-          console.log('Response: ', response);
-        }).catch((error) => {
-          this.$router.push({ path: '/book' });
-          console.log('Error: ', error);
         });
       }
     },

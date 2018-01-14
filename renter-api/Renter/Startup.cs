@@ -35,7 +35,10 @@ namespace Renter
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc()
+            .AddJsonOptions(
+               options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
             RegisterDatebase(services);
             RegisterToken(services);
             RegisterUserServices(services);
@@ -85,12 +88,12 @@ namespace Renter
         {
             var dbContextOptions = new DbContextOptionsBuilder<RentalContext>();
             dbContextOptions.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-            //services.AddDbContext<RentalContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            
             services.AddScoped<DbContext>((provider) =>
             {
                 return new RentalContext(dbContextOptions.Options);
-            }
-            );
+            });
+
             services.AddScoped<IAuthorRepositoryService, AuthorRepositoryService>();
             services.AddScoped<IBookRatingRepositoryService, BookRatingRepositoryService>();
             services.AddScoped<IBookRepositoryService, BookRepositoryService>();
@@ -107,6 +110,7 @@ namespace Renter
             services.AddScoped<IUserRepositoryService, UserRepositoryService>();
             services.AddScoped<IUserSubscriptionRepositoryService, UserSubscriptionRepositoryService>();
             services.AddScoped<IDbInitializer, DbInitializer>();
+
             services.AddCors();
         }
 

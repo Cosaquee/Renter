@@ -42,6 +42,7 @@ namespace Database.Services
         {
             TEntity entityToDelete = dbSet.Find(id);
             Delete(entityToDelete);
+            dbContext.SaveChanges();
         }
 
         public virtual void Delete(TEntity entity)
@@ -51,6 +52,7 @@ namespace Database.Services
                 dbSet.Attach(entity);
             }
             dbSet.Remove(entity);
+            dbContext.SaveChanges();
         }
 
         public virtual IQueryable<TEntity> Queryable()

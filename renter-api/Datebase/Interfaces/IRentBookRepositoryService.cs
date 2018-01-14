@@ -12,7 +12,7 @@ namespace Database.Interfaces
 
         List<Book> GetAvaiableBooksByTitle(string title);
 
-        List<Book> GetAvaiableBooksByIsbn(string isbn);
+        IEnumerable<Book> GetAvaiableBooksByIsbn(string isbn);
 
         List<RentBook> GetUserRentHisotry(string userId);
 
