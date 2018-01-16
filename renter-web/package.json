@@ -10,7 +10,6 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
-    "@websanova/vue-upload": "^0.2.11-beta",
     "axios": "^0.17.0",
     "buefy": "^0.5.4",
     "font-awesome": "^4.7.0",

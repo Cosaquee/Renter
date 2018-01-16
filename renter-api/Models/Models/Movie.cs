@@ -39,6 +39,8 @@ namespace Models.Models
 
         public string Description { get; set; }
 
+        public string CoverURL { get; set; }
+
         public virtual ICollection<MovieRating> MovieRatings { get; set; }
     }
 }

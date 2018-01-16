@@ -19,6 +19,8 @@ import BookForm from '@/components/pages/book/BookForm';
 import Book from '@/components/pages/book/Book';
 
 import Category from '@/components/pages/category/Category';
+import Movie from '@/components/pages/movie/Movie';
+import MovieDetails from '@/components/pages/movie/MovieDetails';
 
 Vue.use(Router);
 
@@ -52,6 +54,18 @@ const router = new Router({
       name: 'users',
       component: Users,
       meta: { auth: true, adminOnly: true },
+    },
+    {
+      path: '/movie',
+      name: 'Movie',
+      component: Movie,
+      meta: { auth: true, requiresAdministrator: true, requiresEmployee: true },
+    },
+    {
+      path: '/movie/:id',
+      name: 'MovieD',
+      component: MovieDetails,
+      meta: { auth: true, requiresAdministrator: true, requiresEmployee: true },
     },
     {
       path: '/register',

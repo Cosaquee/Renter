@@ -11,9 +11,10 @@ using System;
 namespace Database.Migrations
 {
     [DbContext(typeof(RentalContext))]
-    partial class RentalContextModelSnapshot : ModelSnapshot
+    [Migration("20180116171710_AddCoverToMovie")]
+    partial class AddCoverToMovie
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -21,8 +21,7 @@ namespace Renter.Controllers.Api
         private readonly IRentMovieRepositoryService rentMovieRepositoryService;
         private readonly IMovieRatingRepositoryService movieRatingRepositoryService;
 
-        public MoviesController(IUnitOfWork unitOfWork, IMovieRepositoryService movieRepositoryService,
-                                IRentMovieRepositoryService rentMovieRepositoryService, IMovieRatingRepositoryService movieRatingRepositoryService)
+        public MoviesController(IUnitOfWork unitOfWork, IMovieRepositoryService movieRepositoryService, IRentMovieRepositoryService rentMovieRepositoryService, IMovieRatingRepositoryService movieRatingRepositoryService)
         {
             this.unitOfWork = unitOfWork;
             this.movieRepositoryService = movieRepositoryService;
@@ -32,16 +31,18 @@ namespace Renter.Controllers.Api
 
         // GET api/values
         [HttpGet]
+        [Authorize(Roles="Administrator, Employee, User")]
         public IEnumerable<Movie> Get()
         {
-            return movieRepositoryService.Get();
+            return movieRepositoryService.Queryable().Include(x => x.Category).Include(x => x.Director);
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
+        [Authorize(Roles="Administrator, Employee, User")]
         public Movie Get(long id)
         {
-            return movieRepositoryService.Queryable().Where(x => x.Id == id).FirstOrDefault();
+            return movieRepositoryService.Queryable().Where(x => x.Id == id).Include(x => x.Category).Include(x => x.Director).FirstOrDefault();
         }
 
         // POST api/values
@@ -52,13 +53,13 @@ namespace Renter.Controllers.Api
             unitOfWork.Save();
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void UpdateMovie(long id, [FromBody]EditMovieDto movie)
+        [HttpPost("cover")]
+        [Authorize(Roles="Administrator, Employee")]
+        public void AddCover([FromBody] MovieCoverDTO movieCover)
         {
-            var movieDb = Mapper.Map<Movie>(movie);
-            movieDb.Id = id;
-            movieRepositoryService.Update(movieDb);
+            var movie = movieRepositoryService.Queryable().Where(x => x.Id == movieCover.MovieID).FirstOrDefault();
+            movie.CoverURL = movieCover.CoverURL;
+            movieRepositoryService.Update(movie);
             unitOfWork.Save();
         }
 

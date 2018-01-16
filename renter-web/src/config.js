@@ -5,6 +5,7 @@ export default {
     REGISTER: root + 'user',
     AUTHORS: root + 'author',
     CATEGORIES: root + 'category',
-    BOOK: root + 'book'
+    BOOK: root + 'book',
+    MOVIE: root + 'movie'
   }
 };

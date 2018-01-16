@@ -44,3 +44,29 @@ post '/save_image' do
     filename: @filename
   }.to_json
 end
+
+post '/cover/movie' do
+
+    @filename = params[:file][:filename]
+    file = params[:file][:tempfile]
+    extension = File.extname(@filename)
+
+    g = Guid.new
+    g_filename = "#{g.to_s}#{extension}"
+
+    File.open("./public/#{@filename}", 'wb') do |f|
+      f.write(file.read)
+    end
+
+    obj = client.put_object({
+      acl: "public-read",
+      bucket: 'cmsrental-movies',
+      key: g_filename,
+      body: IO.read("./public/#{@filename}")
+    })
+
+    {
+      object_url: "https://s3.eu-central-1.amazonaws.com/cmsrental-movies/#{g_filename}",
+      filename: @filename
+    }.to_json
+end

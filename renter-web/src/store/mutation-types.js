@@ -4,3 +4,4 @@ export const USER_LIST = 'USER_LIST';
 export const AUTHOR_LIST = 'AUTHOR_LIST';
 export const NEW_AUTHOR = 'NEW_AUTHOR';
 export const CATEGORY_LIST = 'CATEGORY_LIST';
+export const MOVIE_LIST = 'MOVIE_LIST';

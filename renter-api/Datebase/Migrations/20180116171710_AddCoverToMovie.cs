@@ -1,22 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
+using System.Collections.Generic;
 
 namespace Database.Migrations
 {
-    public partial class AddDescriptionToAuthor : Migration
+    public partial class AddCoverToMovie : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Description",
-                table: "Authors",
+                name: "CoverURL",
+                table: "Movies",
                 nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Description",
-                table: "Authors");
+                name: "CoverURL",
+                table: "Movies");
         }
     }
 }

@@ -33,6 +33,8 @@ namespace Database
             movies = dbContext.Set<Movie>();
             authors = dbContext.Set<Author>();
             books = dbContext.Set<Book>();
+            authors = dbContext.Set<Author>();
+            books = dbContext.Set<Book>();
 
             await SeedRoles();
             await SeedUsers();
@@ -126,7 +128,7 @@ namespace Database
             categories.Add(new Category { Name = "Thriller" });
             categories.Add(new Category { Name = "Sci-fi" });
             categories.Add(new Category { Name = "Fantasy" });
-
+            
             dbContext.SaveChanges();
         }
 
