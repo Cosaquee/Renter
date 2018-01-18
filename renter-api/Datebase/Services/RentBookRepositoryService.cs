@@ -76,12 +76,30 @@ namespace Database.Services
 
         public List<RentBook> GetUserRentHisotry(string userId)
         {
-            return Queryable().Where(x => x.UserId == userId).ToList();
+            return Queryable().Where(x => x.UserId == userId).Include(x => x.Book).ToList();
         }
 
         public List<RentBook> GetBookRentHisotry(long bookId)
         {
             return Queryable().Where(x => x.BookId == bookId).ToList();
+        }
+
+        public RentBook Confirm(long bookID)
+        {
+            var book = Queryable().Where(x => x.BookId == bookID).FirstOrDefault();
+            book.Received = true;
+            dbContext.Update(book);
+            dbContext.SaveChanges();
+
+            return book;
+        }
+        public RentBook ConfirmReturn(long bookID)
+        {
+            var rentBook = Queryable().Where(x => x.BookId == bookID).FirstOrDefault();
+            dbContext.Remove(rentBook);
+            dbContext.SaveChanges();
+
+            return rentBook;
         }
     }
 }

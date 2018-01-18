@@ -17,5 +17,8 @@ namespace Database.Interfaces
         List<RentBook> GetUserRentHisotry(string userId);
 
         List<RentBook> GetBookRentHisotry(long bookId);
+        RentBook Confirm(long bookID);
+
+        RentBook ConfirmReturn(long bookID);
     }
 }

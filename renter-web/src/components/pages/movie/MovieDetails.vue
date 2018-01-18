@@ -78,7 +78,7 @@
       }).then((response) => {
         this.loading = false;
         this.movie = response.data;
-      })
+      });
     },
     computed: mapGetters(['admin', 'employee']),
   };

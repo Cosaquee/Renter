@@ -3,12 +3,14 @@ import config from '../../config';
 import {
   USER_LOGOUT,
   USER_AUTH_SUCCESS,
-  USER_LIST
+  USER_LIST,
+  USER_RENTED_BOOKS
 } from '../mutation-types';
 
 const state = {
   token: sessionStorage.getItem('token') || '',
   user: JSON.parse(sessionStorage.getItem('user')) || {},
+  rentedBooks: []
 };
 
 const getters = {
@@ -20,6 +22,7 @@ const getters = {
   normal_user: store => state.user.roleId === 1,
   users: store => store.user,
   token: store => state.token,
+  rentedBooks: state => state.rentedBooks
 };
 
 const actions = {
@@ -72,6 +75,17 @@ const actions = {
   },
   logout (store) {
     store.commit(USER_LOGOUT);
+  },
+  getRentedBooks (store) {
+    return new Promise((resolve, reject) => {
+      axios.get(config.API.USER + `renthistory/${store.getters.user.id}`, {
+        headers: {
+          'Authorization': 'Bearer ' + state.token
+        }}).then((response) => {
+          // console.log(response.data);
+          store.commit('USER_RENTED_BOOKS', { books: response.data.reverse() });
+        });
+    });
   }
 };
 
@@ -91,6 +105,9 @@ const mutations = {
   },
   [USER_LIST] (store, { users }) {
     store.users = users;
+  },
+  [USER_RENTED_BOOKS] (store, { books }) {
+    store.rentedBooks = books;
   }
 };
 

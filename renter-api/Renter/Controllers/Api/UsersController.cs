@@ -10,6 +10,7 @@ using Models.Models;
 using Services.UserServices.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
+using Models.Dtos.UserCover;
 
 namespace Renter.Controllers.Api
 {
@@ -154,6 +155,16 @@ namespace Renter.Controllers.Api
         public void UpdateUser(string id, [FromBody]User user)
         {
             user.Id = id;
+            userRepositoryService.Update(user);
+            unitOfWork.Save();
+        }
+
+        [HttpPost("avatar")]
+        [Authorize(Roles="Administrator, Employee")]
+        public void AddAvatar([FromBody] UserCover userCover)
+        {
+            var user = userRepositoryService.Get(userCover.UserID);
+            user.ProvileAvatar = userCover.AvatarUrl;
             userRepositoryService.Update(user);
             unitOfWork.Save();
         }

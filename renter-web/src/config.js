@@ -6,6 +6,7 @@ export default {
     AUTHORS: root + 'author',
     CATEGORIES: root + 'category',
     BOOK: root + 'book',
-    MOVIE: root + 'movie'
+    MOVIE: root + 'movie',
+    USER: root + 'user/'
   }
 };

@@ -7,8 +7,8 @@ import Login from '@/components/pages/Login';
 import Register from '@/components/pages/Register';
 import Welcome from '@/components/pages/Welcome';
 import Home from '@/components/pages/Home';
-import Profile from '@/components/pages/Profile';
-import Users from '@/components/pages/Users';
+import Profile from '@/components/pages/user/Profile';
+import Users from '@/components/pages/user/Users';
 
 import AuthorForm from '@/components/pages/author/AuthorForm';
 import Author from '@/components/pages/author/Author';
@@ -17,6 +17,7 @@ import AuthorDetails from '@/components/pages/author/AuthorDetails';
 import BookDetails from '@/components/pages/book/BookDetails';
 import BookForm from '@/components/pages/book/BookForm';
 import Book from '@/components/pages/book/Book';
+import BookOrders from '@/components/pages/book/Orders';
 
 import Category from '@/components/pages/category/Category';
 import Movie from '@/components/pages/movie/Movie';
@@ -99,6 +100,11 @@ const router = new Router({
       path: '/book/create',
       component: BookForm,
       name: 'BookForm',
+      meta: { auth: true, employeeOnly: true }
+    },
+    {
+      path: '/book/orders',
+      component: BookOrders,
       meta: { auth: true, employeeOnly: true }
     },
     {

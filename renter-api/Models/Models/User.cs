@@ -23,6 +23,14 @@ namespace Models.Models
 
         public long RoleId { get; set; }
 
+        public string ProvileAvatar { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Surname { get; set; }
+
         public virtual Role Role { get; set; }
 
         public virtual ICollection<RentBook> RentBooks { get; set; }

@@ -1,6 +1,18 @@
 import axios from 'axios';
 import config from '../../config';
 
+import {
+  RENTED_BOOKS
+} from '../mutation-types';
+
+const state = {
+  allRentedBooks: []
+};
+
+const getters = {
+  allRentedBooks: state => state.allRentedBooks
+};
+
 const actions = {
   deleteBook (store, { bookID }) {
     return new Promise((resolve, reject) => {
@@ -31,9 +43,29 @@ const actions = {
         reject();
       });
     });
+  },
+  getAllRentedBooks (store) {
+    return new Promise((resolve, reject) => {
+      axios.get(config.API.BOOK + '/rent', {
+        headers: {
+          'Authorization': `Bearer ${store.getters.token}`
+        }
+      }).then((response) => {
+        store.commit(RENTED_BOOKS, { books: response.data });
+      });
+    });
+  }
+};
+
+const mutations = {
+  [RENTED_BOOKS] (store, { books }) {
+    state.allRentedBooks = books;
   }
 };
 
 export default {
-  actions
+  actions,
+  state,
+  getters,
+  mutations
 };

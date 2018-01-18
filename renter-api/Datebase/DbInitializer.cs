@@ -76,6 +76,8 @@ namespace Database
                 UserName = "testUser",
                 Password = PasswordHasher.CalculateHashedPassword("testUser"),
                 Email = "testUser@tt.tt",
+                Name = "Test",
+                Surname = "User"
             });
 
             users.Add(new User
@@ -84,6 +86,8 @@ namespace Database
                 UserName = "testEmployee",
                 Password = PasswordHasher.CalculateHashedPassword("testEmployee"),
                 Email = "testEmployee@tt.tt",
+                Name = "Test",
+                Surname = "Moderator"
             });
 
             users.Add(new User
@@ -92,6 +96,31 @@ namespace Database
                 UserName = "testAdministrator",
                 Password = PasswordHasher.CalculateHashedPassword("testAdministrator"),
                 Email = "testAdministrator@tt.tt",
+                Name = "Test",
+                Surname = "Administrator"
+            });
+
+
+            users.Add(new User
+            {
+                Role = administratorRole,
+                UserName = "cosaquee",
+                Password = PasswordHasher.CalculateHashedPassword("password"),
+                Email = "cosaquee@gmail.com",
+                Name = "Karol",
+                Surname = "Kozakowski",
+                ProvileAvatar = "https://avatars2.githubusercontent.com/u/10079912?s=460&v=4"
+            });
+
+            users.Add(new User
+            {
+                Role =  moderatorRole,
+                UserName = "jarzabek",
+                Password = PasswordHasher.CalculateHashedPassword("password"),
+                Email = "jarzabek@gmail.com",
+                Name = "Piotr",
+                Surname = "Jarzabek",
+                ProvileAvatar = "https://avatars3.githubusercontent.com/u/16638214?s=460&v=4"
             });
 
             dbContext.SaveChanges();
@@ -128,7 +157,7 @@ namespace Database
             categories.Add(new Category { Name = "Thriller" });
             categories.Add(new Category { Name = "Sci-fi" });
             categories.Add(new Category { Name = "Fantasy" });
-            
+
             dbContext.SaveChanges();
         }
 

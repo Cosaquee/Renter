@@ -87,17 +87,9 @@
         this.$toast.open({
           message: `Have fun reading ${this.book.title}`,
           type: 'is-success'
-        })
+        });
       },
       prompt: function () {
-        this.$dialog.prompt({
-          message: `What's your name?`,
-          inputAttrs: {
-            placeholder: 'e.g. Walter',
-            maxlength: 10
-          },
-          onConfirm: (value) => this.$toast.open(`Your name is: ${value} by ${this.book.author.name} ${this.book.author.surname}`)
-        });
       },
       deleteBook: function () {
         this.deleteing = true;

@@ -54,17 +54,6 @@ namespace Renter.Controllers.Api
             unitOfWork.Save();
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void UpdateBook(long id, [FromBody]BookDto book)
-        {
-            var bookDb = Mapper.Map<Book>(book);
-            bookDb.Id = id;
-            bookRepositoryService.Update(bookDb);
-            unitOfWork.Save();
-        }
-
-        // DELETE api/values/5
         [HttpGet("Avaiable/{id}")]
         public IActionResult IsBookAvaiable(long id)
         {
@@ -158,6 +147,33 @@ namespace Renter.Controllers.Api
             var book = this.bookRepositoryService.Get(id);
             this.bookRepositoryService.Delete(book);
             return Ok("Book deleted");
+        }
+
+        [HttpGet("rent")]
+        [Authorize(Roles="Administrator, Employee")]
+        public IEnumerable<RentBook> GetAllRentedBooks()
+        {
+            return rentBookRepositoryService.Queryable().Include(x => x.User).Include(x => x.Book).ToList();
+        }
+
+        [HttpPost("confirm/{ID}")]
+        [Authorize(Roles="Administrator, Employee")]
+        public IActionResult Confirm(long ID)
+        {
+            this.rentBookRepositoryService.Confirm(ID);
+
+            return Ok("Book is received");
+        }
+
+
+        [HttpPost("confirm-return/{ID}")]
+        [Authorize(Roles="Administrator, Employee")]
+        public IActionResult ConfirmReturn(long ID)
+        {
+            this.rentBookRepositoryService.ConfirmReturn(ID);
+            var book = bookRepositoryService.Get(ID);
+            this.bookRepositoryService.ConfirmReturn(book);
+            return Ok("Book is returned");
         }
     }
 }

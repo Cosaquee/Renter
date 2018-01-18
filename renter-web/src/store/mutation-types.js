@@ -5,3 +5,5 @@ export const AUTHOR_LIST = 'AUTHOR_LIST';
 export const NEW_AUTHOR = 'NEW_AUTHOR';
 export const CATEGORY_LIST = 'CATEGORY_LIST';
 export const MOVIE_LIST = 'MOVIE_LIST';
+export const USER_RENTED_BOOKS = 'USER_RENTED_BOOKS';
+export const RENTED_BOOKS = 'RENTED_BOOKS';

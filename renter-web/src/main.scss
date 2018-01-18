@@ -221,6 +221,15 @@
   text-align: center;
 }
 
+.menu {
+  text-align: center;
+
+  .button {
+    min-width: 30%;
+    max-width: 60%;
+  }
+}
+
 .movie-details {
 
   .menu {

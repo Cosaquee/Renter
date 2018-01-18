@@ -56,7 +56,6 @@
          <b-dropdown-item @click="showAdminActions">
           <b> Narzędzia Administracyjne</b>
          </b-dropdown-item>
-         <div v-if="isAdminOpen">
          <hr class="dropdown-divider">
            <b-dropdown-item has-link>
              <router-link to="/users">
@@ -76,7 +75,12 @@
                Kategorie
              </router-link>
            </b-dropdown-item>
-       </div>
+           <b-dropdown-item has-link>
+             <router-link to="/book/orders">
+               <b-icon icon="fa-list"></b-icon>
+               Book orders
+             </router-link>
+           </b-dropdown-item>
        </div>
        <hr class="dropdown-divider">
        <b-dropdown-item value="logout" @click="logout">
@@ -102,7 +106,7 @@
     data () {
       return {
         isAdminOpen: false
-      }
+      };
     },
     computed: mapGetters(['isLogged', 'user', 'admin', 'employee']),
     methods: {

@@ -11,9 +11,10 @@ using System;
 namespace Database.Migrations
 {
     [DbContext(typeof(RentalContext))]
-    partial class RentalContextModelSnapshot : ModelSnapshot
+    [Migration("20180117155949_AddAvatarToUser")]
+    partial class AddAvatarToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -278,9 +279,6 @@ namespace Database.Migrations
                         .IsRequired()
                         .HasMaxLength(64);
 
-                    b.Property<string>("Name")
-                        .IsRequired();
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(64);
@@ -288,9 +286,6 @@ namespace Database.Migrations
                     b.Property<string>("ProvileAvatar");
 
                     b.Property<long>("RoleId");
-
-                    b.Property<string>("Surname")
-                        .IsRequired();
 
                     b.Property<string>("UserName")
                         .IsRequired()
