@@ -2,6 +2,8 @@ require 'sinatra'
 require 'aws-sdk-s3'
 require 'guid'
 require 'json'
+require 'pry'
+require 'mini_magick'
 
 before do
    content_type :json
@@ -32,15 +34,27 @@ post '/save_image' do
     f.write(file.read)
   end
 
-  obj = client.put_object({
+  image = MiniMagick::Image.open("./public/#{@filename}")
+  image.resize('200x200')
+  image.write("./resized/#{@filename}")
+
+  client.put_object({
     acl: "public-read",
     bucket: 'cmsrental',
-    key: g_filename,
+    key: "cover/#{g_filename}",
     body: IO.read("./public/#{@filename}")
   })
 
+  client.put_object({
+    acl: "public-read",
+    bucket: 'cmsrental',
+    key: "resized/#{g_filename}",
+    body: IO.read("./resized/#{@filename}")
+  })
+
   {
-    object_url: "https://s3.eu-central-1.amazonaws.com/cmsrental/#{g_filename}",
+    object_url: "https://s3.eu-central-1.amazonaws.com/cmsrental/cover/#{g_filename}",
+    cover_url: "https://s3.eu-central-1.amazonaws.com/cmsrental/resized/#{g_filename}",
     filename: @filename
   }.to_json
 end

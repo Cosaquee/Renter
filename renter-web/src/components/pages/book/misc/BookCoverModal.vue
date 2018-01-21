@@ -51,15 +51,14 @@
 
         axios.post(UPLOAD_URL, formData)
           .then((response) => {
-            var updateBook = this.book;
-            updateBook['coverURL'] = response.data.object_url;
-
-            axios.put(BOOK_UPDATE_URL + this.book.id, {
+            axios.post(`${BOOK_UPDATE_URL}cover`, {
+              id: this.book.id,
+              CoverURL: response.data.object_url,
+              ResizedCoverURL: response.data.cover_url
+            }, {
               headers: {
                 'Authorization': 'Bearer ' + this.$store.getters.token
               }
-            }, {
-              book: updateBook
             }).then((response) => {
               console.log(response);
             }).catch((error) => {

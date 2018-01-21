@@ -30,5 +30,7 @@ namespace Models.Models
         public bool Rented { get; set; }
 
         public string CoverURL { get; set; }
+
+        public string ResizedCoverURL { get; set; }
     }
 }

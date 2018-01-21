@@ -11,15 +11,15 @@ using System;
 namespace Database.Migrations
 {
     [DbContext(typeof(RentalContext))]
-    [Migration("20171230130513_RemoveBookIDFromBookRating")]
-    partial class RemoveBookIDFromBookRating
+    [Migration("20180120124100_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
+                .HasAnnotation("ProductVersion", "2.0.1-rtm-125");
 
             modelBuilder.Entity("Models.Models.Author", b =>
                 {
@@ -133,6 +133,8 @@ namespace Database.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<long>("CategoryId");
+
+                    b.Property<string>("CoverURL");
 
                     b.Property<string>("Description");
 
@@ -277,11 +279,19 @@ namespace Database.Migrations
                         .IsRequired()
                         .HasMaxLength(64);
 
+                    b.Property<string>("Name")
+                        .IsRequired();
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(64);
 
+                    b.Property<string>("ProvileAvatar");
+
                     b.Property<long>("RoleId");
+
+                    b.Property<string>("Surname")
+                        .IsRequired();
 
                     b.Property<string>("UserName")
                         .IsRequired()

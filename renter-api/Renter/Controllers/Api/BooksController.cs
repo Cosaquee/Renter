@@ -36,7 +36,7 @@ namespace Renter.Controllers.Api
         [HttpGet]
         public IEnumerable<Book> Get()
         {
-            return bookRepositoryService.Queryable().Include(x => x.Author);
+            return bookRepositoryService.Queryable().Include(x => x.Author).Include(x => x.Category);
         }
 
         // GET api/values/5
@@ -51,6 +51,18 @@ namespace Renter.Controllers.Api
         public void CreateBook([FromBody]BookDto book)
         {
             bookRepositoryService.Insert(Mapper.Map<Book>(book));
+            unitOfWork.Save();
+        }
+
+
+        [HttpPost("cover")]
+        [Authorize(Roles="Administrator, Employee")]
+        public void AddCover([FromBody] CoversDTO covers)
+        {
+            var book = bookRepositoryService.Queryable().Where(x => x.Id == covers.ID).FirstOrDefault();
+            book.CoverURL = covers.CoverURL;
+            book.ResizedCoverURL = covers.ResizedCoverURL;
+            bookRepositoryService.Update(book);
             unitOfWork.Save();
         }
 

@@ -17,8 +17,8 @@ namespace Database.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
+                .HasAnnotation("ProductVersion", "2.0.1-rtm-125");
 
             modelBuilder.Entity("Models.Models.Author", b =>
                 {
@@ -58,6 +58,8 @@ namespace Database.Migrations
                         .HasMaxLength(13);
 
                     b.Property<bool>("Rented");
+
+                    b.Property<string>("ResizedCoverURL");
 
                     b.Property<string>("Title")
                         .IsRequired()

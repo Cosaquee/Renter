@@ -16,7 +16,7 @@ namespace Renter
                 .Build();
             var builder = new DbContextOptionsBuilder<RentalContext>();
             var connectionString = configuration.GetConnectionString("DefaultConnection");
-            builder.UseSqlServer(connectionString);
+            builder.UseNpgsql(connectionString);
             return new RentalContext(builder.Options);
         }
     }

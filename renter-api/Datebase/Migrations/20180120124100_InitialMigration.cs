@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using System;
+using System.Collections.Generic;
 
 namespace Database.Migrations
 {
-    public partial class initialMigration : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,7 +14,8 @@ namespace Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Description = table.Column<string>(nullable: true),
                     Name = table.Column<string>(maxLength: 32, nullable: false),
                     Surname = table.Column<string>(maxLength: 32, nullable: false)
                 },
@@ -27,7 +29,7 @@ namespace Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Name = table.Column<string>(maxLength: 64, nullable: false)
                 },
                 constraints: table =>
@@ -40,7 +42,7 @@ namespace Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Name = table.Column<string>(maxLength: 32, nullable: false),
                     Surname = table.Column<string>(maxLength: 32, nullable: false)
                 },
@@ -67,7 +69,7 @@ namespace Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Name = table.Column<string>(maxLength: 32, nullable: false)
                 },
                 constraints: table =>
@@ -80,7 +82,7 @@ namespace Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Cost = table.Column<decimal>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Seconds = table.Column<double>(nullable: false)
@@ -95,11 +97,13 @@ namespace Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     AuthorId = table.Column<long>(nullable: false),
                     CategoryId = table.Column<long>(nullable: false),
+                    CoverURL = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     ISBN = table.Column<string>(maxLength: 13, nullable: false),
+                    Rented = table.Column<bool>(nullable: false),
                     Title = table.Column<string>(maxLength: 128, nullable: false)
                 },
                 constraints: table =>
@@ -124,8 +128,9 @@ namespace Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     CategoryId = table.Column<long>(nullable: false),
+                    CoverURL = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     DirectorId = table.Column<long>(nullable: false),
                     Seconds = table.Column<double>(nullable: false),
@@ -154,8 +159,11 @@ namespace Database.Migrations
                 {
                     Id = table.Column<string>(maxLength: 256, nullable: false),
                     Email = table.Column<string>(maxLength: 64, nullable: false),
+                    Name = table.Column<string>(nullable: false),
                     Password = table.Column<string>(maxLength: 64, nullable: false),
+                    ProvileAvatar = table.Column<string>(nullable: true),
                     RoleId = table.Column<long>(nullable: false),
+                    Surname = table.Column<string>(nullable: false),
                     UserName = table.Column<string>(maxLength: 64, nullable: false)
                 },
                 constraints: table =>
@@ -174,9 +182,9 @@ namespace Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     BookId = table.Column<long>(nullable: true),
-                    BookTitle = table.Column<string>(nullable: true),
+                    ISBN = table.Column<string>(nullable: true),
                     Rate = table.Column<int>(nullable: false),
                     UserId = table.Column<string>(nullable: true)
                 },
@@ -202,7 +210,7 @@ namespace Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     MovieId = table.Column<long>(nullable: false),
                     Rate = table.Column<int>(nullable: false),
                     UserId = table.Column<string>(nullable: true)
@@ -229,9 +237,10 @@ namespace Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     BookId = table.Column<long>(nullable: false),
                     From = table.Column<DateTime>(nullable: false),
+                    Received = table.Column<bool>(nullable: false),
                     To = table.Column<DateTime>(nullable: false),
                     UserId = table.Column<string>(maxLength: 256, nullable: false)
                 },
@@ -257,7 +266,7 @@ namespace Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     From = table.Column<DateTime>(nullable: false),
                     MovieId = table.Column<long>(nullable: false),
                     To = table.Column<DateTime>(nullable: false),
@@ -285,7 +294,7 @@ namespace Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     StartDate = table.Column<DateTime>(nullable: false),
                     SubscriptionId = table.Column<int>(nullable: false),
                     SubscriptionId1 = table.Column<long>(nullable: true),

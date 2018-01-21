@@ -87,7 +87,7 @@ namespace Renter
         private void RegisterDatebase(IServiceCollection services)
         {
             var dbContextOptions = new DbContextOptionsBuilder<RentalContext>();
-            dbContextOptions.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            dbContextOptions.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
             
             services.AddScoped<DbContext>((provider) =>
             {

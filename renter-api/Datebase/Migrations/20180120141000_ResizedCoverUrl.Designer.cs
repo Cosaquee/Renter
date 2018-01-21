@@ -11,15 +11,15 @@ using System;
 namespace Database.Migrations
 {
     [DbContext(typeof(RentalContext))]
-    [Migration("20180116171710_AddCoverToMovie")]
-    partial class AddCoverToMovie
+    [Migration("20180120141000_ResizedCoverUrl")]
+    partial class ResizedCoverUrl
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
+                .HasAnnotation("ProductVersion", "2.0.1-rtm-125");
 
             modelBuilder.Entity("Models.Models.Author", b =>
                 {
@@ -59,6 +59,8 @@ namespace Database.Migrations
                         .HasMaxLength(13);
 
                     b.Property<bool>("Rented");
+
+                    b.Property<string>("ResizedCoverURL");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -279,11 +281,19 @@ namespace Database.Migrations
                         .IsRequired()
                         .HasMaxLength(64);
 
+                    b.Property<string>("Name")
+                        .IsRequired();
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(64);
 
+                    b.Property<string>("ProvileAvatar");
+
                     b.Property<long>("RoleId");
+
+                    b.Property<string>("Surname")
+                        .IsRequired();
 
                     b.Property<string>("UserName")
                         .IsRequired()

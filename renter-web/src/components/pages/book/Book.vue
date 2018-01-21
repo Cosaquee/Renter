@@ -1,48 +1,64 @@
 <template>
   <section>
-    <div class="columns .is-centered">
-      <div class="column">
-        <div v-if="admin || employee" class="book-add">
-          <a @click="addBook" class="button is-primary is-outlined">New Book</a>
+    <b-tabs position="is-centered" expanded >
+      <b-tab-item label="List" >
+        <div class="columns .is-centered">
+          <div class="column">
+            <div v-if="admin || employee" class="book-add">
+              <a @click="addBook" class="button is-primary is-outlined">New Book</a>
+            </div>
+
+            <table-component
+                 :data="books"
+                 @rowClick="handleClick"
+                 sort-order="asc"
+            >
+                 <table-column :hidden="hidden" show="id" label="ID"></table-column>
+                 <table-column show="title" label="Title"></table-column>
+
+                 <table-column label="Author">
+                   <template slot-scope="row">
+                     {{ row.author.name }} {{ row.author.surname }}
+                   </template>
+                 </table-column>
+             </table-component>
+          </div>
         </div>
-
-        <table-component
-             :data="cleanBooks"
-             @rowClick="handleClick"
-             sort-order="asc"
-        >
-             <table-column :hidden="hidden" show="id" label="ID"></table-column>
-             <table-column show="title" label="Title"></table-column>
-
-             <table-column label="Author">
-               <template slot-scope="row">
-                 {{ row.author.name }} {{ row.author.surname }}
-               </template>
-             </table-column>
-         </table-component>
-      </div>
-    </div>
+      </b-tab-item>
+      <b-tab-item label="Covers" class="covers">
+        <b-field label="Category">
+          <b-select @input="selectBook" v-model="selectedCategory" placeholder="Select category">
+              <option
+                  v-for="category in categories"
+                  :value="category.name"
+                  :key="category.id">
+                  {{ category.name }}
+              </option>
+          </b-select>
+      </b-field>
+        <div class="wrapper">
+          <div class="cards">
+            <card v-for="collection in selectBooks" :key="collection.resaizedCoverURL" :collection="collection"></card>
+          </div>
+        </div>
+      </b-tab-item>
+    </b-tabs>
   </section>
 </template>
 
 <script>
-  import axios from 'axios';
-  import _ from 'lodash';
+  import Card from './misc/CoverCard';
   export default {
     data () {
       return {
-        books: [],
-        hidden: true
+        hidden: true,
+        selectedCategory: ''
       };
     },
+    components: { Card },
     created: function () {
-      axios.get('http://localhost:5000/api/book', {
-        headers: {
-          'Authorization': 'Bearer ' + this.$store.getters.token
-        }
-      }).then((response) => {
-        this.books = response.data;
-      });
+      this.$store.dispatch('fetchBooks');
+      this.$store.dispatch('getCategories');
     },
     methods: {
       handleClick (item) {
@@ -50,46 +66,69 @@
       },
       addBook (e) {
         this.$router.push({ path: '/book/create' });
+      },
+      selectBook () {
+        this.selectedCategory = this.selectedCategory;
       }
     },
     computed: {
-      admin: function () {
+      user () {
+        return this.$store.getters.user;
+      },
+      admin () {
         return this.$store.getters.admin;
       },
-      employee: function () {
+      employee () {
         return this.$store.getters.employee;
       },
-      cleanBooks: function () {
-        var books = {};
-        _.forEach(this.books, (book) => {
-          if (books[book.isbn]) {
-            let oldValue = books[book.isbn].copies;
-            let b = {
-              title: book.title,
-              author: book.author,
-              isbn: books.isbn,
-              id: book.id,
-              copies: [oldValue].concat([book])
-            };
-
-            books[book.isbn] = b;
-          } else {
-            books[book.isbn] = {
-              title: book.title,
-              author: book.author,
-              isbn: book.isbn,
-              id: book.id,
-              copies: [book]
-            };
-          }
-        });
-
-        var bb = [];
-        _.forEach(books, (book) => {
-          bb.push(book);
-        });
-        return bb;
+      categories () {
+        return this.$store.getters.categories;
+      },
+      books () {
+        return this.$store.getters.books;
+      },
+      selectBooks () {
+        if (this.selectedCategory) {
+          return this.$store.getters.books.filter((book) => {
+            return book.category.name === this.selectedCategory;
+          });
+        }
+        return this.$store.getters.books;
       }
     }
   };
 </script>
+
+<style scoped>
+  .covers {
+    overflow: scroll;
+  }
+  .cards {
+    column-count: 1;
+    column-gap: 1em;
+  }
+
+  @media only screen and (min-width: 500px) {
+  .cards {
+    column-count: 2;
+  }
+}
+
+@media only screen and (min-width: 700px) {
+  .cards {
+    column-count: 3;
+  }
+}
+
+@media only screen and (min-width: 900px) {
+  .cards {
+    column-count: 4;
+  }
+}
+
+@media only screen and (min-width: 1100px) {
+  .cards {
+    column-count: 5;
+  }
+}
+</style>

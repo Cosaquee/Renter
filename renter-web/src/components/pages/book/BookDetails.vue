@@ -53,7 +53,7 @@
 
 <script>
   import axios from 'axios';
-  import BookCoverModal from './modals/BookCoverModal';
+  import BookCoverModal from './misc/BookCoverModal';
   var moment = require('moment');
 
   export default {
