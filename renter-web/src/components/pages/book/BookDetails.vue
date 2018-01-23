@@ -52,7 +52,6 @@
 </template>
 
 <script>
-  import axios from 'axios';
   import BookCoverModal from './misc/BookCoverModal';
   var moment = require('moment');
 
@@ -125,17 +124,15 @@
       }
     },
     created: function () {
-      axios.get('http://localhost:5000/api/book/' + this.$route.params.id, {
-        headers: {
-          'Authorization': 'Bearer ' + this.$store.getters.token
-        }
+      this.loading = true;
+      this.$store.dispatch('fetchBookDetails', {
+        bookID: this.$route.params.id
       }).then((response) => {
         this.book = response.data;
-        axios.get('http://localhost:5000/api/book/GetAvaiableByIsbn/' + response.data.isbn, {
-          headers: {
-            'Authorization': 'Bearer ' + this.$store.getters.token
-          }
+        this.$store.dispatch('getAvailableByISBN', {
+          isbn: response.data.isbn
         }).then((response) => {
+          this.loading = false;
           this.authorBooks = response.data;
         });
       });

@@ -30,11 +30,6 @@
 </template>
 
 <script>
-  import axios from 'axios';
-
-  const UPLOAD_URL = 'http://localhost:4567/save_image';
-  const BOOK_UPDATE_URL = 'http://localhost:5000/api/book/';
-
   export default {
     data () {
       return {
@@ -43,30 +38,21 @@
     },
     props: ['id', 'book'],
     methods: {
-      upload: function () {
-        axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
-
+      upload () {
         let formData = new FormData();
         formData.append('file', this.files[0]);
 
-        axios.post(UPLOAD_URL, formData)
-          .then((response) => {
-            axios.post(`${BOOK_UPDATE_URL}cover`, {
-              id: this.book.id,
-              CoverURL: response.data.object_url,
-              ResizedCoverURL: response.data.cover_url
-            }, {
-              headers: {
-                'Authorization': 'Bearer ' + this.$store.getters.token
-              }
-            }).then((response) => {
-              console.log(response);
-            }).catch((error) => {
-              console.log(error);
-            });
-          }).catch((error) => {
-            console.log(error);
+        this.$store.dispatch('uploadBookCover', {
+          formData: formData
+        }).then((response) => {
+          this.$store.dispatch('updateCover', {
+            id: this.book.id,
+            coverURL: response.data.object_url,
+            resizedCoverURL: response.data.cover_url
           });
+        }).catch((error) => {
+          console.log(error);
+        });
       }
     }
   };

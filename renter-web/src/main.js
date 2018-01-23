@@ -10,15 +10,10 @@ import './main.scss';
 
 import Rate from 'vue-rate';
 import { TableComponent, TableColumn } from 'vue-table-component';
-import {VueMasonryPlugin} from 'vue-masonry';
-import PhotoGrid from 'vue-photo-grid';
 
 Vue.component('table-component', TableComponent);
 Vue.component('table-column', TableColumn);
 Vue.component('Rate', Rate);
-Vue.use(VueMasonryPlugin);
-
-Vue.use(PhotoGrid);
 
 Vue.use(Buefy, {
   defaultIconPack: 'fa'

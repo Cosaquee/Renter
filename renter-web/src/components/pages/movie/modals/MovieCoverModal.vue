@@ -35,11 +35,6 @@
 </template>
 
 <script>
-  import axios from 'axios';
-
-  const UPLOAD_URL = 'http://localhost:4567/cover/movie';
-  const MOVIE_UPDATE_URL = 'http://localhost:5000/api/movie/cover/';
-
   export default {
     data () {
       return {
@@ -48,29 +43,17 @@
     },
     props: ['id', 'movie'],
     methods: {
-      upload: function () {
-        axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
-
+      upload () {
         let formData = new FormData();
         formData.append('file', this.files[0]);
-
-        axios.post(UPLOAD_URL, formData)
-          .then((response) => {
-            axios.post(MOVIE_UPDATE_URL, {
-              MovieID: this.movie.id,
-              CoverURL: response.data.object_url
-            }, {
-              headers: {
-                'Authorization': `Bearer ${this.$store.getters.token}`
-              }
-            }).then((response) => {
-              console.log(response);
-            }).catch((error) => {
-              console.log(error);
-            });
-          }).catch((error) => {
-            console.log(error);
+        this.$store.dispatch('uploadMovieCover', {
+          formData: formData
+        }).then((response) => {
+          this.$store.dispatch('uploadCover', {
+            movieID: this.movie.id,
+            coverURL: response.data.object_url
           });
+        });
       }
     }
   };

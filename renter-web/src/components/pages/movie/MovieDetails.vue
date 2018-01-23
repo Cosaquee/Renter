@@ -48,7 +48,6 @@
 
 <script>
   import { mapGetters } from 'vuex';
-  import axios from 'axios';
   import MovieCoverModal from './modals/MovieCoverModal';
 
   export default {
@@ -70,12 +69,12 @@
 
       },
     },
-    created () {
-      axios.get(`http://localhost:5000/api/movie/${this.$route.params.id}`, {
-        headers: {
-          'Authorization': `Bearer ${this.$store.getters.token}`
-        }
+    created: function () {
+      this.loading = true;
+      this.$store.dispatch('fetchMovie', {
+        movieID: this.$route.params.id
       }).then((response) => {
+        console.log(response.data);
         this.loading = false;
         this.movie = response.data;
       });

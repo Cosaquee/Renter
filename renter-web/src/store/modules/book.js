@@ -104,6 +104,94 @@ const actions = {
         store.commit(ALL_BOOKS, { books: bb });
       });
     });
+  },
+  fetchBookDetails (store, { bookID }) {
+    return new Promise((resolve, reject) => {
+      axios.get(`${config.API.BOOK}/${bookID}`, {
+        headers: {
+          'Authorization': `Bearer ${store.getters.token}`
+        }
+      }).then((response) => {
+        resolve(response);
+      }).catch((error) => {
+        reject(error);
+      });
+    });
+  },
+  getAvailableByISBN (store, { isbn }) {
+    return new Promise((resolve, reject) => {
+      axios.get(`${config.API.BOOK}/GetAvaiableByIsbn/${isbn}`, {
+        headers: {
+          'Authorization': `Bearer ${store.getters.token}`
+        }
+      }).then((response) => {
+        resolve(response);
+      }).catch((error) => {
+        reject(error);
+      });
+    });
+  },
+  addBook (store, { title, isbn, authorID, description, categoryID }) {
+    return new Promise((resolve, reject) => {
+      axios.post(config.API.BOOK, {
+        title: title,
+        isbn: isbn,
+        authorId: authorID,
+        description: description,
+        categoryId: categoryID
+      }, {
+        headers: {
+          'Authorization': `Bearer ${store.getters.token}`
+        }
+      }).then((response) => {
+        resolve(response);
+      }).catch((error) => {
+        reject(error);
+      });
+    });
+  },
+  confirmRent (store, { bookID }) {
+    return new Promise((resolve, reject) => {
+      axios.post(`${config.API.BOOK}/confirm/${bookID}`, {}, {
+        headers: {
+          'Authorization': `Bearer ${store.getters.token}`
+        }
+      }).then(() => {
+        resolve();
+      }).catch(() => {
+        reject();
+      });
+    });
+  },
+  confirmReturn (store, { bookID }) {
+    return new Promise((resolve, reject) => {
+      axios.post(`${config.API.BOOK}/confirm-return/${bookID}`, {}, {
+        headers: {
+          'Authorization': `Bearer ${store.getters.token}`
+        }
+      }).then(() => {
+        resolve();
+      }).catch(() => {
+        reject();
+      });
+    });
+  },
+  updateCover (store, { id, coverURL, resizedCoverURL }) {
+    return new Promise((resolve, reject) => {
+      axios.post(`${config.API.BOOK}/cover`, {
+        id: id,
+        CoverURL: coverURL,
+        ResizedCoverURL: resizedCoverURL
+      }, {
+        headers: {
+          'Authorization': `Bearer ${store.getters.token}`
+        }
+      }).then((response) => {
+        resolve(response);
+      }).catch((error) => {
+        reject(error);
+      });
+    });
   }
 };
 

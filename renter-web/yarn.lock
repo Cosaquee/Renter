@@ -2,10 +2,6 @@
 # yarn lockfile v1
 
 
-"@websanova/vue-upload@^0.2.11-beta":
-  version "0.2.11-beta"
-  resolved "https://registry.yarnpkg.com/@websanova/vue-upload/-/vue-upload-0.2.11-beta.tgz#2d58b27d55321e8d8581ceefeb6c94decf77f615"
-
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -5218,17 +5214,13 @@ vue-loader@^13.3.0:
     vue-style-loader "^3.0.0"
     vue-template-es2015-compiler "^1.6.0"
 
-vue-rate@^1.4.1:
+"vue-rate@git://github.com/cosaquee/vue-rate.git":
   version "1.4.1"
-  resolved "https://registry.yarnpkg.com/vue-rate/-/vue-rate-1.4.1.tgz#19e40fb58da4a7ce2b35556c351894785f54a6f7"
+  resolved "git://github.com/cosaquee/vue-rate.git#86bbe68208b24b5f7d8e52c74811e841b9465f72"
 
 vue-router@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.0.1.tgz#d9b05ad9c7420ba0f626d6500d693e60092cc1e9"
-
-vue-simple-upload@^0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/vue-simple-upload/-/vue-simple-upload-0.1.6.tgz#71d0a116c951ca91e8e70c705183cb43d073cae1"
 
 vue-stars@^0.3.0:
   version "0.3.0"

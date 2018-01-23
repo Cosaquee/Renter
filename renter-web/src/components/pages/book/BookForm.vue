@@ -58,7 +58,7 @@
             ></b-input>
           </b-field>
 
-          <div class="has-text-danger has-text-centered">{{error}}</div>
+          <div class="has-text-danger has-text-centered">{{ error }}</div>
           <button type="submit" :class="['button', 'is-primary', 'is-fullwidth', {'is-loading': pending}]">Add</button>
         </form>
       </card>
@@ -67,8 +67,6 @@
 </template>
 
 <script>
-  import axios from 'axios';
-  // import _ from 'lodash';
   export default {
     data () {
       return {
@@ -104,19 +102,18 @@
         });
 
         let selectedCategory = this.selectedCategory;
+
+        // TODO: reformat to anonymous function
         let cat = this.$store.getters.categories.find(function (category) { return category.name === selectedCategory; });
 
-        axios.post('http://localhost:5000/api/book', {
+        this.$store.dispatch('addBook', {
           title: this.title,
           isbn: this.isbn,
           authorId: authorID,
           description: this.description,
           categoryId: cat.id
-        }, {
-          headers: {
-            'Authorization': 'Bearer ' + this.$store.getters.token
-          }
-        }).then((response) => {
+        }).then(() => {
+          // TODO: Loading
           this.$router.push({ path: '/book' });
         });
       }

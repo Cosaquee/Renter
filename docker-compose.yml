@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  database:
+    build: .
+    environment:
+      - POSTGRES_USER=renter
+      - POSTGRES_PASWORD=renter
+      - POSTGRES_DATABASE=renter
+    networks:
+       - new
+  cover:
+    build: 'renter-cover/'
+  web:
+    build: 'renter-web/'
+    ports:
+      - "8080:8080"
+    links:
+      - "api:renter"
+    networks:
+      - new
+  api:
+    build: renter-api
+    depends_on:
+      - database
+    networks:
+     new:
+       aliases:
+         - renter
+
+networks:
+  new:

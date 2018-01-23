@@ -41,7 +41,6 @@
 
 <script>
 import Moment from 'moment';
-import axios from 'axios';
 export default {
   data () {
     return {
@@ -55,7 +54,6 @@ export default {
   },
   methods: {
     handleClick () {
-
     },
     rowClass (row, index) {
       return row.state;
@@ -63,23 +61,19 @@ export default {
     rentBooks () {
       this.loading = true;
       this.checkedRows.map((row) => {
-        axios.post(`http://localhost:5000/api/book/confirm/${row.bookId}`, {}, {
-          headers: {
-            'Authorization': `Bearer ${this.$store.getters.token}`
-          }
+        this.$store.dispatch('confirmRent', {
+          bookID: row.bookId
         }).then(() => {
-          this.loading = false;
           this.$store.dispatch('getAllRentedBooks');
+          this.loading = false;
         });
       });
     },
     returnBooks () {
       this.loading = true;
       this.checkedRows.map((row) => {
-        axios.post(`http://localhost:5000/api/book/confirm-return/${row.bookId}`, {}, {
-          headers: {
-            'Authorization': `Bearer ${this.$store.getters.token}`
-          }
+        this.$store.dispatch('confirmReturn', {
+          bookID: row.bookId
         }).then(() => {
           this.loading = false;
           this.$store.dispatch('getAllRentedBooks');

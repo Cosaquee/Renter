@@ -14,9 +14,11 @@ namespace Renter
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
                 .Build();
+
             var builder = new DbContextOptionsBuilder<RentalContext>();
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             builder.UseNpgsql(connectionString);
+            
             return new RentalContext(builder.Options);
         }
     }

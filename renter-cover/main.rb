@@ -2,8 +2,9 @@ require 'sinatra'
 require 'aws-sdk-s3'
 require 'guid'
 require 'json'
-require 'pry'
 require 'mini_magick'
+
+set :bind, '0.0.0.0'
 
 before do
    content_type :json
@@ -21,7 +22,7 @@ client = Aws::S3::Client.new(
   secret_access_key: secret_access_key
 )
 
-post '/save_image' do
+post '/cover/book' do
 
   @filename = params[:file][:filename]
   file = params[:file][:tempfile]
@@ -85,7 +86,7 @@ post '/cover/movie' do
     }.to_json
 end
 
-post '/avatar' do
+post '/user/avatar' do
 
     @filename = params[:file][:filename]
     file = params[:file][:tempfile]

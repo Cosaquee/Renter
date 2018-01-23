@@ -25,6 +25,34 @@ const actions = {
       });
     });
   },
+  fetchMovie (store, { movieID }) {
+    return new Promise((resolve, reject) => {
+      console.log(`${config.API.MOVIE}/${movieID}`);
+      axios.get(`${config.API.MOVIE}/${movieID}`, {
+        headers: {
+          'Authorization': `Bearer ${store.getters.token}`
+        }
+      }).then((response) => {
+        resolve(response);
+      }).catch((error) => {
+        reject(error);
+      });
+    });
+  },
+  uploadCover (store, { movieID, coverURL }) {
+    return new Promise((resolve, reject) => {
+      axios.post(`${config.API.MOVIE}/cover`, {
+        movieID: movieID,
+        coverURL: coverURL
+      }, {
+        headers: {
+          'Authorization': `Bearer ${store.getters.token}`
+        }
+      }).then(() => {
+        resolve();
+      });
+    });
+  }
 };
 
 const mutations = {

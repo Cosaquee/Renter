@@ -38,7 +38,8 @@ namespace Renter
             services.AddMvc()
                 .AddJsonOptions(
                     options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-                );;
+                );
+
             RegisterDatebase(services);
             RegisterToken(services);
             RegisterUserServices(services);
@@ -87,8 +88,13 @@ namespace Renter
         private void RegisterDatebase(IServiceCollection services)
         {
             var dbContextOptions = new DbContextOptionsBuilder<RentalContext>();
-            dbContextOptions.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
-            
+
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+            dbContextOptions.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
+
             services.AddScoped<DbContext>((provider) =>
             {
                 return new RentalContext(dbContextOptions.Options);
