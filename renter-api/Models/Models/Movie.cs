@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models.Models
 {
-    public class Movie
+    public class Movie : BaseEntity
     {
         [Key]
         public long Id { get; set; }

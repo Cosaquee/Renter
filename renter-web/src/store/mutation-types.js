@@ -8,3 +8,4 @@ export const MOVIE_LIST = 'MOVIE_LIST';
 export const USER_RENTED_BOOKS = 'USER_RENTED_BOOKS';
 export const RENTED_BOOKS = 'RENTED_BOOKS';
 export const ALL_BOOKS = 'ALL_BOOKS';
+export const LATEST_BOOKS = 'LATEST_BOOKS';

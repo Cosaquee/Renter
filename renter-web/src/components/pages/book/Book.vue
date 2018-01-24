@@ -31,7 +31,8 @@
         </div>
       </b-tab-item>
       <b-tab-item label="Covers" class="covers">
-          <b-select @input="selectBook" v-model="selectedCategory" placeholder="Choose category">
+        <div class="">
+          <b-select class="category-select" @input="selectBook" v-model="selectedCategory" placeholder="Choose category">
               <option
                   v-for="category in categories"
                   :value="category.name"
@@ -39,6 +40,9 @@
                   {{ category.name }}
               </option>
           </b-select>
+            <a @click="clearFilter" class="button clear is-small is-primary is-outlined">Clear</a>
+        </div>
+
         <div class="wrapper">
           <div class="cards">
             <card v-for="collection in selectBooks" :key="collection.resaizedCoverURL" :collection="collection"></card>
@@ -77,6 +81,9 @@
         return row.copies.some((book) => {
           return !book.rented === true;
         });
+      },
+      clearFilter () {
+        this.selectedCategory = '';
       }
     },
     computed: {
@@ -108,6 +115,15 @@
 </script>
 
 <style scoped>
+  .category-select {
+    padding: 1em;
+    display: inline-block;
+  }
+
+  .clear {
+    margin-top: 1.7em;
+  }
+
   .covers {
     overflow: scroll;
   }

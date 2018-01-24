@@ -2,7 +2,7 @@
 
 namespace Models.Models
 {
-    public class RefreshToken
+    public class RefreshToken : BaseEntity
     {
         public string Id { get; set; }
 

@@ -2,7 +2,7 @@
 
 namespace Models.Models
 {
-    public class UserSubscription
+    public class UserSubscription : BaseEntity
     {
         public long Id { get; set; }
 

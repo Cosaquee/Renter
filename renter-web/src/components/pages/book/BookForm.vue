@@ -105,13 +105,18 @@
 
         // TODO: reformat to anonymous function
         let cat = this.$store.getters.categories.find(function (category) { return category.name === selectedCategory; });
+        console.log(this.title);
+        console.log(this.isbn);
+        console.log(authorID);
+        console.log(this.description);
+        console.log(cat.id);
 
         this.$store.dispatch('addBook', {
           title: this.title,
           isbn: this.isbn,
-          authorId: authorID,
+          authorID: authorID,
           description: this.description,
-          categoryId: cat.id
+          categoryID: cat.id
         }).then(() => {
           // TODO: Loading
           this.$router.push({ path: '/book' });

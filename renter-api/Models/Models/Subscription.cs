@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models.Models
 {
-    public class Subscription
+    public class Subscription : BaseEntity
     {
         public long Id { get; set; }
 

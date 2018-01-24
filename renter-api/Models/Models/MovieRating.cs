@@ -2,7 +2,7 @@
 
 namespace Models.Models
 {
-    public class MovieRating
+    public class MovieRating : BaseEntity
     {
         public long Id { get; set; }
 

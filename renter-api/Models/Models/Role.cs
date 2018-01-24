@@ -2,7 +2,7 @@
 
 namespace Models.Models
 {
-    public class Role
+    public class Role : BaseEntity
     {
         public long Id { get; set; }
 

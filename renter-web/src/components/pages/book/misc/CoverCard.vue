@@ -1,11 +1,11 @@
 <template>
   <div class="card">
-  <div @click="showDetails(collection.id)" class="card-content">
-    <img :src="collection.resaizedCoverURL" :alt="collection.title">
-    <h4 class="title">{{ collection.title }}</h4>
-    <p>{{ collection.author.name }} {{ collection.author.surname }}</p>
+    <div @click="showDetails(collection.id)" class="card-content">
+      <img :src="collection.resaizedCoverURL" :alt="collection.title">
+      <h4 class="title">{{ collection.title }}</h4>
+      <p>{{ collection.author.name }} {{ collection.author.surname }}</p>
+    </div>
   </div>
-</div>
 </template>
 
 <script>

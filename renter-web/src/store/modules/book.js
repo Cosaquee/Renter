@@ -4,17 +4,20 @@ import config from '../../config';
 
 import {
   RENTED_BOOKS,
-  ALL_BOOKS
+  ALL_BOOKS,
+  LATEST_BOOKS
 } from '../mutation-types';
 
 const state = {
   books: [],
-  allRentedBooks: []
+  allRentedBooks: [],
+  latestBooks: []
 };
 
 const getters = {
   allRentedBooks: state => state.allRentedBooks,
-  books: state => state.books
+  books: state => state.books,
+  latestBooks: state => state.latestBooks
 };
 
 const actions = {
@@ -192,6 +195,18 @@ const actions = {
         reject(error);
       });
     });
+  },
+  getLatestBooks (store) {
+    return new Promise((resolve, reject) => {
+      axios.get(`${config.API.BOOK}/latest`, {
+        headers: {
+          'Authorization': `Bearer ${store.getters.token}`
+        }
+      }).then((response) => {
+        console.log(response);
+        store.commit(LATEST_BOOKS, { books: response.data });
+      });
+    });
   }
 };
 
@@ -201,6 +216,9 @@ const mutations = {
   },
   [ALL_BOOKS] (store, { books }) {
     state.books = books;
+  },
+  [LATEST_BOOKS] (store, { books }) {
+    state.latestBooks = books;
   }
 };
 

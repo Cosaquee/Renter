@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Models.Models
 {
-    public class RentBook
+    public class RentBook : BaseEntity
     {
         [Key]
         public long Id { get; set; }

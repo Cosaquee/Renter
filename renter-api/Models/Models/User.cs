@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Models.Models
 {
-    public class User
+    public class User : BaseEntity
     {
         [Key]
         [StringLength(256)]

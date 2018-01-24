@@ -187,5 +187,14 @@ namespace Renter.Controllers.Api
             this.bookRepositoryService.ConfirmReturn(book);
             return Ok("Book is returned");
         }
+
+
+
+        [HttpGet("latest")]
+        [Authorize(Roles="Administrator, Employee, User")]
+        public IEnumerable<Book> Latest()
+        {
+            return this.bookRepositoryService.Queryable().Include(x => x.Author).Include(x => x.Category).Take(5);
+        }
     }
 }

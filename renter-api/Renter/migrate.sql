@@ -339,3 +339,109 @@ BEGIN
     VALUES ('20180120141000_ResizedCoverUrl', '2.0.1-rtm-125');
     END IF;
 END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20180124183617_AddCreatedAtToEveryEntity') THEN
+    ALTER TABLE "UserSubscriptions" ADD "CreatedDate" timestamp NOT NULL DEFAULT TIMESTAMP '0001-01-01 00:00:00.0000000';
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20180124183617_AddCreatedAtToEveryEntity') THEN
+    ALTER TABLE "Users" ADD "CreatedDate" timestamp NOT NULL DEFAULT TIMESTAMP '0001-01-01 00:00:00.0000000';
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20180124183617_AddCreatedAtToEveryEntity') THEN
+    ALTER TABLE "Subscriptions" ADD "CreatedDate" timestamp NOT NULL DEFAULT TIMESTAMP '0001-01-01 00:00:00.0000000';
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20180124183617_AddCreatedAtToEveryEntity') THEN
+    ALTER TABLE "Roles" ADD "CreatedDate" timestamp NOT NULL DEFAULT TIMESTAMP '0001-01-01 00:00:00.0000000';
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20180124183617_AddCreatedAtToEveryEntity') THEN
+    ALTER TABLE "RentMovies" ADD "CreatedDate" timestamp NOT NULL DEFAULT TIMESTAMP '0001-01-01 00:00:00.0000000';
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20180124183617_AddCreatedAtToEveryEntity') THEN
+    ALTER TABLE "RentBooks" ADD "CreatedDate" timestamp NOT NULL DEFAULT TIMESTAMP '0001-01-01 00:00:00.0000000';
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20180124183617_AddCreatedAtToEveryEntity') THEN
+    ALTER TABLE "RefreshTokens" ADD "CreatedDate" timestamp NOT NULL DEFAULT TIMESTAMP '0001-01-01 00:00:00.0000000';
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20180124183617_AddCreatedAtToEveryEntity') THEN
+    ALTER TABLE "Movies" ADD "CreatedDate" timestamp NOT NULL DEFAULT TIMESTAMP '0001-01-01 00:00:00.0000000';
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20180124183617_AddCreatedAtToEveryEntity') THEN
+    ALTER TABLE "MovieRatings" ADD "CreatedDate" timestamp NOT NULL DEFAULT TIMESTAMP '0001-01-01 00:00:00.0000000';
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20180124183617_AddCreatedAtToEveryEntity') THEN
+    ALTER TABLE "Directors" ADD "CreatedDate" timestamp NOT NULL DEFAULT TIMESTAMP '0001-01-01 00:00:00.0000000';
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20180124183617_AddCreatedAtToEveryEntity') THEN
+    ALTER TABLE "Categories" ADD "CreatedDate" timestamp NOT NULL DEFAULT TIMESTAMP '0001-01-01 00:00:00.0000000';
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20180124183617_AddCreatedAtToEveryEntity') THEN
+    ALTER TABLE "BooksRatings" ADD "CreatedDate" timestamp NOT NULL DEFAULT TIMESTAMP '0001-01-01 00:00:00.0000000';
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20180124183617_AddCreatedAtToEveryEntity') THEN
+    ALTER TABLE "Books" ADD "CreatedDate" timestamp NOT NULL DEFAULT TIMESTAMP '0001-01-01 00:00:00.0000000';
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20180124183617_AddCreatedAtToEveryEntity') THEN
+    ALTER TABLE "Authors" ADD "CreatedDate" timestamp NOT NULL DEFAULT TIMESTAMP '0001-01-01 00:00:00.0000000';
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20180124183617_AddCreatedAtToEveryEntity') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20180124183617_AddCreatedAtToEveryEntity', '2.0.1-rtm-125');
+    END IF;
+END $$;

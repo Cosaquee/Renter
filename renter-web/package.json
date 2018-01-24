@@ -15,6 +15,7 @@
     "font-awesome": "^4.7.0",
     "moment": "^2.19.1",
     "node-sass": "^4.5.3",
+    "opn": "^5.2.0",
     "sass-loader": "^6.0.6",
     "vue": "^2.5.2",
     "vue-rate": "git://github.com/cosaquee/vue-rate.git",

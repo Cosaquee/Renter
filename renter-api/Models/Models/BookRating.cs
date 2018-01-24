@@ -2,7 +2,7 @@
 
 namespace Models.Models
 {
-    public class BookRating
+    public class BookRating : BaseEntity
     {
         public long Id { get; set; }
 

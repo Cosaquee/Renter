@@ -2,7 +2,7 @@
 
 namespace Models.Models
 {
-    public class Category
+    public class Category : BaseEntity
     {
         public long Id { get; set; }
 
