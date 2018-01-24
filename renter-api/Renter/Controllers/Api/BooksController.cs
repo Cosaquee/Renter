@@ -43,7 +43,7 @@ namespace Renter.Controllers.Api
         [HttpGet("{id}")]
         public Book Get(long id)
         {
-            return bookRepositoryService.Queryable().Where(x => x.Id == id).FirstOrDefault();
+            return bookRepositoryService.Queryable().Where(x => x.Id == id).Include(x => x.Author).FirstOrDefault();
         }
 
         // POST api/values

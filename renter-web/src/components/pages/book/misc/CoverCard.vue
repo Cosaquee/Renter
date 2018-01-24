@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-  <div class="card-content">
+  <div @click="showDetails(collection.id)" class="card-content">
     <img :src="collection.resaizedCoverURL" :alt="collection.title">
     <h4 class="title">{{ collection.title }}</h4>
     <p>{{ collection.author.name }} {{ collection.author.surname }}</p>
@@ -11,7 +11,12 @@
 <script>
 export default {
   props: ['collection'],
-  name: 'card'
+  name: 'card',
+  methods: {
+    showDetails (id) {
+      this.$router.push({ path: '/book/' + id });
+    }
+  }
 };
 </script>
 
@@ -34,7 +39,6 @@ export default {
  img {
    display: block;
    margin: auto;
-   /* width: 100%; */
  }
 
  .title {

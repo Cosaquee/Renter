@@ -81,7 +81,7 @@ export default {
       });
     }
   },
-  computed: {
+  computed: { // TODO: Handle tahat in rowClass
     formattedRentedBooks () {
       var books = this.$store.getters.allRentedBooks;
       var formattedBooks = [];

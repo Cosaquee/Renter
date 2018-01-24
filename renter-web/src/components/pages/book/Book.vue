@@ -21,13 +21,17 @@
                      {{ row.author.name }} {{ row.author.surname }}
                    </template>
                  </table-column>
+                 <table-column label="Available?">
+                   <template slot-scope="row">
+                     <b-tag :type="checkAvailable(row) ? 'is-success' : 'is-danger'" rounded>{{ checkAvailable(row) ? 'Available' : 'Not available' }}</b-tag>
+                   </template>
+                 </table-column>
              </table-component>
           </div>
         </div>
       </b-tab-item>
       <b-tab-item label="Covers" class="covers">
-        <b-field label="Category">
-          <b-select @input="selectBook" v-model="selectedCategory" placeholder="Select category">
+          <b-select @input="selectBook" v-model="selectedCategory" placeholder="Choose category">
               <option
                   v-for="category in categories"
                   :value="category.name"
@@ -35,7 +39,6 @@
                   {{ category.name }}
               </option>
           </b-select>
-      </b-field>
         <div class="wrapper">
           <div class="cards">
             <card v-for="collection in selectBooks" :key="collection.resaizedCoverURL" :collection="collection"></card>
@@ -69,6 +72,11 @@
       },
       selectBook () {
         this.selectedCategory = this.selectedCategory;
+      },
+      checkAvailable (row) {
+        return row.copies.some((book) => {
+          return !book.rented === true;
+        });
       }
     },
     computed: {

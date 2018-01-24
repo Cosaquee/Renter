@@ -2,41 +2,40 @@
   <section class="book-details">
     <b-loading :active.sync="loading" :canCancel="false"></b-loading>
     <section class="book-menu">
-
-        <div class="columns .is-centered">
-          <div class="column">
-            <div v-if="admin || employee" class="book-menu">
-              <button class="button is-outlined is-medium is-info" @click="prompt">Edit</button>
-              <button class="button is-outlined is-primary is-medium" @click="isComponentModalActive = true">Add cover</button>
-              <a class="button is-danger is-outlined is-medium" @click="deleteBook">Delete</a>
-            </div>
-          </div>
-        </div>
-
-        <b-modal :active.sync="isComponentModalActive" has-modal-card>
-          <BookCoverModal v-bind="{ book: this.book }"></BookCoverModal>
-        </b-modal>
-
+      <div v-if="admin || employee" class="menu">
+        <button class="button is-outlined is-medium is-info" @click="prompt">Edit</button>
+        <button class="button is-outlined is-primary is-medium" @click="isComponentModalActive = true">Add cover</button>
+        <a class="button is-danger is-outlined is-medium" @click="deleteBook">Delete</a>
+      </div>
     </section>
 
-    <div class="columns">
+    <b-modal :active.sync="isComponentModalActive" has-modal-card>
+      <BookCoverModal v-bind="{ book: this.book }"></BookCoverModal>
+    </b-modal>
 
+    <div class="columns book-info">
       <div class="column">
-        <div>
-          <img class="book-image" :src="book.coverURL" alt="Book Cover">
-        </div>
+          <img :src="book.coverURL" alt="Book Cover">
       </div>
 
       <div class="column">
-        <div class="">
-          <div>
-            <h2 class="book-title">{{ book.title }}</h2>
-            <p class="book-description">{{ book.description }}</p>
-            <br>
+          <div class="book-title">
+            {{ book.title }}
           </div>
 
-          <div style="text-align: center" v-if="this.authorBooks.length != 0">
+          <div class="book-author">
+            {{ book.author.name }} {{ book.author.surname }}
+          </div>
 
+          <div class="book-stars">
+            <Rate :length="5"></Rate>
+          </div>
+
+          <div class="book-description">
+            {{ book.description }}
+          </div>
+
+          <div v-if="this.authorBooks.length != 0" class="book-rent">
             <div class="rent-datepicker">
                 <h1 class="rent-title">Select return date</h1>
                 <b-datepicker v-model="date"></b-datepicker>
@@ -45,7 +44,6 @@
               <a  class="button is-success is-outlined is-large rent-button" @click="rentBook">Rent</a>
             </div>
           </div>
-        </div>
       </div>
     </div>
   </section>
@@ -139,3 +137,34 @@
     }
   };
 </script>
+
+<style scoped>
+  .book-info {
+    padding: 2em;
+  }
+
+  .book-title {
+    text-align: center;
+    font-size: 4em;
+    margin-bottom: -0.3em;
+  }
+
+  .book-author {
+    font-size: 2em;
+    color: gray;
+  }
+
+  .book-stars {
+    padding: 1em;
+  }
+
+  .book-description {
+    text-align: center;
+    font-size: 1.2em;
+  }
+
+  .book-rent {
+    text-align: center;
+    padding-top: 2em;
+  }
+</style>
