@@ -54,9 +54,8 @@ namespace Renter.Controllers.Api
             unitOfWork.Save();
         }
 
-
         [HttpPost("cover")]
-        [Authorize(Roles="Administrator, Employee")]
+        [Authorize(Roles = "Administrator, Employee")]
         public void AddCover([FromBody] CoversDTO covers)
         {
             var book = bookRepositoryService.Queryable().Where(x => x.Id == covers.ID).FirstOrDefault();
@@ -104,9 +103,8 @@ namespace Renter.Controllers.Api
             return Ok(rentBook);
         }
 
-
         [HttpPost("rent")]
-        [Authorize(Roles="Administrator, Employee, User")]
+        [Authorize(Roles = "Administrator, Employee, User")]
         public IActionResult Rent([FromBody] RentBookDTO rentBookDTO)
         {
             var timeSpan = TimeSpan.FromDays(rentBookDTO.RentDuration);
@@ -125,10 +123,22 @@ namespace Renter.Controllers.Api
             return Ok(rentBook);
         }
 
-        [HttpGet("Rate/{title}")]
-        public IActionResult Rate(string title)
+        [HttpGet("Rate/{ISBN}")]
+        public IActionResult Rate(string ISBN)
         {
-            var rate = this.bookRatingRepositoryService.GetRate(title);
+            var rate = this.bookRatingRepositoryService.GetRate(ISBN);
+            return Ok(rate);
+        }
+
+        [HttpGet("RateById/{id}")]
+        public IActionResult RateById(long id)
+        {
+            var book = this.bookRepositoryService.Get(id);
+            if (book == null)
+            {
+                return BadRequest("Book does not exists");
+            }
+            var rate = this.bookRatingRepositoryService.GetRate(book.ISBN);
             return Ok(rate);
         }
 
@@ -162,14 +172,14 @@ namespace Renter.Controllers.Api
         }
 
         [HttpGet("rent")]
-        [Authorize(Roles="Administrator, Employee")]
+        [Authorize(Roles = "Administrator, Employee")]
         public IEnumerable<RentBook> GetAllRentedBooks()
         {
             return rentBookRepositoryService.Queryable().Include(x => x.User).Include(x => x.Book).ToList();
         }
 
         [HttpPost("confirm/{ID}")]
-        [Authorize(Roles="Administrator, Employee")]
+        [Authorize(Roles = "Administrator, Employee")]
         public IActionResult Confirm(long ID)
         {
             this.rentBookRepositoryService.Confirm(ID);
@@ -177,9 +187,8 @@ namespace Renter.Controllers.Api
             return Ok("Book is received");
         }
 
-
         [HttpPost("confirm-return/{ID}")]
-        [Authorize(Roles="Administrator, Employee")]
+        [Authorize(Roles = "Administrator, Employee")]
         public IActionResult ConfirmReturn(long ID)
         {
             this.rentBookRepositoryService.ConfirmReturn(ID);
@@ -188,10 +197,8 @@ namespace Renter.Controllers.Api
             return Ok("Book is returned");
         }
 
-
-
         [HttpGet("latest")]
-        [Authorize(Roles="Administrator, Employee, User")]
+        [Authorize(Roles = "Administrator, Employee, User")]
         public IEnumerable<Book> Latest()
         {
             return this.bookRepositoryService.Queryable().Include(x => x.Author).Include(x => x.Category).Take(5);

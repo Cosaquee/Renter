@@ -8,6 +8,10 @@ namespace Database.Services
 {
     public class MovieRatingRepositoryService : RepositoryService<MovieRating>, IMovieRatingRepositoryService
     {
+        private const int minRate = 1;
+
+        private const int maxRate = 10;
+
         public MovieRatingRepositoryService(DbContext dbContext) : base(dbContext)
         {
         }
@@ -51,9 +55,6 @@ namespace Database.Services
                 this.Insert(rateItem);
             }
         }
-
-        private const int minRate = 1;
-        private const int maxRate = 10;
 
         private bool IsRateValid(int rate)
         {

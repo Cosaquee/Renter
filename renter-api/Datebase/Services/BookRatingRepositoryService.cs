@@ -8,6 +8,10 @@ namespace Database.Services
 {
     public class BookRatingRepositoryService : RepositoryService<BookRating>, IBookRatingRepositoryService
     {
+        private const int minRate = 1;
+
+        private const int maxRate = 10;
+
         public BookRatingRepositoryService(DbContext dbContext) : base(dbContext)
         {
         }
@@ -29,7 +33,8 @@ namespace Database.Services
             return Queryable().Where(x => x.ISBN == ISBN && x.UserId == userId).FirstOrDefault();
         }
 
-        // We use ISBN here to rate books to make sure that differnt copies of same books will always have same rate.
+        // We use ISBN here to rate books to make sure that differnt copies of same books will always
+        // have same rate.
         public void RateBook(string ISBN, string userId, int rate)
         {
             if (!this.IsRateValid(rate))
@@ -50,9 +55,6 @@ namespace Database.Services
                 dbContext.SaveChanges();
             }
         }
-
-        private const int minRate = 1;
-        private const int maxRate = 10;
 
         private bool IsRateValid(int rate)
         {

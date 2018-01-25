@@ -93,6 +93,7 @@ namespace Database.Services
 
             return book;
         }
+
         public RentBook ConfirmReturn(long bookID)
         {
             var rentBook = Queryable().Where(x => x.BookId == bookID).FirstOrDefault();
