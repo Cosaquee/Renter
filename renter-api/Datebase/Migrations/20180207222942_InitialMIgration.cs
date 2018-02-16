@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Database.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class InitialMIgration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,6 +15,7 @@ namespace Database.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     Name = table.Column<string>(maxLength: 32, nullable: false),
                     Surname = table.Column<string>(maxLength: 32, nullable: false)
@@ -30,6 +31,7 @@ namespace Database.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
                     Name = table.Column<string>(maxLength: 64, nullable: false)
                 },
                 constraints: table =>
@@ -43,6 +45,7 @@ namespace Database.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
                     Name = table.Column<string>(maxLength: 32, nullable: false),
                     Surname = table.Column<string>(maxLength: 32, nullable: false)
                 },
@@ -56,6 +59,7 @@ namespace Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
                     Expire = table.Column<DateTime>(nullable: false),
                     UserId = table.Column<string>(nullable: true)
                 },
@@ -70,6 +74,7 @@ namespace Database.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
                     Name = table.Column<string>(maxLength: 32, nullable: false)
                 },
                 constraints: table =>
@@ -84,6 +89,7 @@ namespace Database.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Cost = table.Column<decimal>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Seconds = table.Column<double>(nullable: false)
                 },
@@ -101,9 +107,11 @@ namespace Database.Migrations
                     AuthorId = table.Column<long>(nullable: false),
                     CategoryId = table.Column<long>(nullable: false),
                     CoverURL = table.Column<string>(nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     ISBN = table.Column<string>(maxLength: 13, nullable: false),
                     Rented = table.Column<bool>(nullable: false),
+                    ResizedCoverURL = table.Column<string>(nullable: true),
                     Title = table.Column<string>(maxLength: 128, nullable: false)
                 },
                 constraints: table =>
@@ -131,9 +139,12 @@ namespace Database.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     CategoryId = table.Column<long>(nullable: false),
                     CoverURL = table.Column<string>(nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     DirectorId = table.Column<long>(nullable: false),
+                    ReleaseDate = table.Column<DateTime>(nullable: false),
                     Seconds = table.Column<double>(nullable: false),
+                    Thumbnail = table.Column<string>(nullable: true),
                     Title = table.Column<string>(maxLength: 128, nullable: false)
                 },
                 constraints: table =>
@@ -158,6 +169,7 @@ namespace Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(maxLength: 256, nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
                     Email = table.Column<string>(maxLength: 64, nullable: false),
                     Name = table.Column<string>(nullable: false),
                     Password = table.Column<string>(maxLength: 64, nullable: false),
@@ -184,6 +196,7 @@ namespace Database.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     BookId = table.Column<long>(nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
                     ISBN = table.Column<string>(nullable: true),
                     Rate = table.Column<int>(nullable: false),
                     UserId = table.Column<string>(nullable: true)
@@ -211,6 +224,7 @@ namespace Database.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
                     MovieId = table.Column<long>(nullable: false),
                     Rate = table.Column<int>(nullable: false),
                     UserId = table.Column<string>(nullable: true)
@@ -239,10 +253,12 @@ namespace Database.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     BookId = table.Column<long>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
                     From = table.Column<DateTime>(nullable: false),
-                    Received = table.Column<bool>(nullable: false),
+                    ISBN = table.Column<string>(nullable: true),
+                    State = table.Column<int>(nullable: false),
                     To = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<string>(maxLength: 256, nullable: false)
+                    UserId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -267,8 +283,11 @@ namespace Database.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
                     From = table.Column<DateTime>(nullable: false),
                     MovieId = table.Column<long>(nullable: false),
+                    MovieQuality = table.Column<int>(nullable: false),
+                    MovieState = table.Column<int>(nullable: false),
                     To = table.Column<DateTime>(nullable: false),
                     UserId = table.Column<string>(maxLength: 256, nullable: false)
                 },
@@ -295,6 +314,7 @@ namespace Database.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
                     StartDate = table.Column<DateTime>(nullable: false),
                     SubscriptionId = table.Column<int>(nullable: false),
                     SubscriptionId1 = table.Column<long>(nullable: true),

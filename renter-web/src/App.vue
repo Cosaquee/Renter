@@ -17,3 +17,40 @@
     },
   };
 </script>
+
+
+<style scoped>
+  .container {
+    width: 100%;
+    max-width: 800px;
+  }
+
+  @media only screen and (min-width: 500px) {
+    .container {
+      width: 100%;
+      max-width: 500;
+    }
+  }
+
+  @media only screen and (min-width: 700px) {
+    .container {
+      width: 100%;
+      max-width: 700px;
+    }
+  }
+
+  @media only screen and (min-width: 900px) {
+    .container {
+      width: 100%;
+      max-width: 900px;
+    }
+  }
+
+  @media only screen and (min-width: 1100px) {
+    .container {
+      width: 100%;
+      max-width: 1800px;
+    }
+  }
+
+</style>

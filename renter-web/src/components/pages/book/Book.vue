@@ -1,51 +1,50 @@
 <template>
   <section>
-    <b-tabs position="is-centered" expanded >
-      <b-tab-item label="List" >
-        <div class="columns .is-centered">
-          <div class="column">
-            <div v-if="admin || employee" class="book-add">
-              <a @click="addBook" class="button is-primary is-outlined">New Book</a>
-            </div>
+    <section class="book-search">
+      <div class="book-search-inputs">
+        <at-input class="book-search-title" v-model="name" @input="searchBook" placeholder="Search for book or title"></at-input>
+        <at-select style="width: 150px;" class="book-search-select" size="large" v-model="selectedCategory" placeholder="Select category">
+          <at-option v-for="category in categories" :value="category.name">{{ category.name }}</at-option>
+        </at-select>
+        <at-switch class="book-search-switch" @change="switchSelected" v-model="isSwitched">
+          <span slot="checkedText">Show only available books</span>
+          <span slot="unCheckedText">Show all books</span>
+        </at-switch>
+        <at-button size="small" class="clearButton" @click="clearFilter" icon="icon-x"></at-button>
+      </div>
+      <at-button @click="addBook" type="info" hollow>Add</at-button>
+    </section>
 
-            <table-component
-                 :data="books"
-                 @rowClick="handleClick"
-                 sort-order="asc"
-            >
-                 <table-column :hidden="hidden" show="id" label="ID"></table-column>
-                 <table-column show="title" label="Title"></table-column>
-
-                 <table-column label="Author">
-                   <template slot-scope="row">
-                     {{ row.author.name }} {{ row.author.surname }}
-                   </template>
-                 </table-column>
-                 <table-column label="Available?">
-                   <template slot-scope="row">
-                     <b-tag :type="checkAvailable(row) ? 'is-success' : 'is-danger'" rounded>{{ checkAvailable(row) ? 'Available' : 'Not available' }}</b-tag>
-                   </template>
-                 </table-column>
-             </table-component>
-          </div>
-        </div>
-      </b-tab-item>
+    <b-tabs position="is-centered" expanded>
       <b-tab-item label="Covers" class="covers">
-        <div class="">
-          <b-select class="category-select" @input="selectBook" v-model="selectedCategory" placeholder="Choose category">
-              <option
-                  v-for="category in categories"
-                  :value="category.name"
-                  :key="category.id">
-                  {{ category.name }}
-              </option>
-          </b-select>
-            <a @click="clearFilter" class="button clear is-small is-primary is-outlined">Clear</a>
-        </div>
-
         <div class="wrapper">
           <div class="cards">
             <card v-for="collection in selectBooks" :key="collection.resaizedCoverURL" :collection="collection"></card>
+          </div>
+        </div>
+      </b-tab-item>
+      <b-tab-item label="List">
+        <div class="columns .is-centered">
+          <div class="column">
+            <b-table
+              :data="selectBooks"
+              @click="handleClick"
+              :striped="true"
+            >
+              <template slot-scope="props">
+                  <b-table-column label="Title">
+                    {{ props.row.title }}
+                  </b-table-column>
+
+                  <b-table-column label="Author">
+                    {{ props.row.author.name }} {{ props.row.author.surname }}
+                  </b-table-column>
+
+                  <b-table-column label="Available">
+                    <b-tag :type="checkAvailable(props.row) ? 'is-success' : 'is-danger'" rounded>{{ checkAvailable(props.row) ? 'Available' : 'Not available' }}</b-tag>
+                  </b-table-column>
+                 </template>
+            </b-table>
           </div>
         </div>
       </b-tab-item>
@@ -58,33 +57,53 @@
   export default {
     data () {
       return {
-        hidden: true,
-        selectedCategory: ''
+        selectedCategory: '',
+        name: '',
+        isSwitched: false
       };
     },
-    components: { Card },
-    created: function () {
+    components: {
+      Card
+    },
+    created () {
+      this.$store.dispatch('fetchBooksWithRatings');
       this.$store.dispatch('fetchBooks');
       this.$store.dispatch('getCategories');
     },
     methods: {
       handleClick (item) {
-        this.$router.push({ path: '/book/' + item.data.id });
+        this.$router.push({ path: '/book/' + item.id });
       },
-      addBook (e) {
-        this.$router.push({ path: '/book/create' });
+      addBook () {
+        this.$router.push({
+          path: '/book/create'
+        });
       },
       selectBook () {
         this.selectedCategory = this.selectedCategory;
+        this.name = this.name;
+      },
+      searchBook () {
+        this.name = this.name;
+      },
+      switchSelected () {
+        this.isSwitched = !this.isSwitched;
       },
       checkAvailable (row) {
         return row.copies.some((book) => {
           return !book.rented === true;
         });
       },
+      checkBookAvailable (book) {
+        return book.copies.some((book) => {
+          return !book.rented === true;
+        });
+      },
       clearFilter () {
         this.selectedCategory = '';
-      }
+        this.name = '';
+        this.isSwitched = !this.isSwitched;
+      },
     },
     computed: {
       user () {
@@ -103,10 +122,42 @@
         return this.$store.getters.books;
       },
       selectBooks () {
-        if (this.selectedCategory) {
-          return this.$store.getters.books.filter((book) => {
-            return book.category.name === this.selectedCategory;
-          });
+        if (!this.isSwitched) {
+          if (this.selectedCategory && this.name !== '') {
+            return this.$store.getters.books.filter((book) => {
+              return book.category.name === this.selectedCategory && this.checkBookAvailable(book) && (book.title.toUpperCase().includes(this.name.toUpperCase()) || book.author.name.toUpperCase().includes(this.name.toUpperCase()) || book.author.surname.toUpperCase().includes(this.name
+                .toUpperCase()));
+            });
+          } else if (this.selectedCategory) {
+            return this.$store.getters.books.filter((book) => {
+              return book.category.name === this.selectedCategory;
+            });
+          } else if (this.name !== '') {
+            return this.$store.getters.books.filter((book) => {
+              return this.checkBookAvailable(book) && (book.title.toUpperCase().includes(this.name.toUpperCase()) || book.author.name.toUpperCase().includes(this.name.toUpperCase()) || book.author.surname.toUpperCase().includes(this.name
+                .toUpperCase()));
+            });
+          } else if (this.name === '' && !this.selectedCategory) {
+            return this.$store.getters.books.filter((book) => {
+              return this.checkBookAvailable(book);
+            });
+          }
+        } else if (this.isSwitched) {
+          if (this.selectedCategory && this.name !== '') {
+            return this.$store.getters.books.filter((book) => {
+              return this.checkBookAvailable(book) && (book.category.name === this.selectedCategory && (book.title.toUpperCase().includes(this.name.toUpperCase()) || book.author.name.toUpperCase().includes(this.name.toUpperCase()) || book.author.surname.toUpperCase().includes(this.name
+                .toUpperCase())));
+            });
+          } else if (this.selectedCategory) {
+            return this.$store.getters.books.filter((book) => {
+              return book.category.name === this.selectedCategory;
+            });
+          } else if (this.name !== '') {
+            return this.$store.getters.books.filter((book) => {
+              return (book.title.toUpperCase().includes(this.name.toUpperCase()) || book.author.name.toUpperCase().includes(this.name.toUpperCase()) || book.author.surname.toUpperCase().includes(this.name
+                .toUpperCase()));
+            });
+          }
         }
         return this.$store.getters.books;
       }
@@ -115,44 +166,26 @@
 </script>
 
 <style scoped>
-  .category-select {
-    padding: 1em;
-    display: inline-block;
+  .book-search {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
   }
 
-  .clear {
-    margin-top: 1.7em;
+  .book-search-inputs {
+    display: flex;
+    justify-content: space-between;
   }
 
-  .covers {
-    overflow: scroll;
-  }
-  .cards {
-    column-count: 1;
-    column-gap: 1em;
+  .book-search-title {
+    margin: 3px;
   }
 
-  @media only screen and (min-width: 500px) {
-  .cards {
-    column-count: 2;
+  .book-search-select {
+    margin: 4px;
   }
-}
 
-@media only screen and (min-width: 700px) {
-  .cards {
-    column-count: 3;
+  .book-search-switch {
+    margin: 8px;
   }
-}
-
-@media only screen and (min-width: 900px) {
-  .cards {
-    column-count: 4;
-  }
-}
-
-@media only screen and (min-width: 1100px) {
-  .cards {
-    column-count: 5;
-  }
-}
 </style>

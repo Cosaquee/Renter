@@ -13,12 +13,19 @@ namespace Services.UserServices
 
         public UserCreationResult CreateUser(CreateUserDto createUserDto)
         {
-            var user = Mapper.Map<User>(createUserDto);
-            user.Password = Utils.PasswordHasher.CalculateHashedPassword(user.Password);
+            // var user = Mapper.Map<User>(createUserDto);
+            var user = new User
+            {
+                Name = createUserDto.Name,
+                Surname = createUserDto.Surname,
+                Email = createUserDto.Email,
+            };
+
+            user.Password = Utils.PasswordHasher.CalculateHashedPassword(createUserDto.Password);
 
             var ticks = DateTime.Now.Ticks;
             var guid = Guid.NewGuid().ToString();
-            user.Id = $"{guid}-{ticks}-{user.UserName}";
+            user.Id = $"{guid}-{ticks}";
             user.RoleId = DefaultRoleId;
 
             return new UserCreationResult

@@ -8,12 +8,21 @@ import store from './store';
 import Buefy from 'buefy';
 import './main.scss';
 
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+import locale from 'element-ui/lib/locale/lang/en'
+
+import AtComponents from 'at-ui';
+import 'at-ui-style';
+
 import Rate from 'vue-rate';
 import { TableComponent, TableColumn } from 'vue-table-component';
 
+Vue.use(ElementUI, { locale });
 Vue.component('table-component', TableComponent);
 Vue.component('table-column', TableColumn);
 Vue.component('Rate', Rate);
+Vue.use(AtComponents);
 
 Vue.use(Buefy, {
   defaultIconPack: 'fa'

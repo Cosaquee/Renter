@@ -20,7 +20,7 @@ namespace Database.Services
             if (ratesCount <= 0)
                 return 0;
 
-            float sumRates = (float)rates.Sum(x => x.Rate);
+            float sumRates = (float) rates.Sum(x => x.Rate);
             return sumRates / ratesCount;
         }
 
@@ -57,6 +57,11 @@ namespace Database.Services
         private bool IsRateValid(int rate)
         {
             return rate >= minRate && rate <= maxRate;
+        }
+
+        public BookRating GetIndividalRate(string ISBN, string userID)
+        {
+            return Queryable().Where(x => x.ISBN == ISBN && x.UserId == userID).FirstOrDefault();
         }
     }
 }

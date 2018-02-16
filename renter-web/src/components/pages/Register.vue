@@ -1,63 +1,18 @@
 <template>
-  <div class="columns">
-    <div class="column is-4 is-offset-4">
-      <card title="Register" icon="user-plus">
-        <form @submit="makeRegister">
-          <b-field label="Username">
-            <b-input
-              type="text"
-              v-model="username"
-              maxlength="30"
-              required
-              :has-counter="true"
-            ></b-input>
-          </b-field>
-
-          <b-field label="Email">
-            <b-input
-              type="email"
-              icon="envelope"
-              required
-              v-model="email"
-            ></b-input>
-          </b-field>
-
-          <div class="columns">
-            <div class="column">
-              <b-field label="Password">
-                <b-input
-                  type="password"
-                  v-model="password"
-                  class="is-half"
-                  icon="key"
-                  minlength="6"
-                  required
-                  maxlength="20"
-                  :has-counter="false"
-                  password-reveal
-                ></b-input>
-              </b-field>
-            </div>
-            <div class="column">
-              <b-field label="Confirm Password">
-                <b-input
-                  type="password"
-                  v-model="cpassword"
-                  icon="key"
-                  minlength="6"
-                  required
-                  maxlength="20"
-                  :has-counter="false"
-                  password-reveal
-                ></b-input>
-              </b-field>
-            </div>
-          </div>
-          <div class="has-text-danger has-text-centered">{{error}}</div>
-          <button type="submit" :class="['button', 'is-primary', 'is-fullwidth', {'is-loading': pending}]">Register</button>
-        </form>
-      </card>
+    <div class="register-form">
+      <at-card class="register-card" style="width: 300px;">
+        <h2 slot="title">Register</h2>
+        <div>
+          <at-input size="large" v-model="email" :status="emailStatus" placeholder="Email" icon="mail"></at-input>
+          <at-input size="large" v-model="name" placeholder="Name"></at-input>
+          <at-input size="large" v-model="surname" placeholder="Surname"></at-input>
+          <at-input size="large" v-model="password" :status="passwordStatus"  type="password" icon="unlock" placeholder="Password"></at-input>
+          <at-input size="large" v-model="confirmPassword" :status="passwordConfirmStatus" type="password" icon="unlock" placeholder="Confirm password"></at-input>
+          <at-button @click="register" class="register-button" size="large" type="primary" hollow>Register</at-button>
+        </div>
+      </at-card>
     </div>
+
   </div>
 
 </template>
@@ -68,23 +23,49 @@
   export default {
     data: function () {
       return {
-        username: '',
         email: '',
+        name: '',
+        surname: '',
         password: '',
-        cpassword: '',
-        pending: false,
-        error: '',
+        confirmPassword: ''
       };
     },
+    computed: {
+      emailStatus () {
+        let pattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+        if (this.email !== '') {
+          if (this.email.match(pattern)) {
+            return 'success';
+          } else {
+            return 'error';
+          }
+        }
+      },
+      passwordStatus () {
+        if (this.password !== '') {
+          if (this.password.length < 6) {
+            return 'error';
+          } else {
+            return 'success';
+          }
+        }
+      },
+      passwordConfirmStatus () {
+        if (this.confirmPassword !== '') {
+          if (this.confirmPassword.length < 6 || this.confirmPassword !== this.password) {
+            return 'error';
+          } else {
+            return 'success';
+          }
+        }
+      }
+    },
     methods: {
-      makeRegister (e) {
+      register (e) {
         e.preventDefault();
-        console.log(this.password);
-        console.log(this.cpassword);
         this.pending = true;
         this.$store.dispatch('registerUser', this)
           .then(() => {
-            console.log('Then register');
             this.pending = false;
             this.$router.push({name: 'login'});
           })
@@ -99,3 +80,42 @@
     },
   };
 </script>
+
+<style scoped>
+  .error {
+    color: red;
+  }
+  .at-input {
+    padding: 3px;
+  }
+
+  .password-section {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .password-section-button {
+    margin-top: 2%;
+    margin-left: 5px;
+  }
+
+  .at-card__body {
+    padding-top: 1px;
+  }
+
+  .register-card {
+    text-align: center;
+  }
+
+  .register-form {
+    display: flex;
+    justify-content: center;
+    padding-top: 150px;
+  }
+
+  .register-button {
+    margin-top: 3px;
+    margin-bottom: -11px;
+    width: 100%;
+  }
+</style>

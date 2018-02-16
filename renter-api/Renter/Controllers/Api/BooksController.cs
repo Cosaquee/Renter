@@ -32,28 +32,19 @@ namespace Renter.Controllers.Api
             this.bookRatingRepositoryService = bookRatingRepositoryService;
         }
 
-        // GET api/values
         [HttpGet]
-        public IEnumerable<Book> Get()
-        {
-            return bookRepositoryService.Queryable().Include(x => x.Author).Include(x => x.Category);
-        }
+        [AllowAnonymous]
+        public IEnumerable<Book> Get() => bookRepositoryService.Queryable().Include(x => x.Author).Include(x => x.Category).Include(x => x.BookRatings);
 
-        // GET api/values/5
         [HttpGet("{id}")]
-        public Book Get(long id)
-        {
-            return bookRepositoryService.Queryable().Where(x => x.Id == id).Include(x => x.Author).FirstOrDefault();
-        }
+        public Book Get(long id) => bookRepositoryService.Queryable().Where(x => x.Id == id).Include(x => x.Author).FirstOrDefault();
 
-        // POST api/values
         [HttpPost]
         public void CreateBook([FromBody]BookDto book)
         {
             bookRepositoryService.Insert(Mapper.Map<Book>(book));
             unitOfWork.Save();
         }
-
 
         [HttpPost("cover")]
         [Authorize(Roles="Administrator, Employee")]
@@ -79,79 +70,51 @@ namespace Renter.Controllers.Api
         }
 
         [HttpGet("GetAvaiableByIsbn/{isbn}")]
-        public IActionResult GetAvaiableBooksByIsbn(string isbn)
-        {
-            var avaiableBooks = rentBookRepositoryService.GetAvaiableBooksByIsbn(isbn);
-            return Ok(avaiableBooks);
-        }
+        public IEnumerable<Book> GetAvaiableBooksByIsbn(string isbn) => rentBookRepositoryService.GetAvaiableBooksByIsbn(isbn);
 
         [HttpGet("GetAvaiableByTitle/{title}")]
-        public IActionResult GetAvaiableBooksByTitle(string title)
-        {
-            var avaiableBooks = rentBookRepositoryService.GetAvaiableBooksByTitle(title);
-            return Ok(avaiableBooks);
-        }
+        public IEnumerable<Book> GetAvaiableBooksByTitle(string title) => rentBookRepositoryService.GetAvaiableBooksByTitle(title);
 
         [HttpGet("Rent/{bookId}/{userId}/{days}")]
         public IActionResult Rent(long bookId, string userId, int days)
         {
-            var timeSpan = TimeSpan.FromDays(days);
-            var rentBook = rentBookRepositoryService.Rent(bookId, userId, timeSpan);
-            if (rentBook == null)
+            var book = this.bookRepositoryService.Get(bookId);
+            if (book == null)
             {
                 return BadRequest("Book is not avaiable for rent.");
             }
+            var timeSpan = TimeSpan.FromDays(days);
+            var rentBook = rentBookRepositoryService.Rent(bookId, userId, timeSpan, "");
+
             return Ok(rentBook);
         }
-
 
         [HttpPost("rent")]
         [Authorize(Roles="Administrator, Employee, User")]
         public IActionResult Rent([FromBody] RentBookDTO rentBookDTO)
         {
             var timeSpan = TimeSpan.FromDays(rentBookDTO.RentDuration);
-            var rentBook = rentBookRepositoryService.Rent(rentBookDTO.BookID, rentBookDTO.UserID, timeSpan);
+            var rentBook = rentBookRepositoryService.Rent(rentBookDTO.BookID, rentBookDTO.UserID, timeSpan, rentBookDTO.ISBN);
             if (rentBook == null)
             {
                 return BadRequest("Book is not avaiable for rent.");
             }
+
             return Ok(rentBook);
         }
 
-        [HttpGet("RentHistory/{bookId}")]
-        public IActionResult RentHistory(long bookId)
+        [HttpGet("rate/{isbn}")]
+        public IActionResult Rate(string isbn)
         {
-            var rentBook = rentBookRepositoryService.GetBookRentHisotry(bookId);
-            return Ok(rentBook);
-        }
-
-        [HttpGet("Rate/{title}")]
-        public IActionResult Rate(string title)
-        {
-            var rate = this.bookRatingRepositoryService.GetRate(title);
+            var rate = this.bookRatingRepositoryService.GetRate(isbn);
             return Ok(rate);
         }
 
         [HttpPost("rate")]
-        public IActionResult Rate([FromBody] BookRatingDto bookRating)
-        {
-            try
-            {
-                this.bookRatingRepositoryService.RateBook(bookRating.ISBN, bookRating.UserID, bookRating.Rate);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        public void Rate([FromBody] BookRatingDto bookRating) => this.bookRatingRepositoryService.RateBook(bookRating.ISBN, bookRating.UserID, bookRating.Rate);
 
         [HttpGet("Category/{categoryName}")]
-        public IActionResult GetBooksByCategory(string categoryName)
-        {
-            var books = this.bookRepositoryService.Queryable().Include(x => x.Category).Where(x => string.Equals(x.Category.Name, categoryName, StringComparison.OrdinalIgnoreCase)).ToList();
-            return Ok(books);
-        }
+        public IEnumerable<Book> GetBooksByCategory(string categoryName) => this.bookRepositoryService.Queryable().Include(x => x.Category).Where(x => string.Equals(x.Category.Name, categoryName, StringComparison.OrdinalIgnoreCase)).ToList();
 
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
@@ -162,39 +125,36 @@ namespace Renter.Controllers.Api
         }
 
         [HttpGet("rent")]
-        [Authorize(Roles="Administrator, Employee")]
-        public IEnumerable<RentBook> GetAllRentedBooks()
-        {
-            return rentBookRepositoryService.Queryable().Include(x => x.User).Include(x => x.Book).ToList();
-        }
+        [Authorize(Roles = "Administrator, Employee")]
+        public IEnumerable<RentBook> GetAllRentedBooks() => rentBookRepositoryService.Queryable().Where(x => x.State != State.ARCHIVED).Include(x => x.User).Include(x => x.Book).Include(x => x.Book.Author).ToList();
 
         [HttpPost("confirm/{ID}")]
-        [Authorize(Roles="Administrator, Employee")]
-        public IActionResult Confirm(long ID)
-        {
-            this.rentBookRepositoryService.Confirm(ID);
-
-            return Ok("Book is received");
-        }
-
+        [Authorize(Roles = "Administrator, Employee")]
+        public void Confirm(long ID) => this.rentBookRepositoryService.Confirm(ID);
 
         [HttpPost("confirm-return/{ID}")]
-        [Authorize(Roles="Administrator, Employee")]
-        public IActionResult ConfirmReturn(long ID)
+        [Authorize(Roles = "Administrator, Employee")]
+        public void ConfirmReturn(long ID)
         {
             this.rentBookRepositoryService.ConfirmReturn(ID);
             var book = bookRepositoryService.Get(ID);
             this.bookRepositoryService.ConfirmReturn(book);
-            return Ok("Book is returned");
         }
-
-
 
         [HttpGet("latest")]
-        [Authorize(Roles="Administrator, Employee, User")]
-        public IEnumerable<Book> Latest()
-        {
-            return this.bookRepositoryService.Queryable().Include(x => x.Author).Include(x => x.Category).Take(5);
-        }
+        [Authorize(Roles = "Administrator, Employee, User")]
+        public IEnumerable<Book> Latest() => this.bookRepositoryService.Queryable().Include(x => x.Author).Include(x => x.Category).Distinct().Take(5);
+
+        [HttpGet("rent/current/{userID}")]
+        [Authorize(Roles = "Administrator, Employee, User")]
+        public IEnumerable<RentBook> CurrentRent(string userID) => this.rentBookRepositoryService.Queryable().Where(x => x.UserId == userID).Where(x => x.State != State.ARCHIVED).Include(x => x.Book);
+
+        [HttpGet("rent/history/{userID}")]
+        [Authorize(Roles = "Administrator, Employee, User")]
+        public IEnumerable<RentBook> UserHistory(string userID) => this.rentBookRepositoryService.Queryable().Where(x => x.UserId == userID).Where(x => x.State == State.ARCHIVED).Include(x => x.Book);
+
+        [HttpGet("history/{isbn}")]
+        [Authorize(Roles = "Administrator, Employee, User")]
+        public IEnumerable<RentBook> BookHistory(string isbn) => this.rentBookRepositoryService.Queryable().Include(x => x.User).Include(x => x.Book).Where(x => x.ISBN == isbn).Where(x => x.State == State.ARCHIVED).ToList();
     }
 }

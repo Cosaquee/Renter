@@ -13,7 +13,7 @@ namespace Models.Dtos.Movie
 
         public long CategoryId { get; set; }
 
-        public TimeSpan Duration { get; set; }
+        public long Duration { get; set; }
 
         public string Description { get; set; }
     }

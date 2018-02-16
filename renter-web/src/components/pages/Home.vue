@@ -14,3 +14,6 @@
     computed: mapGetters(['user']),
   };
 </script>
+
+<style media="screen">
+</style>

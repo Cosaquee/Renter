@@ -1,18 +1,17 @@
-﻿using Models.Models;
+﻿using System.Collections.Generic;
+using Models.Models;
 
 namespace Database.Interfaces
 {
     public interface IUserRepositoryService : IRepositoryService<User>
     {
-        //userName is UserName or Email
-        User FindUser(string userName, string password);
+        User LoginByEmail(string email, string password);
 
-        string GetUserId(string userName, string password);
+        User FindUserByEmail(string email);
 
-        User FindUserByUsername(string userName);
-
-        bool LoginOrEmailIsAllreadyInUser(string userName, string email);
+        bool LoginOrEmailIsAllreadyInUser(string email);
 
         User GetWithRole(string userId);
+        List<User> FetchAllUsers();
     }
 }

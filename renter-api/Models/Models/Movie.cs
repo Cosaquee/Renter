@@ -41,6 +41,10 @@ namespace Models.Models
 
         public string CoverURL { get; set; }
 
+        public string Thumbnail { get; set; }
+
+        public DateTime ReleaseDate { get; set; }
+
         public virtual ICollection<MovieRating> MovieRatings { get; set; }
     }
 }

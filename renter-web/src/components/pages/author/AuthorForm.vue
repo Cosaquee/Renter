@@ -1,42 +1,14 @@
 <template>
-  <div class="columns">
-    <div class="column is-4 is-offset-4">
-      <card title="Login" icon="sign-in">
-        <form @submit="addAuthor">
-          <b-field label="Name">
-            <b-input
-              type="text"
-              name="sandel"
-              required
-              v-model="name"
-              placeholder='Name'
-            ></b-input>
-          </b-field>
-
-          <b-field label="Surname">
-            <b-input
-              type="text"
-              v-model="surname"
-              class="is-half  "
-              required
-              placeholder='Surname'
-            ></b-input>
-          </b-field>
-
-          <b-field label="Description">
-            <b-input
-              type="textarea"
-              v-model="description"
-              class="is-half  "
-              required
-              placeholder='Description'
-            ></b-input>
-          </b-field>
-          <div class="has-text-danger has-text-centered">{{error}}</div>
-          <button type="submit" :class="['button', 'is-primary', 'is-fullwidth', {'is-loading': pending}]">Add</button>
-        </form>
-      </card>
-    </div>
+  <div class="register-form">
+    <at-card class="register-card" style="width: 300px;">
+      <h1 slot="title">Add new author</h1>
+      <div>
+        <at-input size="large" v-model="name" placeholder="Name"></at-input>
+        <at-input size="large" v-model="surname" placeholder="Surname"></at-input>
+        <at-input size="large" v-model="description" placeholder="Description"></at-input>
+        <at-button @click="addAuthor" class="register-button" size="large" type="primary" hollow>Add</at-button>
+      </div>
+    </at-card>
   </div>
 </template>
 
@@ -72,3 +44,30 @@ export default {
   }
 };
 </script>
+
+<style>
+  .register-card {
+    background-color: rgb(234, 235, 237);
+    text-align: center;
+  }
+
+  .register-form {
+    display: flex;
+    justify-content: center;
+    padding-top: 150px;
+  }
+
+  .register-button {
+    margin-top: 3px;
+    margin-bottom: -11px;
+  }
+
+  .at-input {
+    padding: 3px;
+  }
+
+  h1 {
+    font-size: 2.5em;
+  }
+
+</style>

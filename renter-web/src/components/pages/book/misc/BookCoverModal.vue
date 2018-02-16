@@ -60,6 +60,6 @@
 
 <style scoped>
     .modal-card {
-        width: auto;
+        width: 100%;
     }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <section class="author-details">
-    <b-tabs position="is-centered" expanded >
+    <b-tabs position="is-centered" expanded>
       <b-tab-item label="Info" >
         <div class="columns">
             <div class="column">
@@ -8,14 +8,14 @@
                 <img src="https://tinyfac.es/data/avatars/E0B4CAB3-F491-4322-BEF2-208B46748D4A-1000w.jpeg" alt="">
               </div>
             </div>
-            <div class="column hcenter">
-              <div class="author-info">
-                  <div class="author-info-name">
+            <div class="column">
+              <div class="asset-info">
+                  <div class="name">
                     <h1>{{ author.name }} {{ author.surname}}</h1>
                   </div>
 
-                  <div class="author-books">
-                    {{ author.description }}
+                  <div>
+                    <p class="description">{{ author.description }}</p>
                   </div>
               </div>
             </div>
@@ -23,25 +23,25 @@
       </b-tab-item>
 
       <b-tab-item label="Books">
-        <table-component
-             :data="books"
-             sort-by="name"
-             @rowClick="handleClick"
-             sort-order="asc"
+        <b-table
+          :data="books"
+          @click="handleClick"
+          :striped="true"
         >
-             <table-column :hidden='hidden' show="id" label="ID"></table-column>
-             <table-column show="title" label="Title"></table-column>
-             <table-column label="Copies">
-               <template slot-scope="row">
-                 {{ row.copies.length }}
-               </template>
-             </table-column>
-             <table-column label="Available">
-               <template slot-scope="row">
-                 {{ row.rented }}
-               </template>
-             </table-column>
-         </table-component>
+          <template slot-scope="props">
+              <b-table-column label="Title">
+                {{ props.row.title }}
+              </b-table-column>
+
+              <b-table-column label="Copies">
+                {{ props.row.copies.length }}
+              </b-table-column>
+
+              <b-table-column label="Available">
+                {{ props.row.rented }}
+              </b-table-column>
+             </template>
+        </b-table>
       </b-tab-item>
     </b-tabs>
   </section>
@@ -106,8 +106,23 @@
     },
     methods: {
       handleClick (item) {
-        this.$router.push({ path: '/book/' + item.data.id });
+        this.$router.push({ path: '/book/' + item.id });
       }
     }
   };
 </script>
+<style scoped>
+  h1 {
+    font-size: 3em;
+  }
+
+  .description {
+    font-size: 1.3em;
+    text-align: center;
+    padding: 1em;
+  }
+
+  img {
+    width: 70%;
+  }
+</style>

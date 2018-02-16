@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
+using Models.Models;
 using System;
 
 namespace Database.Migrations
@@ -153,7 +154,11 @@ namespace Database.Migrations
 
                     b.Property<long>("DirectorId");
 
+                    b.Property<DateTime>("ReleaseDate");
+
                     b.Property<double>("Seconds");
+
+                    b.Property<string>("Thumbnail");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -217,13 +222,14 @@ namespace Database.Migrations
 
                     b.Property<DateTime>("From");
 
-                    b.Property<bool>("Received");
+                    b.Property<string>("ISBN");
+
+                    b.Property<int>("State");
 
                     b.Property<DateTime>("To");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(256);
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -244,6 +250,10 @@ namespace Database.Migrations
                     b.Property<DateTime>("From");
 
                     b.Property<long>("MovieId");
+
+                    b.Property<int>("MovieQuality");
+
+                    b.Property<int>("MovieState");
 
                     b.Property<DateTime>("To");
 
@@ -319,10 +329,6 @@ namespace Database.Migrations
 
                     b.Property<string>("Surname")
                         .IsRequired();
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(64);
 
                     b.HasKey("Id");
 

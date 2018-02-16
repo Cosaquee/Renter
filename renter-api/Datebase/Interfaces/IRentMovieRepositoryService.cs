@@ -10,6 +10,14 @@ namespace Database.Interfaces
 
         List<RentMovie> GetMovieRentHisotry(long movieId);
 
-        RentMovie Rent(long movieId, string userId, TimeSpan time);
+        RentMovie Rent(long movieId, string userId, TimeSpan time, MovieQuality quality);
+
+        List<RentMovie> GetUserMovieRentHistory(string userID);
+        List<RentMovie> GetMovieRentHistory(long movieID);
+
+        List<RentMovie> GetCurrentRentedMovies(string userID);
+
+        bool IsCurrentlyRented(long movieID, string userID);
+        List<RentMovie> GetAllRentedMovies();
     }
 }

@@ -7,6 +7,7 @@ import category from './modules/category';
 import book from './modules/book';
 import movie from './modules/movie';
 import covers from './modules/cover';
+import director from './modules/director';
 
 Vue.use(Vuex);
 
@@ -18,6 +19,7 @@ export default new Vuex.Store({
     category,
     book,
     movie,
-    covers
+    covers,
+    director
   },
 });

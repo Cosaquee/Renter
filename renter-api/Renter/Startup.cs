@@ -120,8 +120,6 @@ namespace Renter
             services.AddCors();
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-
         private void RegisterUserServices(IServiceCollection services)
         {
             services.AddTransient<IUserManagementService, UserManagementService>();

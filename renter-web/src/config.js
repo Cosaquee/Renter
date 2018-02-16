@@ -9,7 +9,9 @@ export default {
     CATEGORIES: root + 'category',
     BOOK: root + 'book',
     MOVIE: root + 'movie',
-    USER: root + 'user/'
+    USER: root + 'user',
+    HISTORY: root + 'history',
+    DIRECTOR: root + 'director'
   },
   SERVICES: {
     COVER: {

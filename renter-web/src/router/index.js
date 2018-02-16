@@ -18,10 +18,16 @@ import BookDetails from '@/components/pages/book/BookDetails';
 import BookForm from '@/components/pages/book/BookForm';
 import Book from '@/components/pages/book/Book';
 import BookOrders from '@/components/pages/book/Orders';
+import BookHistory from '@/components/pages/book/BookRentHistory';
 
 import Category from '@/components/pages/category/Category';
 import Movie from '@/components/pages/movie/Movie';
 import MovieDetails from '@/components/pages/movie/MovieDetails';
+import MovieHistory from '@/components/pages/movie/MovieRentHistory';
+import MovieForm from '@/components/pages/movie/MovieForm';
+
+import Director from '@/components/pages/director/Director';
+import DirectorDetails from '@/components/pages/director/DirectorDetails';
 
 Vue.use(Router);
 
@@ -60,13 +66,25 @@ const router = new Router({
       path: '/movie',
       name: 'Movie',
       component: Movie,
-      meta: { auth: true, requiresAdministrator: true, requiresEmployee: true },
+      meta: { auth: true },
+    },
+    {
+      path: '/movie/create',
+      name: 'MovieForm',
+      component: MovieForm,
+      meta: { auth: true },
+    },
+    {
+      path: '/movie/history/:id',
+      name: 'MovieHistory',
+      component: MovieHistory,
+      meta: { auth: true, employeeOnly: true },
     },
     {
       path: '/movie/:id',
-      name: 'MovieD',
+      name: 'MovieID',
       component: MovieDetails,
-      meta: { auth: true, requiresAdministrator: true, requiresEmployee: true },
+      meta: { auth: true },
     },
     {
       path: '/register',
@@ -108,6 +126,11 @@ const router = new Router({
       meta: { auth: true, employeeOnly: true }
     },
     {
+      path: '/book/history/:isbn',
+      component: BookHistory,
+      meta: { auth: true, employeeOnly: true }
+    },
+    {
       path: '/book/:id',
       component: BookDetails,
       meta: { auth: true }
@@ -116,7 +139,17 @@ const router = new Router({
       path: '/category',
       component: Category,
       meta: { auth: true }
-    }
+    },
+    {
+      path: '/director',
+      component: Director,
+      meta: { auth: true }
+    },
+    {
+      path: '/director/:id',
+      component: DirectorDetails,
+      meta: { auth: true }
+    },
   ]
 });
 
@@ -130,7 +163,7 @@ router.beforeEach((to, from, next) => {
       if (store.getters.admin) {
         next();
       } else if (to.meta.employeeOnly) {
-        if (store.getter.employee) {
+        if (store.getters.employee) {
           next();
         } else {
           next({

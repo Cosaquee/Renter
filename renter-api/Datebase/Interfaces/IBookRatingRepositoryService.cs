@@ -9,5 +9,7 @@ namespace Database.Interfaces
         BookRating GetRateByUser(string ISBN, string userId);
 
         void RateBook(string ISBN, string userId, int rate);
+
+        BookRating GetIndividalRate(string ISBN, string userID);
     }
 }

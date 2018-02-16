@@ -73,16 +73,27 @@ post '/cover/movie' do
       f.write(file.read)
     end
 
+    image = MiniMagick::Image.open("./public/#{@filename}")
+    image.resize('200x200')
+    image.write("./resized/#{@filename}")
+
     obj = client.put_object({
       acl: "public-read",
-      bucket: 'cmsrental-movies',
-      key: g_filename,
+      bucket: 'cmsrental',
+      key: "movies/covers/#{g_filename}",
       body: IO.read("./public/#{@filename}")
     })
 
+    client.put_object({
+      acl: "public-read",
+      bucket: 'cmsrental',
+      key: "movies/thumbnail/#{g_filename}",
+      body: IO.read("./resized/#{@filename}")
+    })
+
     {
-      object_url: "https://s3.eu-central-1.amazonaws.com/cmsrental-movies/#{g_filename}",
-      filename: @filename
+      object_url: "https://s3.eu-central-1.amazonaws.com/cmsrental/movies/covers/#{g_filename}",
+      cover_url: "https://s3.eu-central-1.amazonaws.com/cmsrental/movies/thumbnail/#{g_filename}"
     }.to_json
 end
 

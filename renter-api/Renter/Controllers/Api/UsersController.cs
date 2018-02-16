@@ -24,6 +24,7 @@ namespace Renter.Controllers.Api
         private readonly IUserManagementService userManagementService;
         private readonly IRentBookRepositoryService rentBookRepositoryService;
 
+
         public UsersController(IUnitOfWork unitOfWork, IUserRepositoryService userRepositoryService, ITokenProvider tokenProvider, IUserManagementService userManagementService, IRentBookRepositoryService rentBookRepositoryService)
         {
             this.unitOfWork = unitOfWork;
@@ -48,7 +49,7 @@ namespace Renter.Controllers.Api
         public IActionResult Authorize([FromBody]LoginDto loginDto)
         {
             var token = tokenProvider.GenerateToken(loginDto.Username, loginDto.Password);
-            var user = userRepositoryService.FindUserByUsername(loginDto.Username);
+            var user = userRepositoryService.FindUserByEmail(loginDto.Username);
             if (token == null)
                 return NotFound("Bad username or password");
             // TODO: Create better way to handle adding user to token
@@ -120,22 +121,22 @@ namespace Renter.Controllers.Api
         [ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status412PreconditionFailed)]
         public IActionResult CreateUser([FromBody]CreateUserDto createUserDto)
         {
-            //Validate Model
+            // Validate Model
             if (!ModelState.IsValid)
             {
                 Response.StatusCode = StatusCodes.Status412PreconditionFailed;
                 return Json(ModelState);
             }
 
-            //Check if user allready exits
-            var allreadyExists = userRepositoryService.LoginOrEmailIsAllreadyInUser(createUserDto.UserName, createUserDto.Email);
-            if (allreadyExists)
+            // Check if user already exits
+            var alreadyExists = userRepositoryService.LoginOrEmailIsAllreadyInUser(createUserDto.Email);
+            if (alreadyExists)
             {
                 Response.StatusCode = StatusCodes.Status409Conflict;
-                return Json("User name or email is allready in use.");
+                return Json("User name or email is already in use.");
             }
 
-            //Prepare user creation model
+            // Prepare user creation model
             var userCreationResult = userManagementService.CreateUser(createUserDto);
             if (userCreationResult.User == null)
             {
@@ -143,7 +144,7 @@ namespace Renter.Controllers.Api
                 return Json(userCreationResult.Errors);
             }
 
-            //add user to db
+            // add user to db
             userRepositoryService.Insert(userCreationResult.User);
             unitOfWork.Save();
 
@@ -179,15 +180,6 @@ namespace Renter.Controllers.Api
 
         [HttpGet]
         [Authorize(Roles = "Administrator")]
-        public IEnumerable<User> Index()
-        {
-            return userRepositoryService.Get();
-        }
-
-        [HttpGet("RentHistory/{userId}")]
-        public IEnumerable<RentBook> GetRentHistory(string userId)
-        {
-            return rentBookRepositoryService.GetUserRentHisotry(userId);
-        }
+        public IEnumerable<User> Index() => this.userRepositoryService.FetchAllUsers();
     }
 }

@@ -6,7 +6,7 @@ namespace Database.Interfaces
 {
     public interface IRentBookRepositoryService : IRepositoryService<RentBook>
     {
-        RentBook Rent(long bookId, string userId, TimeSpan time);
+        RentBook Rent(long bookId, string userId, TimeSpan time, String ISBN);
 
         bool IsBookAvailable(long bookId);
 

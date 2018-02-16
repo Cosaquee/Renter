@@ -4,13 +4,16 @@ import {
   USER_LOGOUT,
   USER_AUTH_SUCCESS,
   USER_LIST,
-  USER_RENTED_BOOKS
+  USER_RENTED_BOOKS,
+  USER_RENT_HISTORY
 } from '../mutation-types';
 
 const state = {
   token: sessionStorage.getItem('token') || '',
   user: JSON.parse(sessionStorage.getItem('user')) || {},
-  rentedBooks: []
+  users: [],
+  rentedBooks: [],
+  history: []
 };
 
 const getters = {
@@ -20,9 +23,10 @@ const getters = {
   admin: store => state.user.roleId === 3,
   employee: store => state.user.roleId === 2,
   normal_user: store => state.user.roleId === 1,
-  users: store => store.user,
+  users: store => store.users,
   token: store => state.token,
-  rentedBooks: state => state.rentedBooks
+  rentedBooks: state => state.rentedBooks,
+  history: state => state.history
 };
 
 const actions = {
@@ -48,21 +52,22 @@ const actions = {
           store.commit(USER_AUTH_SUCCESS,
             { user: response.data.user, token: response.data.accessToken, refresh_token: response.data.refreshToken });
           resolve();
-        } else {
-          reject();
+        } else if (response.status === 404) {
+          reject('Email or password incorrect.');
         }
-      }).catch(() => {
-        reject('Error sending request to server!');
+      }).catch((error) => {
+        reject(error);
       });
     });
   },
-  registerUser (store, { username, password, cpassword, email }) {
+  registerUser (store, { name, surname, email, password, confirmPassword }) {
     return new Promise(function (resolve, reject) {
-      if (password !== cpassword) reject(new Error('Passwords do not match'));
+      if (password !== confirmPassword) reject(new Error('Passwords do not match'));
       axios.post(config.API.REGISTER, {
-        'username': username,
+        'name': name,
+        'surname': surname,
         'password': password,
-        'confirmPassword': cpassword,
+        'confirmPassword': confirmPassword,
         'email': email
       }).then((response) => {
         if (response.status === 201) {
@@ -76,13 +81,22 @@ const actions = {
   logout (store) {
     store.commit(USER_LOGOUT);
   },
-  getRentedBooks (store) {
+  getRentHistory (store) {
     return new Promise((resolve, reject) => {
-      axios.get(config.API.USER + `renthistory/${store.getters.user.id}`, {
+      axios.get(`${config.API.BOOK}/rent/history/${store.getters.user.id}`, {
         headers: {
           'Authorization': 'Bearer ' + state.token
         }}).then((response) => {
-          // console.log(response.data);
+          store.commit('USER_RENT_HISTORY', { books: response.data.reverse() });
+        });
+    });
+  },
+  getRentedBooks (store) {
+    return new Promise((resolve, reject) => {
+      axios.get(`${config.API.BOOK}/rent/current/${store.getters.user.id}`, {
+        headers: {
+          'Authorization': 'Bearer ' + state.token
+        }}).then((response) => {
           store.commit('USER_RENTED_BOOKS', { books: response.data.reverse() });
         });
     });
@@ -108,6 +122,9 @@ const mutations = {
   },
   [USER_RENTED_BOOKS] (store, { books }) {
     store.rentedBooks = books;
+  },
+  [USER_RENT_HISTORY] (store, { books }) {
+    store.history = books;
   }
 };
 

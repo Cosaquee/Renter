@@ -1,69 +1,26 @@
 <template>
-  <div class="columns">
-    <div class="column is-4 is-offset-4">
-      <card title="Add new book" icon="book">
-        <form @submit="addBook">
-          <b-field label="Title">
-            <b-input
-              type="text"
-              name="title"
-              required
-              v-model="title"
-              placeholder='Title'
-            ></b-input>
-          </b-field>
+  <div class="register-form">
+    <at-card class="register-card" style="width: 300px;">
+      <h1 slot="title">Add new book</h1>
+      <div>
+        <at-alert v-if="error" message="Somenthing went wrong, please check data you provided" type="error"></at-alert>
+        <at-input size="large" v-model="title" placeholder="Title"></at-input>
+        <at-input size="large" v-model="isbn" :status="isbnStatus" placeholder="ISBN"></at-input>
+        <at-input size="large" v-model="description" type="textarea" placeholder="Description"></at-input>
 
-          <b-field label="ISBN">
-            <b-input
-              type="text"
-              name="isbn"
-              required
-              v-model="isbn"
-              placeholder='ISBN'
-            ></b-input>
-          </b-field>
+        <at-select class="select" filterable size="large" v-model="selectedCategory" placeholder="Select category">
+          <at-option v-for="category in categories" :value="category.name">{{ category.name }}</at-option>
+        </at-select>
 
-          <b-field label="Choose author">
-              <b-autocomplete
-                  v-model="authorName"
-                  :data="filteredDataArray"
-                  icon="magnify"
-                  required
-                  @select="option => selected = option">
-                  placeholder="Author"
-                  <template slot="empty">Brak takiego autora, trzeba najpierw go stworzyć.</template>
-              </b-autocomplete>
-          </b-field>
+        <at-select class="select" filterable size="large" v-model="authorName" placeholder="Select author">
+          <at-option v-for="category in filteredDataArray" :value="category.name">{{ category.name }}</at-option>
+        </at-select>
 
-          <b-field label="Choose category">
-              <b-autocomplete
-                  v-model="name"
-                  :data="categories"
-                  icon="magnify"
-                  required
-                  @select="option => selectedCategory = option">
-                  placeholder="Category"
-                  <template slot="empty">Brak takiej kategorii, trzeba najpierw ją stworzyć.</template>
-              </b-autocomplete>
-          </b-field>
-
-
-          <b-field label="Description">
-            <b-input
-              type="textarea"
-              v-model="description"
-              class="is-half  "
-              required
-              placeholder='Description'
-            ></b-input>
-          </b-field>
-
-          <div class="has-text-danger has-text-centered">{{ error }}</div>
-          <button type="submit" :class="['button', 'is-primary', 'is-fullwidth', {'is-loading': pending}]">Add</button>
-        </form>
-      </card>
-    </div>
+        <at-button @click="addBook" class="register-button" size="large" type="primary" hollow>Add</at-button>
+      </div>
+    </at-card>
   </div>
+
 </template>
 
 <script>
@@ -92,6 +49,10 @@
       addBook (e) {
         e.preventDefault();
         var authorID;
+        if (this.authorName === '' || !this.selectedCategory || this.title === '' || this.description === '') {
+          this.error = true;
+        }
+
         let name = this.authorName.split(' ')[0];
         let surname = this.authorName.split(' ')[1];
 
@@ -104,12 +65,7 @@
         let selectedCategory = this.selectedCategory;
 
         // TODO: reformat to anonymous function
-        let cat = this.$store.getters.categories.find(function (category) { return category.name === selectedCategory; });
-        console.log(this.title);
-        console.log(this.isbn);
-        console.log(authorID);
-        console.log(this.description);
-        console.log(cat.id);
+        const cat = this.$store.getters.categories.find(function (category) { return category.name === selectedCategory; });
 
         this.$store.dispatch('addBook', {
           title: this.title,
@@ -120,20 +76,60 @@
         }).then(() => {
           // TODO: Loading
           this.$router.push({ path: '/book' });
+        }).catch((error) => {
+          this.error = error.message;
         });
       }
     },
     computed: {
       filteredDataArray () {
         return this.$store.getters.authors.map((author) => {
-          return author.name + ' ' + author.surname;
+          return { name: author.name + ' ' + author.surname };
         });
       },
       categories () {
         return this.$store.getters.categories.map((category) => {
-          return category.name;
+          return { name: category.name };
         });
+      },
+      isbnStatus () {
+        if (this.isbn !== '') {
+          if (this.isbn.length !== 13) {
+            return 'error';
+          } else {
+            return 'success';
+          }
+        }
       }
     }
   };
 </script>
+
+<style>
+  .error {
+    color: red;
+  }
+  .register-card {
+    text-align: center;
+  }
+
+  .register-form {
+    display: flex;
+    justify-content: center;
+    padding-top: 150px;
+  }
+
+  .register-button {
+    margin-top: 3px;
+    margin-bottom: -11px;
+    width: 100%;
+  }
+
+  .at-input {
+    padding: 3px;
+  }
+
+  .select {
+    padding: 2px;
+  }
+</style>

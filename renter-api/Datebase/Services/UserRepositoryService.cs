@@ -4,6 +4,7 @@ using Models.Models;
 using Services.Utils;
 using System;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Database.Services
 {
@@ -13,16 +14,15 @@ namespace Database.Services
         {
         }
 
-        public User FindUserByUsername(string userName)
-        {
-            return Queryable().Where(x => x.UserName == userName).FirstOrDefault();
-        }
-
-        public User FindUser(string userName, string password)
+        public User LoginByEmail(string email, string password)
         {
             var hashedPassword = PasswordHasher.CalculateHashedPassword(password);
-            return Queryable().Include(x => x.Role).Where(x => string.Equals(x.UserName, userName, StringComparison.InvariantCultureIgnoreCase) &&
-                                                               string.Equals(x.Password, hashedPassword)).FirstOrDefault();
+            return Queryable().Include(x => x.Role).Where(x => x.Email == email && x.Password == hashedPassword).FirstOrDefault();
+        }
+        
+        public User FindUserByEmail(string email)
+        {
+            return Queryable().Where(x => x.Email == email).FirstOrDefault();
         }
 
         public User GetWithRole(string userId)
@@ -30,15 +30,7 @@ namespace Database.Services
             return Queryable().Include(x => x.Role).Where(x => x.Id == userId).FirstOrDefault();
         }
 
-        public string GetUserId(string userName, string password)
-        {
-            return Queryable().Where(x => string.Equals(x.UserName, userName, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault()?.Id;
-        }
-
-        public bool LoginOrEmailIsAllreadyInUser(string userName, string email)
-        {
-            return Queryable().Where(x => string.Equals(x.UserName, userName, StringComparison.InvariantCultureIgnoreCase) ||
-            string.Equals(x.Email, email, StringComparison.InvariantCultureIgnoreCase)).Any();
-        }
+        public bool LoginOrEmailIsAllreadyInUser(string email) => Queryable().Where(x => x.Email == email).Any();
+        public List<User> FetchAllUsers() => Queryable().Include(x => x.Role).Include(x => x.RentBooks).Include(x => x.RentBooks).ToList();
     }
 }

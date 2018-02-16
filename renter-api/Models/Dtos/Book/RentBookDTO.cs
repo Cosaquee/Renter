@@ -12,5 +12,8 @@ namespace Models.Dtos.RentBook
 
         [Required]
         public int RentDuration { get; set; }
+
+        [Required]
+        public string ISBN { get; set; }
     }
 }

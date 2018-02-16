@@ -31,7 +31,7 @@ namespace Authorization
         public AuthToken GenerateToken(string userName, string password)
         {
             //get user
-            user = userRepositoryService.FindUser(userName, password);
+            user = userRepositoryService.LoginByEmail(userName, password);
             if (user == null)
             {
                 return null;
@@ -109,7 +109,7 @@ namespace Authorization
         private ClaimsIdentity GetIdentity(string jwtID)
         {
             //user claims need for auth setup
-            return new ClaimsIdentity(new GenericIdentity(user.UserName, "Token"), new Claim[]
+            return new ClaimsIdentity(new GenericIdentity(user.Email, "Token"), new Claim[]
             {
                     new Claim(ClaimTypes.NameIdentifier, user.Id),
                     new Claim(ClaimTypes.Role, user.Role.Name),

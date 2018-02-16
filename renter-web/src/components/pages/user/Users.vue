@@ -1,6 +1,6 @@
 <template>
   <section>
-         <b-table
+         <!-- <b-table
              :data="computedUsers"
              :paginated="isPaginated"
              :per-page="perPage"
@@ -29,60 +29,36 @@
                      {{ props.row.movies }}
                  </b-table-column>
              </template>
-         </b-table>
+         </b-table> -->
+           <el-table
+            :data="computedUsers"
+            style="width: 100%"
+            empty-text="No users">
+              <el-table-column label="Name">
+                <template slot-scope="scope">{{ scope.row.name }}</template>
+              </el-table-column>
+              <el-table-column label="Surname">
+              <template slot-scope="scope">{{ scope.row.surname}}</template>
+              </el-table-column>
+              <el-table-column label="Role">
+              <template slot-scope="scope">{{ scope.row.role.name }}</template>
+              </el-table-column>
+          </el-table>
      </section>
 </template>
 
 <script>
-  import _ from 'lodash';
-
   export default {
     data () {
       return {
-        users: this.$store.state.user.users,
-        isPaginated: true,
-        isPaginationSimple: false,
-        defaultSortDirection: 'asc',
-        perPage: 5
       };
     },
-    created: function () {
+    created () {
       this.$store.dispatch('getUsers');
     },
     computed: {
-      computedUsers: function () {
-        let roles = {
-          1: 'Administrator',
-          2: 'Employee',
-          3: 'User'
-        };
-
-        var users = [];
-
-        _.forEach(this.$store.state.user.users, (user) => {
-          var movies = null;
-          var books = null;
-
-          if (user.rentMovies === null) {
-            movies = [];
-          }
-
-          if (user.rentBooks === null) {
-            books = [];
-          }
-
-          let us = {
-            email: user.email,
-            role: roles[user.roleId],
-            name: user.userName,
-            movies: movies.length,
-            books: books.length
-          };
-
-          users.push(us);
-        });
-
-        return users;
+      computedUsers () {
+        return this.$store.getters.users;
       }
     }
   };

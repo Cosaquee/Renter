@@ -6,13 +6,14 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
+using Models.Models;
 using System;
 
 namespace Database.Migrations
 {
     [DbContext(typeof(RentalContext))]
-    [Migration("20180120141000_ResizedCoverUrl")]
-    partial class ResizedCoverUrl
+    [Migration("20180207222942_InitialMIgration")]
+    partial class InitialMIgration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -25,6 +26,8 @@ namespace Database.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedDate");
 
                     b.Property<string>("Description");
 
@@ -51,6 +54,8 @@ namespace Database.Migrations
                     b.Property<long>("CategoryId");
 
                     b.Property<string>("CoverURL");
+
+                    b.Property<DateTime>("CreatedDate");
 
                     b.Property<string>("Description");
 
@@ -82,6 +87,8 @@ namespace Database.Migrations
 
                     b.Property<long?>("BookId");
 
+                    b.Property<DateTime>("CreatedDate");
+
                     b.Property<string>("ISBN");
 
                     b.Property<int>("Rate");
@@ -102,6 +109,8 @@ namespace Database.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<DateTime>("CreatedDate");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(64);
@@ -115,6 +124,8 @@ namespace Database.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedDate");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -138,11 +149,17 @@ namespace Database.Migrations
 
                     b.Property<string>("CoverURL");
 
+                    b.Property<DateTime>("CreatedDate");
+
                     b.Property<string>("Description");
 
                     b.Property<long>("DirectorId");
 
+                    b.Property<DateTime>("ReleaseDate");
+
                     b.Property<double>("Seconds");
+
+                    b.Property<string>("Thumbnail");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -161,6 +178,8 @@ namespace Database.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedDate");
 
                     b.Property<long>("MovieId");
 
@@ -182,6 +201,8 @@ namespace Database.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<DateTime>("CreatedDate");
+
                     b.Property<DateTime>("Expire");
 
                     b.Property<string>("UserId");
@@ -198,15 +219,18 @@ namespace Database.Migrations
 
                     b.Property<long>("BookId");
 
+                    b.Property<DateTime>("CreatedDate");
+
                     b.Property<DateTime>("From");
 
-                    b.Property<bool>("Received");
+                    b.Property<string>("ISBN");
+
+                    b.Property<int>("State");
 
                     b.Property<DateTime>("To");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(256);
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -222,9 +246,15 @@ namespace Database.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<DateTime>("CreatedDate");
+
                     b.Property<DateTime>("From");
 
                     b.Property<long>("MovieId");
+
+                    b.Property<int>("MovieQuality");
+
+                    b.Property<int>("MovieState");
 
                     b.Property<DateTime>("To");
 
@@ -246,6 +276,8 @@ namespace Database.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<DateTime>("CreatedDate");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(32);
@@ -262,6 +294,8 @@ namespace Database.Migrations
 
                     b.Property<decimal>("Cost");
 
+                    b.Property<DateTime>("CreatedDate");
+
                     b.Property<string>("Name");
 
                     b.Property<double>("Seconds");
@@ -276,6 +310,8 @@ namespace Database.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(256);
+
+                    b.Property<DateTime>("CreatedDate");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -310,6 +346,8 @@ namespace Database.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedDate");
 
                     b.Property<DateTime>("StartDate");
 

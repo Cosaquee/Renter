@@ -4,8 +4,17 @@ export const USER_LIST = 'USER_LIST';
 export const AUTHOR_LIST = 'AUTHOR_LIST';
 export const NEW_AUTHOR = 'NEW_AUTHOR';
 export const CATEGORY_LIST = 'CATEGORY_LIST';
+
 export const MOVIE_LIST = 'MOVIE_LIST';
+export const LATEST_MOVIES = 'LATEST_MOVIES';
+export const RENTED_MOVIES = 'RENTED_MOVIES';
+export const RENTED_MOVIES_HISTORY = 'RENTED_MOVIES_HISTORY';
+
 export const USER_RENTED_BOOKS = 'USER_RENTED_BOOKS';
-export const RENTED_BOOKS = 'RENTED_BOOKS';
 export const ALL_BOOKS = 'ALL_BOOKS';
+export const RENTED_BOOKS = 'RENTED_BOOKS';
+export const USER_RENT_HISTORY = 'USER_RENT_HISTORY';
 export const LATEST_BOOKS = 'LATEST_BOOKS';
+export const BOOK_RATE = 'BOOK_RATE';
+
+export const ALL_DIRECTORS = 'ALL_DIRECTORS';

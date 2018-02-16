@@ -1,113 +1,45 @@
 <template>
-  <nav class="navbar is-light" style="margin-bottom: 10px;">
-    <div class="navbar-brand">
-      <router-link class="navbar-item" to="/">
-        <img src="https://image.flaticon.com/icons/png/512/25/25694.png" alt="Logo" >
-
-      </router-link>
-      <a class="navbar-item" slot="trigger">
-        <span @click="back"><b>Back</b></span>
-      </a>
-      <button class="button navbar-burger">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
-    <!-- TODO: Move menus closer together -->
-    <div v-if="isLogged" class="navbar-menu">
-    <div class="navbar-start">
-       <b-dropdown position="is-bottom-left">
-         <a class="navbar-item" slot="trigger">
-           <span>Wypożyczalnia</span>
-           <b-icon icon="angle-down"></b-icon>
-         </a>
-         <b-dropdown-item has-link>
-           <router-link to="/book">
-             <b-icon icon="book"></b-icon>
-            Książki
-           </router-link>
-         </b-dropdown-item>
-         <b-dropdown-item has-link>
-           <router-link to="/movie">
-             <b-icon icon="film"></b-icon>
-             Filmy
-          </router-link>
-        </b-dropdown-item>
-      </b-dropdown>
-   </div>
-
-   <div class="navbar-end">
-     <b-dropdown position="is-bottom-left">
-       <a class="navbar-item" slot="trigger">
-         <span>Welcome, <b>{{ user.userName }}</b></span>
-         <b-icon icon="angle-down"></b-icon>
-       </a>
-       <b-dropdown-item custom >
-         Zalogowany jako <b>{{this.returnNameRole()}}</b>
-       </b-dropdown-item>
-       <b-dropdown-item has-link>
-         <router-link to="/profile">
-           <b-icon icon="user"></b-icon>
-           Profile
-         </router-link>
-       </b-dropdown-item>
-       <div v-if="admin || employee" >
-         <b-dropdown-item @click="showAdminActions">
-          <b> Narzędzia Administracyjne</b>
-         </b-dropdown-item>
-         <hr class="dropdown-divider">
-           <b-dropdown-item has-link>
-             <router-link to="/users">
-               <b-icon icon="user"></b-icon>
-               Users
-             </router-link>
-           </b-dropdown-item>
-           <b-dropdown-item has-link>
-             <router-link to="/author">
-               <b-icon icon="address-book"></b-icon>
-               Authors
-             </router-link>
-           </b-dropdown-item>
-           <b-dropdown-item has-link>
-             <router-link to="/category">
-               <b-icon icon="camera-retro"></b-icon>
-               Kategorie
-             </router-link>
-           </b-dropdown-item>
-           <b-dropdown-item has-link>
-             <router-link to="/book/orders">
-               <b-icon icon="fa-list"></b-icon>
-               Book orders
-             </router-link>
-           </b-dropdown-item>
-       </div>
-       <hr class="dropdown-divider">
-       <b-dropdown-item value="logout" @click="logout">
-           <b-icon icon="sign-out"></b-icon>
-           Logout
-       </b-dropdown-item>
-     </b-dropdown>
-   </div>
-    <div v-if="!isLogged" class="navbar-menu">
-      <div class="navbar-end">
-        <router-link to="login" class="is-tab navbar-item">Login</router-link>
-        <router-link to="register" class="is-tab navbar-item">Register</router-link>
+  <section>
+    <at-menu v-if="isLogged" mode="horizontal" class="nav-bar">
+      <div class="navigation">
+         <at-menu-item :to="{ path: '/' }" name="home"><i class="icon icon-home"></i>Home</at-menu-item>
+         <at-menu-item :to="{ path: '/book' }" name="books"><i class="icon icon-book"></i>Books</at-menu-item>
+         <at-menu-item :to="{ path: '/movie' }" name="movie"><i class="icon icon-film"></i>Movies</at-menu-item>
+         <at-submenu>
+           <template slot="title"><i class="icon icon-users"></i>People</template>
+            <at-menu-item :to="{ path: '/author' }" name="author">Authors</at-menu-item>
+            <at-menu-item :to="{ path: '/director' }" name="director">Directors</at-menu-item>
+         </at-submenu>
       </div>
-    </div>
-  </div>
-  </nav>
+
+      <div class="administration">
+        <at-submenu v-if="">
+          <template slot="title"><i class="icon icon-settings"></i>{{ user.name }} {{ user.surname }}</template>
+          <at-menu-item :to="{ path: '/profile' }" name="profile"><i class="icon icon-user"></i>Profile</at-menu-item>
+          <at-menu-item v-if="admin" :to="{ path: '/users' }" name="Users"><i class="icon icon-users"></i>Users</at-menu-item>
+          <at-menu-item v-if="admin || employee" :to="{ path: '/book/orders' }" name="Orders"><i class="icon icon-shopping-cart"></i>Orders</at-menu-item>
+          <at-menu-item name="Logout"><i @click="logout" class="icon icon-log-out"></i>Logout</at-menu-item>
+        </at-submenu>
+      </div>
+    </at-menu>
+
+    <at-menu v-if="!isLogged" mode="horizontal" class="nav-bar">
+      <div class="navigation">
+         <at-menu-item :to="{ path: '/' }" name="home"><i class="icon icon-home"></i>Home</at-menu-item>
+      </div>
+
+      <div class="administration">
+         <at-menu-item :to="{ path: '/login' }" name="login">Login</at-menu-item>
+         <at-menu-item :to="{ path: '/register' }" name="register">Register</at-menu-item>
+      </div>
+    </at-menu>
+  </section>
 </template>
 
 <script>
   import { mapGetters } from 'vuex';
 
   export default {
-    data () {
-      return {
-        isAdminOpen: false
-      };
-    },
     computed: mapGetters(['isLogged', 'user', 'admin', 'employee']),
     methods: {
       logout () {
@@ -117,17 +49,14 @@
       back () {
         this.$router.go(-1);
       },
-      returnNameRole () {
-        if (this.isLogged) {
-          return this.$store.state.user.user.role.name.toString();
-        } else {
-          return '';
-        }
-      },
-      showAdminActions () {
-        this.isAdminOpen = !this.isAdminOpen;
-        return this.isAdminOpen;
-      },
-    },
+    }
   };
 </script>
+
+<style>
+  .nav-bar {
+    margin-bottom: 1em;
+    display: flex;
+    justify-content: space-between;
+  }
+</style>

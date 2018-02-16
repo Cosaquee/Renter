@@ -1,18 +1,20 @@
 <template>
   <section>
     <h3 class="title">Our latest books</h3>
-
-    <div class="latest-books container">
-      <img @click="change(book.id)" class="book" v-for="book in latestBooks" :src="book.resizedCoverURL"></img>
-      <div v-for="book in latestBooks" class="book-stars">
-        <Rate :length="5"></Rate>
-      </div>
+    <div class="content">
+      <book-card v-for="book in latestBooks" :key="book.id" :book="book"></book-card>
+    </div>
+    <h3 class="title">Our latest movies</h3>
+    <div class="content">
+      <movie-card v-for="movie in latestMovies" :key="movie.id" :movie="movie"></movie-card>
     </div>
   </section>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
+import BookCard from './BookCard';
+import MovieCard from './MovieCard';
 export default {
   data () {
     return {
@@ -26,10 +28,13 @@ export default {
   },
   created () {
     this.$store.dispatch('getLatestBooks');
+    this.$store.dispatch('getLatestMovies');
   },
   components: {
+    BookCard,
+    MovieCard
   },
-  computed: mapGetters(['latestBooks'])
+  computed: mapGetters(['latestBooks', 'latestMovies'])
 };
 </script>
 
@@ -38,29 +43,20 @@ export default {
     background: hsla(0, 0%, 92%, 0.5);
   }
 
- .book {
-   padding: 1em;
-   background: rgba(#f5f5f5, 0.33);
-   cursor: pointer;
-   margin-bottom: -1em;
-   transition: all 100ms ease-in-out;
-   display: inline-block;
-   text-align: center;
-   max-width: 250px;
-   min-width: 250px;
- }
+  .content {
+    display: flex;
+    justify-content: center;
+    flex-flow: row wrap;
+  }
 
- .book-stars {
-   display: inline-block;
-   text-align: center;
-   max-width: 250px;
-   min-width: 250px;
- }
+  .book {
+    margin: 10px;
+  }
 
- .book:hover {
-   transform: translateY(-0.5em);
-   background: #EBEBEB;
- }
+  .book:hover {
+    transform: translateY(-0.5em);
+    background: #EBEBEB;
+  }
 
  .title {
    text-align: center;

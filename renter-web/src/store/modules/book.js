@@ -5,19 +5,23 @@ import config from '../../config';
 import {
   RENTED_BOOKS,
   ALL_BOOKS,
-  LATEST_BOOKS
+  LATEST_BOOKS,
+  USER_RENT_HISTORY,
+  BOOK_RATE
 } from '../mutation-types';
 
 const state = {
   books: [],
   allRentedBooks: [],
-  latestBooks: []
+  latestBooks: [],
+  rate: 0
 };
 
 const getters = {
   allRentedBooks: state => state.allRentedBooks,
   books: state => state.books,
-  latestBooks: state => state.latestBooks
+  latestBooks: state => state.latestBooks,
+  rate: state => state.rate
 };
 
 const actions = {
@@ -34,12 +38,13 @@ const actions = {
       });
     });
   },
-  rentBook (store, { userID, bookID, duration }) {
+  rentBook (store, { userID, bookID, duration, isbn }) {
     return new Promise((resolve, reject) => {
       axios.post(config.API.BOOK + `/rent`, {
         bookID: bookID,
         userID: userID,
-        RentDuration: duration
+        RentDuration: duration,
+        ISBN: isbn
       }, {
         headers: {
           'Authorization': `Bearer ${store.getters.token}`
@@ -74,20 +79,22 @@ const actions = {
         _.forEach(response.data, (book) => {
           if (tmpBooks[book.isbn]) {
             let oldValue = tmpBooks[book.isbn].copies;
-
+            console.log(book.state);
             let b = {
               title: book.title,
               author: book.author,
               isbn: book.isbn,
               id: book.id,
               coverURL: book.coverURL,
-              resaizedCoverURL: book.resizedCoverURL,
+              resizedCoverURL: book.resizedCoverURL,
               category: book.category,
+              rate: book.bookRatings,
               copies: [oldValue].concat([book])
             };
 
             tmpBooks[book.isbn] = b;
           } else {
+            console.log(book.state);
             tmpBooks[book.isbn] = {
               title: book.title,
               author: book.author,
@@ -95,7 +102,8 @@ const actions = {
               id: book.id,
               coverURL: book.coverURL,
               category: book.category,
-              resaizedCoverURL: book.resizedCoverURL,
+              rate: book.bookRatings,
+              resizedCoverURL: book.resizedCoverURL,
               copies: [book]
             };
           }
@@ -203,8 +211,83 @@ const actions = {
           'Authorization': `Bearer ${store.getters.token}`
         }
       }).then((response) => {
-        console.log(response);
         store.commit(LATEST_BOOKS, { books: response.data });
+      });
+    });
+  },
+  rateBook (store, { isbn, rate }) {
+    return new Promise((resolve, reject) => {
+      axios.post(`${config.API.BOOK}/rate`, {
+        ISBN: isbn,
+        UserID: store.getters.user.id,
+        Rate: rate
+      }, {
+        headers: {
+          'Authorization': `Bearer ${store.getters.token}`
+        }
+      }).then((response) => {
+        resolve(response);
+      }).catch((error) => {
+        reject(error);
+      });
+    });
+  },
+  fetchBooksWithRatings (store) {
+    return new Promise((resolve, reject) => {
+      axios.get(`${config.API.BOOK}/stars`, {
+        headers: {
+          'Authorization': `Bearer ${store.getters.token}`
+        }
+      }).then((response) => {
+        var allBooks = store.getters.books;
+        var books = [];
+        allBooks.map((book) => {
+          var ratings = [];
+          response.data.map((bookRating) => {
+            if (book.isbn === bookRating.isbn) {
+              ratings.push(bookRating.rate);
+            }
+          });
+          let rate = ratings.reduce((a, b) => a + b, 0);
+          let meanRate = rate / ratings.length;
+          let bok = {
+            title: book.title,
+            author: book.author,
+            rate: meanRate,
+            isbn: book.isbn,
+            id: book.id,
+            coverURL: book.coverURL,
+            copies: book.copies,
+            category: book.category,
+            resizedCoverURL: book.resaizedCoverURL
+          };
+          books.push(bok);
+        });
+        store.commit('ALL_BOOKS', { books: books });
+      });
+    });
+  },
+  getBookRentHistory (store, { isbn }) {
+    return new Promise((resolve, reject) => {
+      axios.get(`${config.API.BOOK}/history/${isbn}`, {
+        headers: {
+          'Authorization': `Bearer ${store.getters.token}`
+        }
+      }).then((response) => {
+        resolve(response.data);
+      }).catch((error) => {
+        reject(error);
+      });
+    });
+  },
+  fetchBookRate (store, { isbn }) {
+    return new Promise((resolve, reject) => {
+      axios.get(`${config.API.BOOK}/rate/${isbn}`, {
+        headers: {
+          'Authorization': `Bearer ${store.getters.token}`
+        }
+      }).then((response) => {
+        store.commit(BOOK_RATE, { rate: response.data });
       });
     });
   }
@@ -217,8 +300,14 @@ const mutations = {
   [ALL_BOOKS] (store, { books }) {
     state.books = books;
   },
+  [USER_RENT_HISTORY] (store, { books }) {
+    state.rentHistory = books;
+  },
   [LATEST_BOOKS] (store, { books }) {
     state.latestBooks = books;
+  },
+  [BOOK_RATE] (store, { rate }) {
+    state.rate = rate;
   }
 };
 

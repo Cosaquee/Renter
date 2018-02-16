@@ -1,25 +1,35 @@
 <template>
   <section>
-    <div class="columns .is-centered">
-        <div class="column">
-
-          <div v-if="admin || employee" class="author-add">
-            <a @click="addAuthor" class="button is-primary is-outlined">New Author</a>
-          </div>
-          <table-component
-               :data="computedAuthors"
-               sort-by="name"
-               @rowClick="handleClick"
-               sort-order="asc"
-          >
-               <table-column :hidden="hidden" show="id" label="ID"></table-column>
-               <table-column show="name" label="First name"></table-column>
-               <table-column show="surname" label="Surname"></table-column>
-               <table-column show="books" label="Books"></table-column>
-           </table-component>
-         </div>
+    <div class="search-menu">
+      <div>
+        <at-input class="search-menu-left-input" v-model="name" @input="searchAuthor" placeholder="Search for author"></at-input>
+      </div>
+      <div>
+        <at-button @click="addAuthor" type="info" hollow>Add</at-button>
+      </div>
     </div>
-   </section>
+    <div>
+      <b-table
+           :data="searchBox"
+           @click="handleClick"
+           :striped="true"
+      >
+        <template slot-scope="props">
+          <b-table-column label="Name">
+            {{ props.row.name }}
+          </b-table-column>
+
+          <b-table-column label="Surname">
+            {{ props.row.surname }}
+          </b-table-column>
+
+          <b-table-column label="Books">
+            {{ props.row.books.length }}
+          </b-table-column>
+         </template>
+       </b-table>
+    </div>
+ </section>
 </template>
 
 <script>
@@ -27,7 +37,7 @@ import _ from 'lodash';
 export default {
   data () {
     return {
-      hidden: true
+      name: ''
     };
   },
   created: function () {
@@ -35,10 +45,13 @@ export default {
   },
   methods: {
     handleClick (item) {
-      this.$router.push({ path: '/author/' + item.data.id });
+      this.$router.push({ path: '/author/' + item.id });
     },
     addAuthor (event) {
       this.$router.push({ name: 'AuthorForm' });
+    },
+    searchAuthor () {
+      this.name = this.name;
     }
   },
   computed: {
@@ -64,6 +77,21 @@ export default {
 
       return authors;
     },
+    searchBox () {
+      if (this.name !== '') {
+        return this.$store.getters.authors.filter((author) => {
+          return author.name.toUpperCase().includes(this.name.toUpperCase()) || author.surname.toUpperCase().includes(this.name.toUpperCase());
+        });
+      }
+      return this.$store.getters.authors;
+    }
   }
 };
 </script>
+
+<style scoped>
+  .search-menu {
+    display: flex;
+    justify-content: space-between;
+  }
+</style>

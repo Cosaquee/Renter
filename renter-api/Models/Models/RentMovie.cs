@@ -3,6 +3,19 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Models.Models
 {
+
+    public enum MovieState {
+        ACTIVE,
+        EXPIRED
+    }
+
+    public enum MovieQuality {
+        SD,
+        HDREADY,
+        FULLHD,
+        FOURK
+    }
+
     public class RentMovie : BaseEntity
     {
         [Key]
@@ -24,5 +37,8 @@ namespace Models.Models
 
         [Required]
         public DateTime To { get; set; }
+        public MovieState MovieState { get; set; }
+
+        public MovieQuality MovieQuality {get; set; }
     }
 }

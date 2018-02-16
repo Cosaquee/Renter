@@ -44,14 +44,11 @@ namespace Database.Services
 
         public bool IsBookAvailable(long bookId)
         {
-            return !Queryable().Where(x => x.BookId == bookId && x.To >= DateTime.Now).Any();
+            return !Queryable().Where(x => x.BookId == bookId && x.To >= DateTime.Now && x.State == State.ARCHIVED).Any();
         }
 
-        public RentBook Rent(long bookId, string userId, TimeSpan time)
+        public RentBook Rent(long bookId, string userId, TimeSpan time, String ISBN)
         {
-            if (IsBookAvailable(bookId) == false)
-                return null;
-
             var now = DateTime.Now;
 
             var rentBook = new RentBook
@@ -60,7 +57,8 @@ namespace Database.Services
                 UserId = userId,
                 From = now,
                 To = now.Add(time),
-                Received = false
+                ISBN = ISBN,
+                State = State.READY
             };
 
             var book = getBookById(bookId);
@@ -87,7 +85,7 @@ namespace Database.Services
         public RentBook Confirm(long bookID)
         {
             var book = Queryable().Where(x => x.BookId == bookID).FirstOrDefault();
-            book.Received = true;
+            book.State = State.RENTED;
             dbContext.Update(book);
             dbContext.SaveChanges();
 
@@ -96,7 +94,7 @@ namespace Database.Services
         public RentBook ConfirmReturn(long bookID)
         {
             var rentBook = Queryable().Where(x => x.BookId == bookID).FirstOrDefault();
-            dbContext.Remove(rentBook);
+            rentBook.State = State.ARCHIVED;
             dbContext.SaveChanges();
 
             return rentBook;

@@ -1,11 +1,12 @@
 <template>
   <section class="book-details">
     <b-loading :active.sync="loading" :canCancel="false"></b-loading>
-    <section class="book-menu">
-      <div v-if="admin || employee" class="menu">
-        <button class="button is-outlined is-medium is-info" @click="prompt">Edit</button>
-        <button class="button is-outlined is-primary is-medium" @click="isComponentModalActive = true">Add cover</button>
-        <a class="button is-danger is-outlined is-medium" @click="deleteBook">Delete</a>
+    <section class="menu">
+      <div v-if="admin || employee">
+        <at-button class="menu-button" type="info" size="large" icon="icon-edit" hollow @click="prompt">Edit</at-button>
+        <at-button class="menu-button" type="primary" size="large" icon="icon-file-plus" hollow @click="isComponentModalActive = true">Add cover</at-button>
+        <at-button class="menu-button" type="error" size="large" icon="icon-trash-2" hollow @click="deleteBook">Delete book</at-button>
+        <at-button class="menu-button" type="default" size="large" icon="icon-info" hollow @click="showBookHistory">Show history</at-button>
       </div>
     </section>
 
@@ -13,12 +14,13 @@
       <BookCoverModal v-bind="{ book: this.book }"></BookCoverModal>
     </b-modal>
 
-    <div class="columns book-info">
-      <div class="column">
+    <div class="row at-row no-gutter flex-center asset-info">
+      <div class="col-sd-12 col-md-12">
           <img :src="book.coverURL" alt="Book Cover">
       </div>
 
-      <div class="column">
+      <div class="col-md-12">
+        <div class="book">
           <div class="book-title">
             {{ book.title }}
           </div>
@@ -28,7 +30,11 @@
           </div>
 
           <div class="book-stars">
-            <Rate :length="5"></Rate>
+            Rate: <b>{{ bookRate }}</b>
+            Your rate:
+            <at-select @on-change="confirm" class="rate" style="width: 10px;" v-model="userRate" placeholder="Your score...">
+              <at-option v-for="i in range(1,6)" :key="i" :value="i">{{ i }}</at-option>
+            </at-select>
           </div>
 
           <div class="book-description">
@@ -36,14 +42,18 @@
           </div>
 
           <div v-if="this.authorBooks.length != 0" class="book-rent">
-            <div class="rent-datepicker">
-                <h1 class="rent-title">Select return date</h1>
-                <b-datepicker v-model="date"></b-datepicker>
-            </div>
+            <h1>Select return date</h1>
+            <el-date-picker
+              v-model="date"
+              type="date"
+              placeholder="Pick a return day">
+            </el-date-picker>
             <div>
-              <a  class="button is-success is-outlined is-large rent-button" @click="rentBook">Rent</a>
+              <at-button class="rent-button" type="success" size="large" hollow @click="rentBook">Rent</at-button>
             </div>
           </div>
+          <at-alert class="alert" v-else message="We are sorry but currently there is no book available to rent. Please check later" type="error"></at-alert>
+        </div>
       </div>
     </div>
   </section>
@@ -51,6 +61,8 @@
 
 <script>
   import BookCoverModal from './misc/BookCoverModal';
+  import _ from 'lodash';
+
   var moment = require('moment');
 
   export default {
@@ -62,33 +74,61 @@
         isComponentModalActive: false,
         date: new Date(),
         loading: false,
-        error: true
+        error: true,
+        readonly: false,
+        rate: 0,
+        userRate: 0
       };
     },
     components: {
       BookCoverModal
     },
     computed: {
-      rate: function () {
-        return this.book.bookRatings[0].rate / 2;
-      },
-      admin: function () {
+      admin () {
         return this.$store.getters.admin;
       },
-      employee: function () {
+      employee () {
         return this.$store.getters.employee;
-      }
+      },
+      bookRate () {
+        console.log(this.$store.getters.rate);
+        return this.$store.getters.rate;
+      },
     },
     methods: {
+      range (x, y) {
+        return _.range(x, y);
+      },
+      open () {
+        this.$alert('Please select correct date', 'Error', {
+          confirmButtonText: 'OK',
+          callback: action => {
+            this.loading = false;
+          }
+        });
+      },
+      showBookHistory () {
+        this.$router.push({ path: `/book/history/${this.book.isbn}` });
+      },
       success () {
         this.$toast.open({
           message: `Have fun reading ${this.book.title}`,
           type: 'is-success'
         });
       },
-      prompt: function () {
+      confirm (rate) {
+        this.$dialog.confirm({
+          message: 'Are you sure you want to rate this book?',
+          onConfirm: () => {
+            this.$toast.open('Book rated');
+            this.$store.dispatch('rateBook', { isbn: this.book.isbn, rate: rate });
+            this.readonly = true;
+          }
+        });
       },
-      deleteBook: function () {
+      prompt () {
+      },
+      deleteBook () {
         this.deleteing = true;
         this.$store.dispatch('deleteBook', { bookID: this.$route.params.id })
           .then(() => {
@@ -106,45 +146,81 @@
         let momentDate = moment.utc(this.date);
         let now = moment.utc();
         let diff = momentDate.diff(now, 'days');
-
-        this.$store.dispatch('rentBook', {
-          userID: userID,
-          bookID: bookID,
-          duration: diff
-        }).then(() => {
-          this.loading = false;
-          this.success();
-          this.$router.push({ path: '/profile' });
-        }).catch((err) => {
-          this.error = err;
-          this.loading = false;
-        });
+        if (diff <= 0) {
+          this.open();
+        } else {
+          this.$store.dispatch('rentBook', {
+            userID: userID,
+            bookID: bookID,
+            duration: diff,
+            isbn: this.book.isbn
+          }).then(() => {
+            this.loading = false;
+            this.success();
+            this.$router.push({ path: '/profile' });
+          }).catch((err) => {
+            this.error = err;
+            this.loading = false;
+          });
+        }
       }
     },
-    created: function () {
+    created () {
       this.loading = true;
       this.$store.dispatch('fetchBookDetails', {
         bookID: this.$route.params.id
       }).then((response) => {
         this.book = response.data;
+        this.rate = response.data.rate;
+
         this.$store.dispatch('getAvailableByISBN', {
           isbn: response.data.isbn
         }).then((response) => {
-          this.loading = false;
           this.authorBooks = response.data;
+          this.loading = false;
+
+          this.$store.dispatch('fetchBookRate', {
+            isbn: this.book.isbn
+          });
         });
       });
+    },
+    checkRate () {
+      return this.book.rate;
     }
   };
 </script>
 
 <style scoped>
-  .book-info {
-    padding: 2em;
+  img {
+    max-width: 600px;
+  }
+
+  @media only screen and (min-width: 500px) {
+    img {
+      max-width: 200px;
+    }
+  }
+
+  @media only screen and (min-width: 700px) {
+    img {
+      max-width: 500px;
+    }
+  }
+
+  @media only screen and (min-width: 900px) {
+    img {
+      max-width: 500px;
+    }
+  }
+
+  @media only screen and (min-width: 1100px) {
+    img {
+      max-width: 600px;
+    }
   }
 
   .book-title {
-    text-align: center;
     font-size: 4em;
     margin-bottom: -0.3em;
   }
@@ -154,17 +230,36 @@
     color: gray;
   }
 
-  .book-stars {
-    padding: 1em;
-  }
-
   .book-description {
-    text-align: center;
     font-size: 1.2em;
+    word-wrap: break-word;
+    width: 60%;
+    margin: 0 auto;
   }
 
   .book-rent {
-    text-align: center;
     padding-top: 2em;
+  }
+
+  .alert {
+    text-align: center;
+    max-width: 200px;
+    margin-left: 40%;
+    margin-top: 10px;
+  }
+
+  .rent-datepicker {
+    padding-bottom: 1em;
+    width: 20%;
+    margin: auto;
+  }
+
+  .rate {
+    margin: 3px;
+  }
+
+  .rent-button {
+    width: 24%;
+    margin: 3px;
   }
 </style>

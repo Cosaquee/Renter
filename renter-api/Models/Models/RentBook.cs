@@ -3,6 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Models.Models
 {
+
+    public enum State {
+        READY,
+        RENTED,
+        ARCHIVED
+    }
+
     public class RentBook : BaseEntity
     {
         [Key]
@@ -13,8 +20,9 @@ namespace Models.Models
 
         public virtual Book Book { get; set; }
 
+        public string ISBN { get; set; }
+
         [Required]
-        [StringLength(256)]
         public string UserId { get; set; }
 
         public virtual User User { get; set; }
@@ -25,6 +33,7 @@ namespace Models.Models
         [Required]
         public DateTime To { get; set; }
 
-        public bool Received { get; set; }
+        public State State {get; set; }
+
     }
 }
